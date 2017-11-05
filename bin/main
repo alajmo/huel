@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+
+const tasks = require('../src/tasks.js');
+const defaultConfig = require('../config/default.json');
+const pkg = require('../package.json');
+const program = require('commander');
+
+program
+  .version(pkg.version)
+  .description('')
+  .option('-k, --key', `text. [boolean] [default: ${defaultConfig.key}]`)
+  .option('-m, --key2 [optional-value]', `text. [string] [default: ${defaultConfig.key2}]`)
+  .option('-s, --key-value <required-value>', `text. [string] [required]`)
+
+program.on('--help', () => {
+  console.log(`
+  Examples:
+
+    $ {{ NAME }}
+    $ {{ NAME }}
+  `);
+});
+
+program.parse(process.argv);
+
+function getOptions() {
+  if (!program.dest) {
+    console.error('error: option -s, --key-value with value is required');
+    process.exit(1);
+  }
+
+  return Object.freeze({
+    key: program.key || defaultConfig.key
+  });
+}
+
+function main() {
+  const options = getOptions();
+
+  if (program.optionA) {
+    tasks.dev(options);
+  } else {
+    tasks.build(options);
+  }
+}
+main();

@@ -1,0 +1,40 @@
+{
+  "name": "hal",
+  "version": "0.1.0",
+  "description": "A development environment for the web. Basically a wrapper around webpack, babel and postcss.",
+  "main": "bin/hal",
+  "bin": {
+    "hal": "./bin/hal"
+  },
+  "scripts": {
+    "start": "node bin/hal",
+    "build": "node bin/hal",
+    "test": "node test/test.js",
+    "precommit": "prettier --single-quote --bracket-spacing true --trailing-comma none --write \"src/**/*.js\" && npm test && pjv package.json",
+    "prepush": "npm test && pjv package.json",
+    "prepublish": "pkg-ok && pjv package.json"
+  },
+  "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "0.14.3",
+    "npm-check": "5.4.4",
+    "package-json-validator": "0.6.2",
+    "pkg-ok": "1.1.0",
+    "prettier": "1.5.2",
+    "tap": "10.7.0"
+  },
+  "dependencies": {
+    "commander": "2.11.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/samiralajmovic/hal.git"
+  },
+  "homepage": "https://github.com/samiralajmovic/hal",
+  "keywords": [
+    "html",
+    "cli",
+    "command line tool"
+  ]
+}

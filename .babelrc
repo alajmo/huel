@@ -1,0 +1,14 @@
+{
+    "presets": [
+        [ "es2015", { "modules": false } ]
+    ],
+    "retainLines": true,
+    "plugins": [],
+    "compact": false,
+    "comments": true,
+    "env": {
+        "development": {
+            "plugins": []
+        }
+    }
+}

@@ -4,13 +4,35 @@
 
 ## Synopsis
 
-A development environment for the web. Basically a wrapper around webpack, babel and postcss.
+A highly opionated build and development environment for the web. Based around webpack, babel and postcss.
 
 ## Requirements
 
 * Node > 8
 
 ## Usage
+
+```
+  Usage: hal [options]
+
+
+  Options:
+
+    -V, --version              output the version number
+    -t, --template <template>  template for project. [string] [required]
+    -e, --entry <entry>        entry for project. [string] [required]
+    -o, --output <output>      output for project. [string] [required]
+    -p, --port [port]          port webpack-dev-server listens on. [integer] [default: 3000]
+    -w, --watch                start development server. [boolean] [default: false]
+    -h, --help                 output usage information
+
+  Examples:
+    Production build
+    $ hal -t src/index.html -e src/app.js -o dist
+
+    Start webpack-dev-server
+    $ hal -w -p 3001 -t src/index.html -e src/app.js -o dist
+```
 
 ## Development
 

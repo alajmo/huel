@@ -23,8 +23,11 @@ program
 program.on('--help', () => {
   console.log(`
   Examples:
-    $ hal -e src/app.js -o dist
-    $ hal -w -e src/app.js -o dist
+    Production build
+    $ hal -t src/index.html -e src/app.js -o dist
+
+    Start webpack-dev-server
+    $ hal -w -p 3001 -t src/index.html -e src/app.js -o dist
   `);
 });
 

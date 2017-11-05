@@ -1,4 +1,5 @@
 const child = require('child_process');
+const path = require('path');
 
 const TASKS = Object.freeze({
   build: options => build(options),
@@ -7,23 +8,28 @@ const TASKS = Object.freeze({
 
 module.exports = TASKS;
 
-function dev({ port, entry, output }) {
+function dev({ template, port, entry, output }) {
   console.log('dev');
+  const webpack = path.join(path.dirname(__filename), 'webpack.js');
 
   child.execSync(
-    `node src/webpack.js --watch --port ${port} --entry ${entry} --output ${output}`,
+    `node ${webpack} --watch --port ${port} --template ${template} --entry ${entry} --output ${output}`,
     {
       stdio: [0, 1, 2]
     }
   );
 }
 
-function build({ entry, output }) {
+function build({ template, entry, output }) {
   console.log('build');
+  const webpack = path.join(path.dirname(__filename), 'webpack.js');
 
-  child.execSync(`node src/webpack.js --entry ${entry} --output ${output}`, {
-    stdio: [0, 1, 2]
-  });
+  child.execSync(
+    `node ${webpack} --template ${template} --entry ${entry} --output ${output}`,
+    {
+      stdio: [0, 1, 2]
+    }
+  );
 }
 
 function changeStartingTime(

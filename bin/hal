@@ -8,6 +8,7 @@ const program = require('commander');
 program
   .version(pkg.version)
   .description('')
+  .option('-t, --template <template>', `template for project. [string] [required]`)
   .option('-e, --entry <entry>', `entry for project. [string] [required]`)
   .option('-o, --output <output>', `output for project. [string] [required]`)
   .option(
@@ -30,6 +31,11 @@ program.on('--help', () => {
 program.parse(process.argv);
 
 function getOptions() {
+  if (!program.template) {
+    console.error('error: option -t, --template with value is required');
+    process.exit(1);
+  }
+
   if (!program.entry) {
     console.error('error: option -e, --entry with value is required');
     process.exit(1);
@@ -41,6 +47,7 @@ function getOptions() {
   }
 
   return Object.freeze({
+    template: program.template,
     entry: program.entry,
     output: program.output,
     watch: program.watch || defaultConfig.watch,

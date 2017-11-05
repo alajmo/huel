@@ -10,8 +10,8 @@
     "bin/hal"
   ],
   "scripts": {
-    "start": "node bin/hal -w -e example/src/index.js -o example/dist/",
-    "build": "node bin/hal -e example/src/index.js -o example/dist/",
+    "start": "node bin/hal -w -t example/src/index.html -e example/src/index.js -o example/dist/",
+    "build": "node bin/hal -t example/src/index.html -e example/src/index.js -o example/dist/",
     "test": "node test/test.js",
     "precommit": "prettier --config prettier.config.json --write \"src/**/*.js\" && npm test && pjv package.json",
     "prepush": "npm test && pjv package.json",

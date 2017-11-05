@@ -8,6 +8,7 @@ function main() {
   const webpackConfig = require('../webpack.config.js')({
     entry: argv.entry,
     output: argv.output,
+    template: argv.template,
     webpack
   });
   const webpackDevServerConfig = require('../webpack-dev-server.config.js')({

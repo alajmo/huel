@@ -6,7 +6,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = config;
 
-function config({ entry, output, port = 3000, webpack }) {
+function config({ template, entry, output, port = 3000, webpack }) {
   const ENV = process.env.npm_lifecycle_event;
   const isDev = ENV === 'start';
 
@@ -14,13 +14,19 @@ function config({ entry, output, port = 3000, webpack }) {
     devtool: isDev ? 'cheap-eval-source-map' : 'source-map',
 
     entry: {
-      app: [path.resolve(__dirname, entry)]
+      app: [path.resolve(entry)]
     },
 
     output: {
-      path: path.resolve(__dirname, output),
+      path: path.resolve(output),
       filename: '[hash].index.js',
       publicPath: '/'
+    },
+
+    resolveLoader: {
+      modules: [path.resolve(__dirname, 'node_modules')]
+      // extensions: ['.js', '.json'],
+      // mainFields: ['loader', 'main']
     },
 
     module: {
@@ -28,10 +34,6 @@ function config({ entry, output, port = 3000, webpack }) {
         {
           test: /\.html$/,
           use: 'html-loader'
-        },
-        {
-          test: /\.(png|jpg|gif|svg)$/,
-          use: 'file-loader?name=img/[name].[ext]'
         },
         {
           test: /.*\.js/,
@@ -43,16 +45,20 @@ function config({ entry, output, port = 3000, webpack }) {
             fallback: 'style-loader',
             use: ['css-loader', 'postcss-loader']
           })
+        },
+        {
+          test: /\.(png|jpg|gif|svg)$/,
+          use: 'file-loader?name=img/[name].[ext]'
         }
       ]
     },
 
     plugins: [
-      new CleanWebpackPlugin([path.resolve(output)]),
+      new CleanWebpackPlugin([path.resolve(output)], { root: process.cwd() }),
       new UglifyJSPlugin({
         sourceMap: true
       }),
-      new HtmlWebpackPlugin({ template: 'example/src/index.html' }),
+      new HtmlWebpackPlugin({ template }),
       new ExtractTextPlugin({
         filename: '[hash].index.css',
         allChunks: true
@@ -66,7 +72,10 @@ function config({ entry, output, port = 3000, webpack }) {
     ],
 
     resolve: {
-      modules: [path.resolve(__dirname, path.dirname(entry)), 'node_modules']
+      modules: [
+        path.resolve(process.cwd(), path.dirname(entry)),
+        'node_modules'
+      ]
     }
   };
 }

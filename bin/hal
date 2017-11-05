@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+
+const tasks = require('../src/tasks.js');
+const defaultConfig = require('../config/default.json');
+const pkg = require('../package.json');
+const program = require('commander');
+
+program
+  .version(pkg.version)
+  .description('')
+  .option('-e, --entry <entry>', `entry for project. [string] [required]`)
+  .option('-o, --output <output>', `output for project. [string] [required]`)
+  .option(
+    '-p, --port [port]',
+    `port webpack-dev-server listens on. [integer] [default: ${defaultConfig.port}]`
+  )
+  .option(
+    '-w, --watch',
+    `start development server. [boolean] [default: ${defaultConfig.watch}]`
+  );
+
+program.on('--help', () => {
+  console.log(`
+  Examples:
+    $ hal -e src/app.js -o dist
+    $ hal -w -e src/app.js -o dist
+  `);
+});
+
+program.parse(process.argv);
+
+function getOptions() {
+  if (!program.entry) {
+    console.error('error: option -e, --entry with value is required');
+    process.exit(1);
+  }
+
+  if (!program.output) {
+    console.error('error: option -o, --output with value is required');
+    process.exit(1);
+  }
+
+  return Object.freeze({
+    entry: program.entry,
+    output: program.output,
+    watch: program.watch || defaultConfig.watch,
+    port: program.port || defaultConfig.port
+  });
+}
+
+function main() {
+  const options = getOptions();
+
+  if (options.watch) {
+    tasks.dev(options);
+  } else {
+    tasks.build(options);
+  }
+}
+main();

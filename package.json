@@ -1,16 +1,19 @@
 {
   "name": "hal",
   "version": "0.1.0",
-  "description": "A development environment for the web. Basically a wrapper around webpack, babel and postcss.",
+  "description": "A development environment for the web",
   "main": "bin/hal",
   "bin": {
     "hal": "./bin/hal"
   },
+  "files": [
+    "bin/hal"
+  ],
   "scripts": {
-    "start": "node bin/hal",
-    "build": "node bin/hal",
+    "start": "node bin/hal -w -e example/src/index.js -o example/dist/",
+    "build": "node bin/hal -e example/src/index.js -o example/dist/",
     "test": "node test/test.js",
-    "precommit": "prettier --single-quote --bracket-spacing true --trailing-comma none --write \"src/**/*.js\" && npm test && pjv package.json",
+    "precommit": "prettier --config prettier.config.json --write \"src/**/*.js\" && npm test && pjv package.json",
     "prepush": "npm test && pjv package.json",
     "prepublish": "pkg-ok && pjv package.json"
   },
@@ -18,14 +21,36 @@
   "license": "MIT",
   "devDependencies": {
     "husky": "0.14.3",
-    "npm-check": "5.4.4",
+    "npm-check": "^5.5.1",
     "package-json-validator": "0.6.2",
     "pkg-ok": "1.1.0",
-    "prettier": "1.5.2",
-    "tap": "10.7.0"
+    "tap": "^10.7.2"
   },
   "dependencies": {
-    "commander": "2.11.0"
+    "autoprefixer": "^7.1.6",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "clean-webpack-plugin": "^0.1.17",
+    "commander": "2.11.0",
+    "css-loader": "^0.28.7",
+    "eslint": "^4.10.0",
+    "eslint-config-prettier": "^2.7.0",
+    "eslint-plugin-prettier": "^2.3.1",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.5",
+    "html-loader": "^0.5.1",
+    "html-webpack-plugin": "^2.30.1",
+    "minimist": "^1.2.0",
+    "postcss-loader": "2.0.8",
+    "prettier": "^1.7.4",
+    "style-loader": "^0.19.0",
+    "uglifyjs-webpack-plugin": "^1.0.1",
+    "webpack": "3.8.1",
+    "webpack-dev-server": "^2.9.4",
+    "whatwg-fetch": "2.0.3"
   },
   "repository": {
     "type": "git",

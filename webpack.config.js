@@ -1,21 +1,25 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = config;
 
-function config({ entry, output, port, webpack }) {
+function config({ entry, output, port = 3000, webpack }) {
   const ENV = process.env.npm_lifecycle_event;
-  const isDev = ENV === 'dev';
+  const isDev = ENV === 'start';
 
   return {
-    devtool: isDev ? 'eval' : 'source-map',
+    devtool: isDev ? 'cheap-eval-source-map' : 'source-map',
 
     entry: {
-      app: ['whatwg-fetch', 'babel-polyfill', path.resolve(__dirname, entry)]
+      app: [path.resolve(__dirname, entry)]
     },
 
     output: {
       path: path.resolve(__dirname, output),
-      filename: '[chunkhash].app.js',
+      filename: '[hash].index.js',
       publicPath: '/'
     },
 
@@ -26,7 +30,7 @@ function config({ entry, output, port, webpack }) {
           use: 'html-loader'
         },
         {
-          test: /\.(png|jpg)$/,
+          test: /\.(png|jpg|gif|svg)$/,
           use: 'file-loader?name=img/[name].[ext]'
         },
         {
@@ -35,37 +39,30 @@ function config({ entry, output, port, webpack }) {
         },
         {
           test: /\.css$/,
-          use: ['style-loader', 'css-loader', 'postcss-loader']
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'postcss-loader']
+          })
         }
       ]
     },
 
-    devtool: 'inline-source-map',
-
-    devServer: {
-      clientLogLevel: 'info',
-      compress: true,
-      contentBase: path.dirname(output),
-      filename: 'bundle.js',
-      historyApiFallback: true,
-      inline: true,
-      port: 1337,
-      publicPath: '/',
-      stats: { colors: true },
-      watchOptions: {
-        aggregateTimeout: 0,
-        poll: 500
-      }
-    },
-
     plugins: [
-      new webpack.optimize.UglifyJsPlugin({
-        compress: { drop_console: true },
-        compressor: { warnings: false },
-        include: /\.min\.js$/,
-        minimize: true,
+      new CleanWebpackPlugin([path.resolve(output)]),
+      new UglifyJSPlugin({
         sourceMap: true
-      })
+      }),
+      new HtmlWebpackPlugin({ template: 'example/src/index.html' }),
+      new ExtractTextPlugin({
+        filename: '[hash].index.css',
+        allChunks: true
+      }),
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify('production')
+        }
+      }),
+      new webpack.optimize.ModuleConcatenationPlugin()
     ],
 
     resolve: {

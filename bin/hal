@@ -22,6 +22,7 @@ program
 
 program.on('--help', () => {
   console.log(`
+
   Examples:
     Production build
     $ hal -t src/index.html -e src/app.js -o dist

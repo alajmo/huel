@@ -27,6 +27,7 @@ A highly opionated build and development environment for the web. Based around w
     -h, --help                 output usage information
 
   Examples:
+
     Production build
     $ hal -t src/index.html -e src/app.js -o dist
 

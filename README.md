@@ -4,7 +4,17 @@
 
 ## Synopsis
 
-A highly opionated build and development environment for the web. Based around webpack, babel and postcss.
+A highly opionated build and development environment for the web. A collocation of the following tools:
+
+* webpack
+* babel
+* prettier
+* eslint
+* postcss
+
+Which enables the following features:
+
+* TODO
 
 ## Requirements
 
@@ -45,3 +55,4 @@ Follows [Conventional Commits](https://conventionalcommits.org/).
 * [Webpack development](https://webpack.js.org/guides/development/)
 * [Webpack devserver configuration](https://webpack.js.org/configuration/dev-server)
 * [Webpack production](https://webpack.js.org/guides/production/)
+* [Webpack dashboard](https://github.com/FormidableLabs/webpack-dashboard)

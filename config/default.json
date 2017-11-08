@@ -1,4 +1,6 @@
 {
   "watch": false,
-  "port": 3000
+  "port": 3000,
+  "lint": false,
+  "env": "prod"
 }

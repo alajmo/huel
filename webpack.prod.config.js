@@ -1,8 +1,8 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const path = require('path');
 
 module.exports = config;
 
@@ -25,8 +25,6 @@ function config({ template, entry, output, port = 3000, webpack }) {
 
     resolveLoader: {
       modules: [path.resolve(__dirname, 'node_modules')]
-      // extensions: ['.js', '.json'],
-      // mainFields: ['loader', 'main']
     },
 
     module: {
@@ -37,13 +35,22 @@ function config({ template, entry, output, port = 3000, webpack }) {
         },
         {
           test: /.*\.js/,
+          exclude: /node_modules/,
           use: ['babel-loader']
         },
         {
           test: /\.css$/,
           use: ExtractTextPlugin.extract({
             fallback: 'style-loader',
-            use: ['css-loader', 'postcss-loader']
+            use: [
+              { loader: 'css-loader', options: { importLoaders: 1 } },
+              {
+                loader: 'postcss-loader',
+                options: {
+                  config: { path: path.resolve(__dirname, 'postcss.config.js') }
+                }
+              }
+            ]
           })
         },
         {

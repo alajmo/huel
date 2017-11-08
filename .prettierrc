@@ -3,5 +3,5 @@
   "parser": "babylon",
   "single-quote": true,
   "bracket-spacing": true,
-  "trailing-comma": "none"
+  "trailing-comma": true
 }

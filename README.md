@@ -1,10 +1,29 @@
 # HAL
 
+<p align="center">
+  <a href="https://travis-ci.org/hal/hal">
+    <img alt="Travis" src="https://img.shields.io/travis/prettier/prettier.svg?style=flat-square">
+  </a>
+  <a href="https://codecov.io/gh/hal/hal">
+    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/prettier/prettier.svg?style=flat-square">
+  </a>
+  <a href="https://www.npmjs.com/package/hal">
+    <img alt="npm version" src="https://img.shields.io/npm/v/hal.svg?style=flat-square">
+  </a>
+  <a href="https://www.npmjs.com/package/hal">
+    <img alt="npm version" src="https://img.shields.io/npm/dm/hal.svg?style=flat-square">
+  </a>
+  <a href="#badge">
+    <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square">
+  </a>
+</p>
+
 > Roger that Dave, I can build that for you.
 
 ## Synopsis
 
-A highly opionated build and development environment for the web. A collocation of the following tools:
+A highly opionated build and development environment for the web. A collocation
+of the following tools:
 
 * webpack
 * babel
@@ -14,7 +33,7 @@ A highly opionated build and development environment for the web. A collocation 
 
 Which enables the following features:
 
-* TODO
+* Tracking of performance https://github.com/webpackmonitor/webpackmonitor
 
 ## Requirements
 

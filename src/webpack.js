@@ -2,14 +2,26 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
+const webpackFileConfigs = {
+  prod: '../webpack.prod.config.js',
+  dev: '../webpack.dev.config.js',
+  devServer: '../webpack-dev-server.config.js'
+};
+
+const TARGETS = {
+  prod: 'prod',
+  dev: 'dev'
+};
 
 module.exports = {
   build,
   dev
 };
 
-function build({ entry, output, template }) {
-  const webpackConfig = require('../webpack.prod.config.js')({
+function build({ env, entry, output, template }) {
+  const webpackConfig = require(env === TARGETS.prod
+    ? webpackFileConfigs.prod
+    : webpackFileConfigs.dev)({
     entry,
     output,
     template,
@@ -46,14 +58,16 @@ function build({ entry, output, template }) {
   });
 }
 
-function dev({ entry, output, template, port }) {
-  const webpackConfig = require('../webpack.prod.config.js')({
+function dev({ env, entry, output, template, port }) {
+  const webpackConfig = require(env === TARGETS.dev
+    ? webpackFileConfigs.prod
+    : webpackFileConfigs.dev)({
     entry,
     output,
     template,
     webpack
   });
-  const webpackDevServerConfig = require('../webpack-dev-server.config.js')({
+  const webpackDevServerConfig = require(webpackFileConfigs.devServer)({
     contentBase: path.normalize(output),
     port
   });

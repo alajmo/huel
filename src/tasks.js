@@ -9,14 +9,14 @@ const TASKS = Object.freeze({
 
 module.exports = TASKS;
 
-function build({ lint, template, entry, output, port, watch }) {
+function build({ lint, env, template, entry, output, port, watch }) {
   if (lint) {
     startLint({ entry, watch });
   }
 
   if (watch) {
-    webpackTask.dev({ port, entry, template, output });
+    webpackTask.dev({ env, port, entry, template, output });
   } else {
-    webpackTask.build({ entry, template, output, port, watch });
+    webpackTask.build({ env, entry, template, output, port, watch });
   }
 }

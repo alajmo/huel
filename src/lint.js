@@ -20,11 +20,17 @@ function lint(entry, watch) {
   const report = cli.executeOnFiles([entry]);
   const errorReport = CLIEngine.getErrorResults(report.results);
   const formatter = cli.getFormatter();
+
   if (errorReport.length > 0) {
+    // Clear console.
+    process.stdout.write('\x1Bc');
+
     console.log(formatter(report.results));
     if (!watch) {
       process.exit(1);
     }
+  } else {
+    console.log('Code is ESLint compliant.');
   }
 }
 
@@ -32,8 +38,6 @@ function watchLint(entry) {
   chokidar
     .watch(path.join(entry, '**/*.js'), { ignored: /(^|[\/\\])\../ })
     .on('all', (event, path) => {
-      // TODO: Perhaps implement when watching to only show error messages for 1 file
-      // at a time.
       lint(entry, true);
     });
 }

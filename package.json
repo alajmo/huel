@@ -7,7 +7,7 @@
   "files": [ "bin/hal" ],
   "scripts": {
     "start": "hal -w -t example/src/index.html -e example/src/index.js -o example/dist/ build",
-    "build": "hal example/src --lint example/src --format -t example/src/index.html -e example/src/index.js -o example/dist/ build",
+    "build": "hal --lint example/src --format example/src -t example/src/index.html -e example/src/index.js -o example/dist/ build",
     "lint": "hal --src example/src lint",
     "lint-watch": "hal --watch --src example/src lint",
     "format": "hal --src example/src format",

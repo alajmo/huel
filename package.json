@@ -7,11 +7,13 @@
   "files": [ "bin/hal" ],
   "scripts": {
     "start": "hal -w -t example/src/index.html -e example/src/index.js -o example/dist/ build",
-    "build": "hal --format example/src --lint example/src -t example/src/index.html -e example/src/index.js -o example/dist/ build",
-    "lint": "hal --watch --src example/src lint",
-    "format": "hal --watch --src example/src format",
+    "build": "hal example/src --lint example/src --format -t example/src/index.html -e example/src/index.js -o example/dist/ build",
+    "lint": "hal --src example/src lint",
+    "lint-watch": "hal --watch --src example/src lint",
+    "format": "hal --src example/src format",
+    "format-watch": "hal --watch --src example/src format",
     "test": "node test/test.js && npm run eslint-check",
-    "precommit": "npm run prettier && npm test && pkg-ok && pjv package.json",
+    "precommit": "npm run format && npm test && pkg-ok && pjv package.json",
     "prepush": "npm test && pkg-ok && pjv package.json",
     "prepublish": "npm test && pkg-ok && pjv package.json",
     "eslint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check"

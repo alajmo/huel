@@ -19,13 +19,11 @@ program
     '-t, --template <template>',
     `template for project. [string] [required]`
   )
+  .option('-s, --src <src>', `src for project. [string]`)
   .option('-e, --entry <entry>', `entry for project. [string] [required]`)
   .option('-o, --output <output>', `output for project. [string] [required]`)
   .option('-l, --lint <src>', `lint entry folder before build. [string]`)
-  .option(
-    '-L, --prettier <src>',
-    `run prettier on entry folder before build. [string]`
-  )
+  .option('-f, --format <src>', `format entry folder before build. [string]`)
   .option(
     '-p, --port [port]',
     `port webpack-dev-server listens on. [integer] [default: ${
@@ -69,10 +67,34 @@ program
   Examples:
 
     One time run lint
-    $ hal lint -e src/
+    $ hal -s src/ lint
 
     Watch files and run lint on file change
-    $ hal lint -w -e src/
+    $ hal -w -s src/ lint
+  `);
+  });
+
+program
+  .command('format')
+  .option('-s, --src <src>', `src for project. [string] [required]`)
+  .option(
+    '-w, --watch',
+    `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
+  )
+  .action(options => {
+    const opt = getLintOptions(options);
+    tasks.format(opt);
+  })
+  .on('--help', () => {
+    console.log(`
+
+  Examples:
+
+    One time run format
+    $ hal -s src/ format
+
+    Watch files and run format on file change
+    $ hal -w -s src/ format
   `);
   });
 
@@ -83,6 +105,18 @@ if (!program.args.length) {
 }
 
 function getLintOptions(options) {
+  if (!options.src) {
+    console.error('error: option -s, --src with value is required');
+    process.exit(1);
+  }
+
+  return Object.freeze({
+    src: options.src,
+    watch: options.watch || defaultConfig.watch
+  });
+}
+
+function getFormatOptions(options) {
   if (!options.src) {
     console.error('error: option -s, --src with value is required');
     process.exit(1);
@@ -114,9 +148,9 @@ function getBuildOptions(options) {
     entry: options.entry,
     env: options.env || defaultConfig.env,
     lint: options.lint,
+    format: options.format,
     output: options.output,
     port: options.port || defaultConfig.port,
-    prettier: options.prettier,
     template: options.template,
     watch: options.watch || defaultConfig.watch
   });

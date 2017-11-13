@@ -4,40 +4,58 @@ const glob = require('glob');
 const chokidar = require('chokidar');
 const prettier = require('prettier');
 
-module.exports = startPrettier;
+module.exports = startFormat;
 
-function startPrettier({ entry, watch }) {
-  const jsFiles = glob.sync(`${formatPath(entry)}/**/*.js`);
+function startFormat({ src, watch }) {
+  if (watch) {
+    watchFormat(src);
+  } else {
+    format({ src, watch });
+  }
+}
 
-  console.log(jsFiles);
-  return;
-  const pretterConfig = JSON.parse(
+function format({ src, watch }) {
+  const normalizedSrc = path.resolve(path.normalize(src));
+
+  const jsFiles = glob.sync(`${formatPath(normalizedSrc)}/**/*.js`);
+  const jsonFiles = glob.sync(`${formatPath(normalizedSrc)}/**/*.json`);
+  const cssFiles = glob.sync(`${formatPath(normalizedSrc)}/**/*.css`);
+
+  const prettierConfig = JSON.parse(
     fs.readFileSync(path.resolve(__dirname, '../.prettierrc'), 'utf8')
   );
+  jsFiles.forEach(filepath => {
+    const text = fs.readFileSync(filepath, 'utf8');
+    const formatted = prettier.format(text, prettierConfig);
+    fs.writeFileSync(filepath, formatted);
+  });
 
-  const formatted = prettier.format(text, pretterConfig);
+  const prettierJSONConfig = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, '../.json.prettierrc'), 'utf8')
+  );
+  jsonFiles.forEach(filepath => {
+    const text = fs.readFileSync(filepath, 'utf8');
+    const formatted = prettier.format(text, prettierJSONConfig);
+    fs.writeFileSync(filepath, formatted);
+  });
 
-  if (watch) {
-    watchPrettier(entry);
-  } else {
-    runPrettier(entry, watch);
-  }
+  const prettierCSSConfig = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, '../.css.prettierrc'), 'utf8')
+  );
+  cssFiles.forEach(filepath => {
+    const text = fs.readFileSync(filepath, 'utf8');
+    const formatted = prettier.format(text, prettierCSSConfig);
+    fs.writeFileSync(filepath, formatted);
+  });
+
+  console.log('Code has been formatted with prettier.');
 }
 
-function runPrettier(entry, watch) {
-  if (!watch) {
-    process.exit(1);
-  } else {
-    console.log('Code is ESLint compliant.');
-  }
-}
-
-// const text = fs.readFileSync(filePath, 'utf8');
-function watchPrettier(entry) {
+function watchFormat(src) {
   chokidar
-    .watch([path.join(entry, '**/*.js')], { ignored: /(^|[\/\\])\../ })
+    .watch([path.join(src, '**/*.js')], { ignored: /(^|[\/\\])\../ })
     .on('all', (event, path) => {
-      lint(entry, true);
+      format({ src, watch: true });
     });
 }
 

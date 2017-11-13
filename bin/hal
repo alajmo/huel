@@ -21,13 +21,16 @@ program
   )
   .option('-e, --entry <entry>', `entry for project. [string] [required]`)
   .option('-o, --output <output>', `output for project. [string] [required]`)
+  .option('-l, --lint <src>', `lint entry folder before build. [string]`)
   .option(
-    '-l, --lint',
-    `lint entry folder before build. [boolean] [default: ${defaultConfig.lint}]`
+    '-L, --prettier <src>',
+    `run prettier on entry folder before build. [string]`
   )
   .option(
     '-p, --port [port]',
-    `port webpack-dev-server listens on. [integer] [default: ${defaultConfig.port}]`
+    `port webpack-dev-server listens on. [integer] [default: ${
+      defaultConfig.port
+    }]`
   )
   .option(
     '-w, --watch',
@@ -51,7 +54,7 @@ program
 
 program
   .command('lint')
-  .option('-e, --entry <entry>', `entry for project. [string] [required]`)
+  .option('-s, --src <src>', `src for project. [string] [required]`)
   .option(
     '-w, --watch',
     `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
@@ -80,13 +83,13 @@ if (!program.args.length) {
 }
 
 function getLintOptions(options) {
-  if (!options.entry) {
-    console.error('error: option -e, --entry with value is required');
+  if (!options.src) {
+    console.error('error: option -s, --src with value is required');
     process.exit(1);
   }
 
   return Object.freeze({
-    entry: options.entry,
+    src: options.src,
     watch: options.watch || defaultConfig.watch
   });
 }
@@ -113,6 +116,7 @@ function getBuildOptions(options) {
     lint: options.lint,
     output: options.output,
     port: options.port || defaultConfig.port,
+    prettier: options.prettier,
     template: options.template,
     watch: options.watch || defaultConfig.watch
   });

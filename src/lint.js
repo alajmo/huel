@@ -3,21 +3,21 @@ const path = require('path');
 const CLIEngine = require('eslint').CLIEngine;
 const cli = new CLIEngine({
   baseConfig: false,
-  configFile: path.resolve(__dirname, '../.eslintrc.json')
+  configFile: path.resolve(__dirname, '../.eslintrc')
 });
 
 module.exports = startLint;
 
-function startLint({ entry, watch }) {
+function startLint({ src, watch }) {
   if (watch) {
-    watchLint(entry);
+    watchLint(src);
   } else {
-    lint(entry, watch);
+    lint(src, watch);
   }
 }
 
-function lint(entry, watch) {
-  const report = cli.executeOnFiles([entry]);
+function lint(src, watch) {
+  const report = cli.executeOnFiles([src]);
   const errorReport = CLIEngine.getErrorResults(report.results);
   const formatter = cli.getFormatter();
 
@@ -34,10 +34,12 @@ function lint(entry, watch) {
   }
 }
 
-function watchLint(entry) {
+function watchLint(src) {
   chokidar
-    .watch(path.join(entry, '**/*.js'), { ignored: /(^|[\/\\])\../ })
+    .watch(path.join(process.cwd(), path.normalize(src), '/**/*.js'), {
+      ignored: /(^|[\/\\])\../
+    })
     .on('all', (event, path) => {
-      lint(entry, true);
+      lint(src, true);
     });
 }

@@ -3,28 +3,28 @@
   "version": "0.1.0",
   "description": "A development environment for the web",
   "main": "bin/hal",
-  "bin": {
-    "hal": "./bin/hal"
-  },
-  "files": [
-    "bin/hal"
-  ],
+  "bin": { "hal": "./bin/hal" },
+  "files": [ "bin/hal" ],
   "scripts": {
-    "start": "node bin/hal -w -t example/src/index.html -e example/src/index.js -o example/dist/",
-    "build": "node bin/hal -t example/src/index.html -e example/src/index.js -o example/dist/",
-    "test": "node test/test.js",
-    "precommit": "prettier --config prettier.config.json --write \"src/**/*.js\" && npm test && pjv package.json",
-    "prepush": "npm test && pjv package.json",
-    "prepublish": "pkg-ok && pjv package.json"
+    "start": "hal -w -t example/src/index.html -e example/src/index.js -o example/dist/ build",
+    "build": "hal -t example/src/index.html -e example/src/index.js -o example/dist/ -m build",
+    "lint": "hal --watch --src example/src lint",
+    "format": "hal format",
+    "test": "node test/test.js && npm run eslint-check",
+    "precommit": "npm run prettier && npm test && pkg-ok && pjv package.json",
+    "prepush": "npm test && pkg-ok && pjv package.json",
+    "prepublish": "npm test && pkg-ok && pjv package.json",
+    "eslint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check"
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
   "license": "MIT",
   "devDependencies": {
+    "eslint-config-prettier": "^2.7.0",
     "husky": "0.14.3",
-    "npm-check": "^5.5.1",
+    "npm-check": "^5.5.2",
     "package-json-validator": "0.6.2",
     "pkg-ok": "1.1.0",
-    "tap": "^10.7.2"
+    "tap": "^10.7.3"
   },
   "dependencies": {
     "autoprefixer": "^7.1.6",
@@ -37,19 +37,19 @@
     "clean-webpack-plugin": "^0.1.17",
     "commander": "2.11.0",
     "css-loader": "^0.28.7",
-    "eslint": "^4.10.0",
-    "eslint-config-prettier": "^2.7.0",
+    "eslint": "^4.11.0",
     "eslint-plugin-prettier": "^2.3.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
     "postcss-loader": "2.0.8",
-    "prettier": "^1.7.4",
+    "prettier": "^1.8.2",
     "style-loader": "^0.19.0",
     "uglifyjs-webpack-plugin": "^1.0.1",
     "webpack": "3.8.1",
     "webpack-dev-server": "^2.9.4",
+    "webpack-monitor": "^1.0.13",
     "whatwg-fetch": "2.0.3"
   },
   "repository": {

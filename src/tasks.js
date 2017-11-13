@@ -1,17 +1,21 @@
 const startLint = require('./lint.js');
+const startPrettier = require('./format.js');
 const path = require('path');
 const webpackTask = require('./webpack.js');
 
 const TASKS = Object.freeze({
   build: options => build(options),
-  lint: ({ entry, watch }) => startLint({ entry, watch })
+  lint: ({ src, watch }) => startLint({ src, watch })
 });
 
 module.exports = TASKS;
 
-function build({ lint, env, template, entry, output, port, watch }) {
+function build({ lint, prettier, env, template, entry, output, port, watch }) {
   if (lint) {
-    startLint({ entry, watch });
+    startLint({ src: entry, watch });
+  }
+  if (prettier) {
+    startPrettier({ entry, watch });
   }
 
   if (watch) {

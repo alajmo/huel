@@ -7,19 +7,20 @@ const prettier = require('prettier');
 module.exports = startFormat;
 
 function startFormat({ src, watch }) {
+  const normalizedSrc = path.resolve(path.normalize(src));
+
   if (watch) {
-    watchFormat(src);
+    format({ src: normalizedSrc, watch });
+    watchFormat(normalizedSrc);
   } else {
-    format({ src, watch });
+    format({ src: normalizedSrc, watch });
   }
 }
 
 function format({ src, watch }) {
-  const normalizedSrc = path.resolve(path.normalize(src));
-
-  const jsFiles = glob.sync(`${formatPath(normalizedSrc)}/**/*.js`);
-  const jsonFiles = glob.sync(`${formatPath(normalizedSrc)}/**/*.json`);
-  const cssFiles = glob.sync(`${formatPath(normalizedSrc)}/**/*.css`);
+  const jsFiles = glob.sync(`${formatPath(src)}/**/*.js`);
+  const jsonFiles = glob.sync(`${formatPath(src)}/**/*.json`);
+  const cssFiles = glob.sync(`${formatPath(src)}/**/*.css`);
 
   const prettierConfig = JSON.parse(
     fs.readFileSync(path.resolve(__dirname, '../.prettierrc'), 'utf8')
@@ -51,11 +52,47 @@ function format({ src, watch }) {
   console.log('Code has been formatted with prettier.');
 }
 
+function formatFile(filepath) {
+  if (path.extname(filepath) === '.js') {
+    const prettierConfig = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../.prettierrc'), 'utf8')
+    );
+
+    const text = fs.readFileSync(filepath, 'utf8');
+    const formatted = prettier.format(text, prettierConfig);
+    fs.writeFileSync(filepath, formatted);
+  } else if (path.extname(filepath) === '.json') {
+    const prettierJSONConfig = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../.json.prettierrc'), 'utf8')
+    );
+
+    const text = fs.readFileSync(filepath, 'utf8');
+    const formatted = prettier.format(text, prettierJSONConfig);
+    fs.writeFileSync(filepath, formatted);
+  } else if (path.extname(filepath) === '.css') {
+    const prettierCSSConfig = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../.css.prettierrc'), 'utf8')
+    );
+
+    const text = fs.readFileSync(filepath, 'utf8');
+    const formatted = prettier.format(text, prettierCSSConfig);
+    fs.writeFileSync(filepath, formatted);
+  }
+}
+
 function watchFormat(src) {
   chokidar
-    .watch([path.join(src, '**/*.js')], { ignored: /(^|[\/\\])\../ })
-    .on('all', (event, path) => {
-      format({ src, watch: true });
+    .watch(
+      [
+        path.join(src, '**/*.js'),
+        path.join(src, '**/*.json'),
+        path.join(src, '**/*.css')
+      ],
+      { ignored: /(^|[\/\\])\../, ignoreInitial: true }
+    )
+    .on('all', (event, filepath) => {
+      formatFile(filepath);
+      console.log(`Formatted ${filepath}`);
     });
 }
 

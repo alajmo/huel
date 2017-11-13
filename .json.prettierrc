@@ -1,5 +1,5 @@
 {
-  "printWidth": 80,
+  "printWidth": 99999,
   "parser": "json",
   "singleQuote": true,
   "bracketSpacing": true,

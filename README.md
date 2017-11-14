@@ -33,8 +33,6 @@ of the following tools:
 
 Which enables the following features:
 
-* Tracking of performance https://github.com/webpackmonitor/webpackmonitor
-
 ## Requirements
 
 * Node > 8

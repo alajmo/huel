@@ -5,18 +5,22 @@ const cli = new CLIEngine({
   baseConfig: false,
   configFile: path.resolve(__dirname, '../.eslintrc')
 });
+const colors = require('./colors.js');
 
 module.exports = startLint;
 
 function startLint({ src, watch }) {
+  const normalizedSrc = path.resolve(path.normalize(src));
+
+  lint(normalizedSrc);
   if (watch) {
-    watchLint(src);
-  } else {
-    lint(src, watch);
+    console.log(`${colors.bold}Watching: ${colors.reset}${normalizedSrc}`);
+    watchLint(normalizedSrc);
   }
 }
 
-function lint(src, watch) {
+function lint( src ) {
+  // eslint does the globbing.
   const report = cli.executeOnFiles([src]);
   const errorReport = CLIEngine.getErrorResults(report.results);
   const formatter = cli.getFormatter();
@@ -24,22 +28,20 @@ function lint(src, watch) {
   if (errorReport.length > 0) {
     // Clear console.
     process.stdout.write('\x1Bc');
-
     console.log(formatter(report.results));
-    if (!watch) {
-      process.exit(1);
-    }
   } else {
-    console.log('Code is ESLint compliant.');
+    const successMessage = 'Code is ESLint compliant.';
+    console.log(`${colors.green}${successMessage}${colors.reset}`);
   }
 }
 
 function watchLint(src) {
   chokidar
-    .watch(path.join(process.cwd(), path.normalize(src), '/**/*.js'), {
-      ignored: /(^|[\/\\])\../
+    .watch(path.join(src, '/**/*.js'), {
+      ignored: /(^|[\/\\])\../,
+      ignoreInitial: true
     })
-    .on('all', (event, path) => {
-      lint(src, true);
+    .on('all', (event, filepath) => {
+      lint(filepath);
     });
 }

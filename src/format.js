@@ -3,21 +3,21 @@ const fs = require('fs');
 const glob = require('glob');
 const chokidar = require('chokidar');
 const prettier = require('prettier');
+const colors = require('./colors.js');
 
 module.exports = startFormat;
 
 function startFormat({ src, watch }) {
   const normalizedSrc = path.resolve(path.normalize(src));
 
+  format(normalizedSrc);
   if (watch) {
-    format({ src: normalizedSrc, watch });
+    console.log(`${colors.bold}Watching: ${colors.reset}${normalizedSrc}`);
     watchFormat(normalizedSrc);
-  } else {
-    format({ src: normalizedSrc, watch });
   }
 }
 
-function format({ src, watch }) {
+function format(src) {
   const jsFiles = glob.sync(`${formatPath(src)}/**/*.js`);
   const jsonFiles = glob.sync(`${formatPath(src)}/**/*.json`);
   const cssFiles = glob.sync(`${formatPath(src)}/**/*.css`);
@@ -49,7 +49,8 @@ function format({ src, watch }) {
     fs.writeFileSync(filepath, formatted);
   });
 
-  console.log('Code has been formatted with prettier.');
+  const successMessage = 'Code has been formatted with prettier.\n';
+  console.log(`${colors.green}${successMessage}${colors.reset}`);
 }
 
 function formatFile(filepath) {
@@ -92,7 +93,11 @@ function watchFormat(src) {
     )
     .on('all', (event, filepath) => {
       formatFile(filepath);
-      console.log(`Formatted ${filepath}`);
+      console.log(
+        `${colors.green}Formatted file: ${colors.reset}${filepath}${
+          colors.reset
+        }`
+      );
     });
 }
 

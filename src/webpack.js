@@ -41,10 +41,14 @@ function build({ env, entry, output, template }) {
 
     console.log(
       stats.toString({
+        version: true,
         chunks: false,
+        chunkModules: false,
         colors: true,
         assets: true,
-        cached: true
+        cached: false,
+        children: false,
+        hash: false
       })
     );
 
@@ -90,10 +94,14 @@ function dev({ env, entry, output, template, port }) {
 
     console.log(
       stats.toString({
+        version: false,
         chunks: false,
+        chunkModules: false,
         colors: true,
         assets: true,
-        cached: true
+        cached: false,
+        children: false,
+        hash: false
       })
     );
 

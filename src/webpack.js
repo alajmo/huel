@@ -64,8 +64,8 @@ function build({ env, entry, output, template }) {
 
 function dev({ env, entry, output, template, port }) {
   const webpackConfig = require(env === TARGETS.dev
-    ? webpackFileConfigs.prod
-    : webpackFileConfigs.dev)({
+    ? webpackFileConfigs.dev
+    : webpackFileConfigs.prod)({
     entry,
     output,
     template,

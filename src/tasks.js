@@ -13,10 +13,10 @@ module.exports = TASKS;
 
 function build({ lint, format, env, template, entry, output, port, watch }) {
   if (lint) {
-    startLint({ src: lint, watch });
+    startLint({ src: lint, watch: false });
   }
   if (format) {
-    startFormat({ src: format, watch });
+    startFormat({ src: format, watch: false });
   }
 
   if (watch) {

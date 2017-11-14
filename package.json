@@ -1,6 +1,6 @@
 {
   "name": "hal",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A development environment for the web",
   "main": "bin/hal",
   "bin": { "hal": "./bin/hal" },

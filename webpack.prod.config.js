@@ -1,8 +1,8 @@
+const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const path = require('path');
 
 module.exports = config;
 
@@ -65,7 +65,22 @@ function config({ template, entry, output, port = 3000, webpack }) {
       new UglifyJSPlugin({
         sourceMap: true
       }),
-      new HtmlWebpackPlugin({ template }),
+      new HtmlWebpackPlugin({
+        template,
+        minify: {
+          collapseWhitespace: true,
+          collapseInlineTagWhitespace: true,
+          caseSensitive: true,
+          html5: true,
+          minifyCSS: true,
+          minifyJS: true,
+          removeComments: true,
+          removeRedundantAttributes: true,
+          removeEmptyAttributes: true,
+          sortAttributes: true,
+          sortClassName: true
+        }
+      }),
       new ExtractTextPlugin({
         filename: '[hash].index.css',
         allChunks: true

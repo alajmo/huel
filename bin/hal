@@ -19,7 +19,6 @@ program
     '-t, --template <template>',
     `template for project. [string] [required]`
   )
-  .option('-s, --src <src>', `src for project. [string]`)
   .option('-e, --entry <entry>', `entry for project. [string] [required]`)
   .option('-o, --output <output>', `output for project. [string] [required]`)
   .option('-l, --lint <src>', `lint entry folder before build. [string]`)

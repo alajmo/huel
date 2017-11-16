@@ -12,7 +12,7 @@ program
 program
   .command('build')
   .option(
-    '-m, --env [env]',
+    '--env [env]',
     `environment. [string] [default: ${defaultConfig.env}]`
   )
   .option(

@@ -94,7 +94,10 @@ function config({ template, entry, output, port = 3000, webpack }) {
     ],
 
     resolve: {
-      modules: [path.resolve(process.cwd(), entry), 'node_modules']
+      modules: [
+        path.resolve(process.cwd(), path.dirname(entry)),
+        'node_modules'
+      ]
     }
   };
 }

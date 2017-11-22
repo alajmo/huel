@@ -33,9 +33,12 @@
     "tap": "^10.7.3"
   },
   "dependencies": {
+    "@commitlint/cli": "~4.3.0",
+    "@commitlint/config-angular": "~4.3.0",
     "autoprefixer": "^7.1.6",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
@@ -67,6 +70,13 @@
   "keywords": [
     "html",
     "cli",
-    "command line tool"
+    "command line tool",
+    "lint",
+    "format",
+    "prettier",
+    "webpack",
+    "build",
+    "dev",
+    "environment"
   ]
 }

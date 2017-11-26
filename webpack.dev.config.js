@@ -9,7 +9,7 @@ module.exports = config;
 
 function config({ template, entry, output, port = 3000, webpack }) {
   return {
-    devtool: 'cheap-eval-source-map',
+    devtool: 'cheap-module-eval-source-map',
 
     entry: {
       app: [path.resolve(entry)]

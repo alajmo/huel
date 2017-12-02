@@ -22,7 +22,7 @@
 
 ## Synopsis
 
-A highly opionated build and development environment for the web. A collocation
+A highly opionated build and development environment for the web. A collection
 of the following tools:
 
 * webpack

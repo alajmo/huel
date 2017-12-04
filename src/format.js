@@ -7,6 +7,12 @@ const colors = require('./colors.js');
 
 module.exports = startFormat;
 
+const PRETTIERRC = {
+  js: path.resolve(__dirname, '../config/.prettierrc'),
+  json: path.resolve(__dirname, '../config/.json.prettierrc'),
+  css: path.resolve(__dirname, '../config/.css.prettierrc')
+};
+
 function startFormat({ src, watch }) {
   const normalizedSrc = path.resolve(path.normalize(src));
 
@@ -22,9 +28,7 @@ function format(src) {
   const jsonFiles = glob.sync(`${formatPath(src)}/**/*.json`);
   const cssFiles = glob.sync(`${formatPath(src)}/**/*.css`);
 
-  const prettierConfig = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '../.prettierrc'), 'utf8')
-  );
+  const prettierConfig = JSON.parse(fs.readFileSync(PRETTIERRC.js, 'utf8'));
   jsFiles.forEach(filepath => {
     const text = fs.readFileSync(filepath, 'utf8');
     const formatted = prettier.format(text, prettierConfig);
@@ -32,7 +36,7 @@ function format(src) {
   });
 
   const prettierJSONConfig = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '../.json.prettierrc'), 'utf8')
+    fs.readFileSync(PRETTIERRC.json, 'utf8')
   );
   jsonFiles.forEach(filepath => {
     const text = fs.readFileSync(filepath, 'utf8');
@@ -40,9 +44,7 @@ function format(src) {
     fs.writeFileSync(filepath, formatted);
   });
 
-  const prettierCSSConfig = JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '../.css.prettierrc'), 'utf8')
-  );
+  const prettierCSSConfig = JSON.parse(fs.readFileSync(PRETTIERRC.css, 'utf8'));
   cssFiles.forEach(filepath => {
     const text = fs.readFileSync(filepath, 'utf8');
     const formatted = prettier.format(text, prettierCSSConfig);
@@ -55,16 +57,14 @@ function format(src) {
 
 function formatFile(filepath) {
   if (path.extname(filepath) === '.js') {
-    const prettierConfig = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../.prettierrc'), 'utf8')
-    );
+    const prettierConfig = JSON.parse(fs.readFileSync(PRETTIERRC.js, 'utf8'));
 
     const text = fs.readFileSync(filepath, 'utf8');
     const formatted = prettier.format(text, prettierConfig);
     fs.writeFileSync(filepath, formatted);
   } else if (path.extname(filepath) === '.json') {
     const prettierJSONConfig = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../.json.prettierrc'), 'utf8')
+      fs.readFileSync(PRETTIERRC.json, 'utf8')
     );
 
     const text = fs.readFileSync(filepath, 'utf8');
@@ -72,7 +72,7 @@ function formatFile(filepath) {
     fs.writeFileSync(filepath, formatted);
   } else if (path.extname(filepath) === '.css') {
     const prettierCSSConfig = JSON.parse(
-      fs.readFileSync(path.resolve(__dirname, '../.css.prettierrc'), 'utf8')
+      fs.readFileSync(PRETTIERRC.css, 'utf8')
     );
 
     const text = fs.readFileSync(filepath, 'utf8');

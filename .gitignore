@@ -1,3 +1,5 @@
 /node_modules
 *.log
 example/dist
+coverage
+.nyc_output

@@ -3,7 +3,7 @@ const path = require('path');
 const CLIEngine = require('eslint').CLIEngine;
 const cli = new CLIEngine({
   baseConfig: false,
-  configFile: path.resolve(__dirname, '../.eslintrc')
+  configFile: path.resolve(__dirname, '../config/.eslintrc')
 });
 const colors = require('./colors.js');
 

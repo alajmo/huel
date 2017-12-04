@@ -3,9 +3,9 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
 const webpackFileConfigs = {
-  prod: '../webpack.prod.config.js',
-  dev: '../webpack.dev.config.js',
-  devServer: '../webpack-dev-server.config.js'
+  prod: '../config/webpack.prod.config.js',
+  dev: '../config/webpack.dev.config.js',
+  devServer: '../config/webpack-dev-server.config.js'
 };
 
 const TARGETS = {

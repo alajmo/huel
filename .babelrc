@@ -1,14 +1,13 @@
 {
-    "presets": [
-        [ "env", { "modules": false } ]
-    ],
-    "retainLines": true,
-    "plugins": [],
-    "compact": false,
-    "comments": true,
-    "env": {
-        "development": {
-            "plugins": []
-        }
+  "presets": [["env", { "modules": false }]],
+  "retainLines": true,
+  "plugins": ["transform-object-rest-spread"],
+  "compact": false,
+  "comments": true,
+  "ignore": "test.js",
+  "env": {
+    "development": {
+      "plugins": []
     }
+  }
 }

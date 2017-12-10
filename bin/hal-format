@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const defaultConfig = require('../config/default.json');
-const pkg = require('../package.json');
 const program = require('commander');
 const tasks = require('../src/tasks.js');
 
@@ -17,10 +16,10 @@ program
   Examples:
 
     One time run format
-    $ hal -s src/ format
+    $ hal format -s src/
 
     Watch files and run format on file change
-    $ hal -w -s src/ format
+    $ hal format -w -s src/
   `);
   })
   .parse(process.argv);

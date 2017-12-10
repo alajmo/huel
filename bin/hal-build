@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const defaultConfig = require('../config/default.json');
-const pkg = require('../package.json');
 const program = require('commander');
 const tasks = require('../src/tasks.js');
 

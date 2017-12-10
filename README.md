@@ -1,37 +1,22 @@
 # HAL
 
-<p align="center">
-  <a href="https://travis-ci.org/hal/hal">
-    <img alt="Travis" src="https://img.shields.io/travis/prettier/prettier.svg?style=flat-square">
-  </a>
-  <a href="https://codecov.io/gh/hal/hal">
-    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/prettier/prettier.svg?style=flat-square">
-  </a>
-  <a href="https://www.npmjs.com/package/hal">
-    <img alt="npm version" src="https://img.shields.io/npm/v/hal.svg?style=flat-square">
-  </a>
-  <a href="https://www.npmjs.com/package/hal">
-    <img alt="npm version" src="https://img.shields.io/npm/dm/hal.svg?style=flat-square">
-  </a>
-  <a href="#badge">
-    <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square">
-  </a>
-</p>
-
-> Roger that Dave, I can build that for you.
+> Developer: Hello, HAL. Do you read me, HAL? <br>
+> HAL: Affirmative, Dave. I read you.
 
 ## Synopsis
 
-A highly opionated build and development environment for the web. A collection
+A highly opionated build and development toolset for the web. A collection
 of the following tools:
 
-* webpack
-* babel
-* prettier
-* eslint
-* postcss
+* webpack - module bundler
+* babel - write next-gen javascript
+* prettier - formats your code
+* eslint - lints your code
+* postcss - write next-gen css
+* ava - test assertion library
+* karma - test runner
 
-Which enables the following features:
+hidden behind a minimalistic command-line-interface (CLI).
 
 ## Requirements
 
@@ -40,26 +25,22 @@ Which enables the following features:
 ## Usage
 
 ```
-  Usage: hal [options]
+ Usage: hal [options] [command]
+
+ Development and build environment for the web
+
+ Options:
+
+   -V, --version  output the version number
+   -h, --help     output usage information
 
 
-  Options:
+ Commands:
 
-    -V, --version              output the version number
-    -t, --template <template>  template for project. [string] [required]
-    -e, --entry <entry>        entry for project. [string] [required]
-    -o, --output <output>      output for project. [string] [required]
-    -p, --port [port]          port webpack-dev-server listens on. [integer] [default: 3000]
-    -w, --watch                start development server. [boolean] [default: false]
-    -h, --help                 output usage information
+   build [options]
+   lint [options]
+   format [options]
 
-  Examples:
-
-    Production build
-    $ hal -t src/index.html -e src/app.js -o dist
-
-    Start webpack-dev-server
-    $ hal -w -p 3001 -t src/index.html -e src/app.js -o dist
 ```
 
 ## Development

@@ -3,15 +3,34 @@
 const pkg = require('../package.json');
 const program = require('commander');
 
+const hej = { hej:1 }
+
 program
   .version(pkg.version)
   .description('Development and build environment for the web')
-  .command('lint', 'lint files')
-  .command('build', 'build project', { isDefault: true })
-  .command('format', 'format files')
-  .command('test', 'test code');
+  .command('build', 'build project').alias('b')
+  .command('format', 'format files').alias('f')
+  .command('lint', 'lint files').alias('l')
+  .command('make', 'setup project').alias('m')
+  .command('test', 'test code').alias('t')
+  .on('--help', () => {
+    console.log(`
+  Examples:
 
-program.parse(process.argv);
+    Build project
+    $ hal build --lint src --format src -t src/index.html -e src/index.js -o dist/
+
+    Lint files
+    $ hal lint -s src/
+
+    Format files
+    $ hal format -s src/
+
+    Run test suite
+    $ hal test -s src/
+  `);
+  })
+  .parse(process.argv);
 
 if (!program.args.length) {
   program.help();

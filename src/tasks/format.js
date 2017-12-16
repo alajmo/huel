@@ -3,14 +3,14 @@ const fs = require('fs');
 const glob = require('glob');
 const chokidar = require('chokidar');
 const prettier = require('prettier');
-const colors = require('./colors.js');
+const colors = require('../lib/colors.js');
 
 module.exports = startFormat;
 
 const PRETTIERRC = {
-  js: path.resolve(__dirname, '../config/.prettierrc'),
-  json: path.resolve(__dirname, '../config/.json.prettierrc'),
-  css: path.resolve(__dirname, '../config/.css.prettierrc')
+  js: path.resolve(__dirname, '../../config/.prettierrc'),
+  json: path.resolve(__dirname, '../../config/.json.prettierrc'),
+  css: path.resolve(__dirname, '../../config/.css.prettierrc')
 };
 
 function startFormat({ src, watch }) {
@@ -51,7 +51,7 @@ function format(src) {
     fs.writeFileSync(filepath, formatted);
   });
 
-  const successMessage = 'Code has been formatted with prettier.\n';
+  const successMessage = 'Code has been formatted with prettier.';
   console.log(`${colors.green}${successMessage}${colors.reset}`);
 }
 

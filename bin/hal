@@ -1,156 +1,37 @@
 #!/usr/bin/env node
 
-const tasks = require('../src/tasks.js');
-const defaultConfig = require('../config/default.json');
 const pkg = require('../package.json');
 const program = require('commander');
 
+const hej = { hej:1 }
+
 program
   .version(pkg.version)
-  .description('Development and build environment for the web');
-
-program
-  .command('build')
-  .option(
-    '--env [env]',
-    `environment. [string] [default: ${defaultConfig.env}]`
-  )
-  .option(
-    '-t, --template <template>',
-    `template for project. [string] [required]`
-  )
-  .option('-e, --entry <entry>', `entry for project. [string] [required]`)
-  .option('-o, --output <output>', `output for project. [string] [required]`)
-  .option('-l, --lint <src>', `lint entry folder before build. [string]`)
-  .option('-f, --format <src>', `format entry folder before build. [string]`)
-  .option(
-    '-p, --port [port]',
-    `port webpack-dev-server listens on. [integer] [default: ${
-      defaultConfig.port
-    }]`
-  )
-  .option(
-    '-w, --watch',
-    `start development server. [boolean] [default: ${defaultConfig.watch}]`
-  )
-  .action(options => {
-    const opt = getBuildOptions(options);
-    tasks.build(opt);
-  })
+  .description('Development and build environment for the web')
+  .command('build', 'build project').alias('b')
+  .command('format', 'format files').alias('f')
+  .command('lint', 'lint files').alias('l')
+  .command('make', 'setup project').alias('m')
+  .command('test', 'test code').alias('t')
   .on('--help', () => {
     console.log(`
-
   Examples:
-    Production build
-    $ hal build -t src/index.html -e src/app.js -o dist
 
-    Start webpack-dev-server
-    $ hal build -w -p 3001 -t src/index.html -e src/app.js -o dist
+    Build project
+    $ hal build --lint src --format src -t src/index.html -e src/index.js -o dist/
+
+    Lint files
+    $ hal lint -s src/
+
+    Format files
+    $ hal format -s src/
+
+    Run test suite
+    $ hal test -s src/
   `);
-  });
-
-program
-  .command('lint')
-  .option('-s, --src <src>', `src for project. [string] [required]`)
-  .option(
-    '-w, --watch',
-    `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
-  )
-  .action(options => {
-    const opt = getLintOptions(options);
-    tasks.lint(opt);
   })
-  .on('--help', () => {
-    console.log(`
-
-  Examples:
-
-    One time run lint
-    $ hal -s src/ lint
-
-    Watch files and run lint on file change
-    $ hal -w -s src/ lint
-  `);
-  });
-
-program
-  .command('format')
-  .option('-s, --src <src>', `src for project. [string] [required]`)
-  .option(
-    '-w, --watch',
-    `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
-  )
-  .action(options => {
-    const opt = getLintOptions(options);
-    tasks.format(opt);
-  })
-  .on('--help', () => {
-    console.log(`
-
-  Examples:
-
-    One time run format
-    $ hal -s src/ format
-
-    Watch files and run format on file change
-    $ hal -w -s src/ format
-  `);
-  });
-
-program.parse(process.argv);
+  .parse(process.argv);
 
 if (!program.args.length) {
   program.help();
-}
-
-function getLintOptions(options) {
-  if (!options.src) {
-    console.error('error: option -s, --src with value is required');
-    process.exit(1);
-  }
-
-  return Object.freeze({
-    src: options.src,
-    watch: options.watch || defaultConfig.watch
-  });
-}
-
-function getFormatOptions(options) {
-  if (!options.src) {
-    console.error('error: option -s, --src with value is required');
-    process.exit(1);
-  }
-
-  return Object.freeze({
-    src: options.src,
-    watch: options.watch || defaultConfig.watch
-  });
-}
-
-function getBuildOptions(options) {
-  if (!options.template) {
-    console.error('error: option -t, --template with value is required');
-    process.exit(1);
-  }
-
-  if (!options.entry) {
-    console.error('error: option -e, --entry with value is required');
-    process.exit(1);
-  }
-
-  if (!options.output) {
-    console.error('error: option -o, --output with value is required');
-    process.exit(1);
-  }
-
-  return Object.freeze({
-    entry: options.entry,
-    env: options.env || defaultConfig.env,
-    lint: options.lint,
-    format: options.format,
-    output: options.output,
-    port: options.port || defaultConfig.port,
-    template: options.template,
-    watch: options.watch || defaultConfig.watch
-  });
 }

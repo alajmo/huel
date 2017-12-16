@@ -1,2 +1,2 @@
-import 'reset.css';
-import 'base.css';
+import './assets/reset.css';
+import './components/app/base.css';

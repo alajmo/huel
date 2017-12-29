@@ -2,7 +2,7 @@
 
 const defaultConfig = require('../config/default.json');
 const program = require('commander');
-const tasks = require('../src/tasks.js');
+const tasks = require('../src/tasks/tasks.js');
 
 program
   .option(

@@ -27,7 +27,9 @@ const TASKS = Object.freeze({
 
   make: ({ src, watch }) => startMake(),
 
-  test: ({ src, watch }) => startTest({ src, watch })
+  test: ({ src, watch }) => startTest({ src, watch }),
+
+  init: () => startInit()
 });
 
 module.exports = TASKS;

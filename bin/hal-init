@@ -10,7 +10,7 @@ program
 
   Examples:
 
-    Watch files and run test on file change
+    Bootstrap project
     $ hal init
   `);
   })

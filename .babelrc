@@ -1,5 +1,5 @@
 {
-  "presets": [["env", { "modules": false }]],
+  "presets": [["env"]],
   "retainLines": true,
   "plugins": ["transform-object-rest-spread"],
   "compact": false,

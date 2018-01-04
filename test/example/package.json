@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "description": "Example app",
   "scripts": {
-    "start": "hal build -w -t test/example/src/index.html -e test/example/src/index.js -o test/example/dist/ --env prod",
-    "build": "hal build --lint test/example/src --format test/example/src -t example/src/index.html -e test/example/src/index.js -o test/example/dist/",
+    "start": "hal build -w -t src/index.html -e src/index.js -o dist/ --env prod",
+    "build": "hal build --lint src --format src -t src/index.html -e src/index.js -o dist/",
+    "lint": "hal lint --src src",
+    "format": "hal format --src src",
     "test": "node test/test.js",
     "prepush": "npm test",
-    "commitmsg": "commitlint -e $GIT_PARAMS"
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "author": "McExample ExampleFace  <example.face@gmail.com>",
   "license": "MIT",

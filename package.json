@@ -40,7 +40,6 @@
     "pkg-ok": "1.1.0"
   },
   "dependencies": {
-    "husky": "0.14.3",
     "@commitlint/cli": "^4.3.0",
     "@commitlint/config-angular": "^4.3.0",
     "@commitlint/core": "^5.2.8",
@@ -52,6 +51,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
+    "chalk": "^2.3.0",
     "chokidar": "^1.7.0",
     "clean-webpack-plugin": "^0.1.17",
     "commander": "2.11.0",
@@ -64,6 +64,7 @@
     "file-loader": "^1.1.5",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
+    "husky": "0.14.3",
     "karma": "^1.7.1",
     "karma-cli": "^1.0.1",
     "karma-tap": "^3.1.1",

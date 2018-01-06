@@ -22,7 +22,8 @@ function addGitHooks(pkg) {
     scripts: Object.assign({}, pkg.scripts, {
       // precommit: 'npm test',
       prepush: 'npm test',
-      commitmsg: 'commitlint -e $GIT_PARAMS'
+      commitmsg: 'commitlint -e $GIT_PARAMS',
+      version: "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
     })
   });
 }

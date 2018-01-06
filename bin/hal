@@ -11,6 +11,7 @@ program
   .command('format', 'format files').alias('f')
   .command('lint', 'lint files').alias('l')
   .command('test', 'test code').alias('t')
+  .command('commitmsg', 'test code').alias('c')
   .command('init', 'bootstrap project').alias('i')
   .on('--help', () => {
     console.log(`

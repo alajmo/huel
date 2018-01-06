@@ -4,6 +4,7 @@ const startFormat = require('./format.js');
 const startLint = require('./lint.js');
 const startTest = require('./test.js');
 const startInit = require('./init.js');
+const commitmsg = require('./lint-commit.js');
 
 const TASKS = Object.freeze({
   build: ({ lint, format, env, template, entry, output, port, watch }) => {
@@ -28,6 +29,8 @@ const TASKS = Object.freeze({
   make: ({ src, watch }) => startMake(),
 
   test: ({ src, watch }) => startTest({ src, watch }),
+
+  startCommitmsg: () => commitmsg(),
 
   init: () => startInit()
 });

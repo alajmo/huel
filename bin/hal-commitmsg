@@ -9,8 +9,8 @@ program
 
   Examples:
 
-    Bootstrap project
-    $ hal init
+    Lints the last commit message
+    $ hal commitmsg
   `);
   })
   .parse(process.argv);
@@ -22,5 +22,6 @@ function getTestOptions(options) {
 main();
 function main() {
   const opt = getTestOptions(program);
-  tasks.init(opt);
+  tasks.startCommitmsg(opt);
 }
+

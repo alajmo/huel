@@ -1,3 +1,4 @@
+const child = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
@@ -7,8 +8,28 @@ const PJV = require('package-json-validator').PJV;
 
 module.exports = startTest;
 
-function startTest() {
+function startTest({ src, watch }) {
   validatePackageJson();
+  runTests(src);
+}
+
+function runTests(src) {
+  const babelNodePath = path.join(
+    '..',
+    '..',
+    'node_modules',
+    'babel-cli',
+    'bin',
+    'babel-node.js'
+  );
+
+  child.exec(`${babelNodePath} ${src}`, (err, stdout, stderr) => {
+    console.log(stdout);
+    console.log(stderr);
+    if (err !== null) {
+      console.log('exec error: ' + err);
+    }
+  });
 }
 
 function validatePackageJson() {

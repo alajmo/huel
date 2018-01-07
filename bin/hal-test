@@ -10,6 +10,10 @@ program
     '-w, --watch',
     `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
   )
+  .option(
+    '-s, --src',
+    `test files`
+  )
   .on('--help', () => {
     console.log(`
 
@@ -25,10 +29,10 @@ program
   .parse(process.argv);
 
 function getTestOptions(options) {
-  // if (!options.src) {
-  //   console.error('error: option -s, --src with value is required');
-  //   process.exit(1);
-  // }
+  if (!options.src) {
+    console.error('error: option -s, --src with value is required');
+    process.exit(1);
+  }
 
   return Object.freeze({
     src: options.src,

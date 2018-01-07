@@ -27,7 +27,8 @@
     "precommit": "npm run format && pkg-ok && pjv package.json && npm test",
     "prepush": "pkg-ok && pjv package.json && npm test",
     "prepublish": "pkg-ok && pjv package.json && npm test",
-    "commitmsg": "commitlint -e $GIT_PARAMS"
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
   "bugs": "https://github.com/samiralajmovic/hal-9000/issues",

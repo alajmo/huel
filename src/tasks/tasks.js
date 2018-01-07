@@ -1,8 +1,10 @@
-const build = require('./tasks/build.js');
+const build = require('./build.js');
 const path = require('path');
-const startFormat = require('./tasks/format.js');
-const startLint = require('./tasks/lint.js');
-const startTest = require('./tasks/test.js');
+const startFormat = require('./format.js');
+const startLint = require('./lint.js');
+const startTest = require('./test.js');
+const startInit = require('./init.js');
+const commitmsg = require('./lint-commit.js');
 
 const TASKS = Object.freeze({
   build: ({ lint, format, env, template, entry, output, port, watch }) => {
@@ -26,7 +28,11 @@ const TASKS = Object.freeze({
 
   make: ({ src, watch }) => startMake(),
 
-  test: ({ src, watch }) => startTest({ src, watch })
+  test: ({ src, watch }) => startTest({ src, watch }),
+
+  startCommitmsg: () => commitmsg(),
+
+  init: () => startInit()
 });
 
 module.exports = TASKS;

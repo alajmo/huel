@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const tasks = require('../src/tasks/tasks.js');
+
+program
+  .on('--help', () => {
+    console.log(`
+
+  Examples:
+
+    Lints the last commit message
+    $ hal commitmsg
+  `);
+  })
+  .parse(process.argv);
+
+function getTestOptions(options) {
+  return Object.freeze({ });
+}
+
+main();
+function main() {
+  const opt = getTestOptions(program);
+  tasks.startCommitmsg(opt);
+}
+

@@ -2,13 +2,17 @@
 
 const defaultConfig = require('../config/default.json');
 const program = require('commander');
-const tasks = require('../src/tasks.js');
+const tasks = require('../src/tasks/tasks.js');
 
 program
   .option('-s, --src <src>', `src for project. [string] [required]`)
   .option(
     '-w, --watch',
     `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
+  )
+  .option(
+    '-s, --src',
+    `test files`
   )
   .on('--help', () => {
     console.log(`

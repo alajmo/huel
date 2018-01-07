@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 const pkg = require('../package.json');
+require('please-upgrade-node')(pkg);
 const program = require('commander');
-
-const hej = { hej:1 }
 
 program
   .version(pkg.version)
@@ -11,8 +10,9 @@ program
   .command('build', 'build project').alias('b')
   .command('format', 'format files').alias('f')
   .command('lint', 'lint files').alias('l')
-  .command('make', 'setup project').alias('m')
   .command('test', 'test code').alias('t')
+  .command('commitmsg', 'test code').alias('c')
+  .command('init', 'bootstrap project').alias('i')
   .on('--help', () => {
     console.log(`
   Examples:

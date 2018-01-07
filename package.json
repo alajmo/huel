@@ -1,6 +1,6 @@
 {
   "name": "hal-9000",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "A development environment for the web",
   "main": "bin/hal",
   "bin": {
@@ -9,46 +9,54 @@
   "files": [
     "bin/hal"
   ],
+  "contributors": [],
+  "engines": {
+    "node": ">=8"
+  },
   "scripts": {
-    "start": "hal build -w -t example/src/index.html -e example/src/index.js -o example/dist/ --env prod",
-    "build": "hal build --lint example/src --format example/src -t example/src/index.html -e example/src/index.js -o example/dist/",
+    "start": "hal build -w -t test/example/src/index.html -e test/example/src/index.js -o test/example/dist/ --env prod",
+    "build": "hal build --lint test/example/src --format test/example/src -t test/example/src/index.html -e test/example/src/index.js -o test/example/dist/",
     "eslint-check": "eslint --print-config config/.eslintrc | eslint-config-prettier-check",
-    "lint": "hal lint --src example/src",
-    "lint-watch": "hal lint --watch --src example/src",
-    "format": "hal format --src example/src",
-    "format-watch": "hal format --watch --src example/src",
+    "lint": "hal lint --src test/example/src",
+    "lint-watch": "hal lint --watch --src test/example/src",
+    "format": "hal format --src test/example/src",
+    "format-watch": "hal format --watch --src test/example/src",
     "karma": "karma start karma.config.js",
-    "ava": "ava example/test/test.js",
-    "test": "node test/test.js",
+    "test": "exit 0",
     "precommit": "npm run format && pkg-ok && pjv package.json && npm test",
     "prepush": "pkg-ok && pjv package.json && npm test",
-    "prepublish": "pkg-ok && pjv package.json && npm test"
+    "prepublish": "pkg-ok && pjv package.json && npm test",
+    "commitmsg": "commitlint -e $GIT_PARAMS",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
+  "bugs": "https://github.com/samiralajmovic/hal-9000/issues",
   "license": "MIT",
   "devDependencies": {
     "eslint-config-prettier": "^2.8.0",
-    "husky": "0.14.3",
     "karma-chrome-launcher": "^2.2.0",
     "npm-check": "^5.5.2",
     "package-json-validator": "0.6.2",
-    "pkg-ok": "1.1.0",
-    "tap": "^10.7.3"
+    "pkg-ok": "1.1.0"
   },
   "dependencies": {
-    "@commitlint/cli": "~4.3.0",
-    "@commitlint/config-angular": "~4.3.0",
+    "@commitlint/cli": "^4.3.0",
+    "@commitlint/config-angular": "^4.3.0",
+    "@commitlint/core": "^5.2.8",
     "autoprefixer": "^7.1.6",
     "ava": "^0.24.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-register": "^6.26.0",
+    "chalk": "^2.3.0",
     "chokidar": "^1.7.0",
     "clean-webpack-plugin": "^0.1.17",
     "commander": "2.11.0",
+    "conventional-changelog-cli": "^1.3.5",
     "css-loader": "^0.28.7",
     "cssnano": "^3.10.0",
     "eslint": "^4.11.0",
@@ -57,13 +65,15 @@
     "file-loader": "^1.1.5",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
+    "husky": "0.14.3",
     "karma": "^1.7.1",
     "karma-cli": "^1.0.1",
     "karma-tap": "^3.1.1",
     "karma-webpack": "^2.0.6",
-    "nyc": "^11.3.0",
+    "please-upgrade-node": "^3.0.1",
     "postcss-loader": "2.0.8",
     "prettier": "^1.8.2",
+    "puppeteer": "^0.13.0",
     "style-loader": "^0.19.0",
     "uglifyjs-webpack-plugin": "^1.1.0",
     "webpack": "3.8.1",
@@ -91,7 +101,7 @@
   "ava": {
     "require": "babel-register",
     "babel": {
-      "babelrc": true
+      "extends": "./.babelrc"
     }
   }
 }

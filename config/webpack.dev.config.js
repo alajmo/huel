@@ -5,7 +5,7 @@ const path = require('path');
 
 module.exports = config;
 
-function config({ template, entry, output, port = 3000, webpack }) {
+function config({ template, entry, output, webpack }) {
   return {
     devtool: 'cheap-module-eval-source-map',
 

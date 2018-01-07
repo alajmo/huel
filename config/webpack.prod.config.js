@@ -86,8 +86,7 @@ function config({ template, entry, output, webpack }) {
         'process.env': {
           NODE_ENV: JSON.stringify('production')
         }
-      }),
-      new webpack.optimize.ModuleConcatenationPlugin()
+      })
     ],
 
     resolve: {

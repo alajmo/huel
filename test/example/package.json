@@ -9,8 +9,9 @@
     "format": "hal format --src src",
     "test": "node test/test.js",
     "prepush": "npm test",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+    "commitmsg": "hal commitmsg",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "precommit": "npm test"
   },
   "author": "McExample ExampleFace  <example.face@gmail.com>",
   "license": "MIT",

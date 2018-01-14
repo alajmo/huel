@@ -1,5 +1,6 @@
 {
   "watch": false,
   "port": 3000,
-  "env": "prod"
+  "env": "prod",
+  "changelogFilename": "CHANGELOG.md"
 }

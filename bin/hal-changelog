@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+const defaultConfig = require('../config/default.json');
+const program = require('commander');
+const tasks = require('../src/tasks/tasks.js');
+
+program
+  .option('-c, --config <config>', `path to custom config file. [string]`)
+  .option(
+    '-f, --filename <filename>',
+    `save as filename. [boolean] [default: ${defaultConfig.changelogFilename}]`
+  )
+  .on('--help', () => {
+    console.log(`
+  Examples:
+
+    Generate changelog
+    $ hal lint -s src/
+  `);
+  })
+  .parse(process.argv);
+
+function getChangelogOptions(options) {
+  return Object.freeze({
+    configPath: options.config,
+    filename: options.filename || defaultConfig.changelogFilename
+  });
+}
+
+main();
+
+function main() {
+  const opt = getChangelogOptions(program);
+  tasks.changelog(opt);
+}

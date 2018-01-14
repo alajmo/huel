@@ -5,6 +5,7 @@ const startLint = require('./lint.js');
 const startTest = require('./test.js');
 const startInit = require('./init.js');
 const commitmsg = require('./lint-commit.js');
+const generateChangelog = require('./changelog.js');
 
 const TASKS = Object.freeze({
   build: ({ lint, format, env, template, entry, output, port, watch }) => {
@@ -31,6 +32,8 @@ const TASKS = Object.freeze({
   test: ({ src, watch }) => startTest({ src, watch }),
 
   startCommitmsg: () => commitmsg(),
+
+  changelog: ({ configPath, filename }) => generateChangelog({ configPath, filename }),
 
   init: () => startInit()
 });

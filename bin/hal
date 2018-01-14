@@ -11,7 +11,8 @@ program
   .command('format', 'format files').alias('f')
   .command('lint', 'lint files').alias('l')
   .command('test', 'test code').alias('t')
-  .command('commitmsg', 'test code').alias('c')
+  .command('commitmsg', 'assert commit message is in conventional commit form').alias('c')
+  .command('changelog', 'generate changelog')
   .command('init', 'bootstrap project').alias('i')
   .on('--help', () => {
     console.log(`

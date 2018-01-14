@@ -7,7 +7,7 @@ const tasks = require('../src/tasks/tasks.js');
 program
   .option('-c, --config <config>', `path to custom config file. [string]`)
   .option(
-    '-f, --filename',
+    '-f, --filename <filename>',
     `save as filename. [boolean] [default: ${defaultConfig.changelogFilename}]`
   )
   .on('--help', () => {

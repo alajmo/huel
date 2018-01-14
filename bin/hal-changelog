@@ -15,7 +15,7 @@ program
   Examples:
 
     Generate changelog
-    $ hal lint -s src/
+    $ hal changelog
   `);
   })
   .parse(process.argv);

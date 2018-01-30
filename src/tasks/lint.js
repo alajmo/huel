@@ -19,7 +19,7 @@ function startLint({ src, watch }) {
   }
 }
 
-function lint( src ) {
+function lint(src) {
   // eslint does the globbing.
   const report = cli.executeOnFiles([src]);
   const errorReport = CLIEngine.getErrorResults(report.results);
@@ -29,9 +29,10 @@ function lint( src ) {
     // TODO: Decide if clearing console is wanted.
     // Clear console.
     // process.stdout.write('\x1Bc');
-    console.log(formatter(report.results));
-    const successMessage = 'Code has been linted with ESLint.';
-    console.log(`${colors.green}${successMessage}${colors.reset}`);
+    console.error(formatter(report.results));
+    const successMessage = 'Code is not ESlint compliant.\n';
+    console.error(`${colors.red}${successMessage}${colors.reset}`);
+    process.exit(1);
   } else {
     const successMessage = 'Code is ESLint compliant.';
     console.log(`${colors.green}${successMessage}${colors.reset}`);

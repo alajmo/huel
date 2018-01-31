@@ -1,5 +1,4 @@
 const build = require('./build.js');
-const path = require('path');
 const startFormat = require('./format.js');
 const startLint = require('./lint.js');
 const startTest = require('./test.js');
@@ -27,13 +26,11 @@ const TASKS = Object.freeze({
 
   lint: ({ src, watch }) => startLint({ src, watch }),
 
-  make: ({ src, watch }) => startMake(),
-
   test: ({ src, watch }) => startTest({ src, watch }),
 
   startCommitmsg: () => commitmsg(),
 
-  changelog: ({ configPath, filename }) => generateChangelog({ configPath, filename }),
+  changelog: ({ filename }) => generateChangelog({ filename }),
 
   init: () => startInit()
 });

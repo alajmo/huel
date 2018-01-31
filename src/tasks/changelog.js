@@ -4,7 +4,7 @@ const conventionalChangelog = require('conventional-changelog');
 
 module.exports = generateConfig;
 
-function generateConfig({ configPath, filename }) {
+function generateConfig({ filename }) {
   const filepath = path.join(process.cwd(), filename);
   const config = require('conventional-changelog-angular');
 

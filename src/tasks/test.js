@@ -8,9 +8,11 @@ const PJV = require('package-json-validator').PJV;
 
 module.exports = startTest;
 
-function startTest({ src, watch }) {
-  validatePackageJson();
-  runTests(src);
+function startTest({ src, pjv, watch }) {
+  if (pjv) {
+    validatePackageJson();
+  }
+  // runTests(src);
 }
 
 function runTests(src) {

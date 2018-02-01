@@ -13,6 +13,7 @@ program
   .command('test', 'test code').alias('t')
   .command('commitmsg', 'assert commit message is in conventional commit form').alias('c')
   .command('changelog', 'generate changelog')
+  .command('size-limit', 'check size limit')
   .command('init', 'bootstrap project').alias('i')
   .on('--help', () => {
     console.log(`

@@ -15,6 +15,8 @@ of the following tools:
 * postcss - write next-gen css
 * ava - test assertion library
 * karma - test runner
+* please-upgrade-node
+* pjv
 
 hidden behind a minimalistic command-line-interface (CLI).
 

@@ -6,6 +6,7 @@ const tasks = require('../src/tasks/tasks.js');
 
 program
   .option('-s, --src <src>', `src for project. [string] [required]`)
+  .option('-p, --pjv', `check package.json. [boolean] [default: ${defaultConfig.testPackageJson}]`)
   .option(
     '-w, --watch',
     `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
@@ -36,6 +37,7 @@ function getTestOptions(options) {
 
   return Object.freeze({
     src: options.src,
+    pjv: options.src || defaultConfig.testPackageJson,
     watch: options.watch || defaultConfig.watch
   });
 }

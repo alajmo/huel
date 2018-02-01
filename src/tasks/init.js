@@ -20,7 +20,7 @@ function startInit() {
 function addGitHooks(pkg) {
   return Object.assign(pkg, {
     scripts: Object.assign({}, pkg.scripts, {
-      precommit: 'npm test',
+      precommit: 'npm test --pjv && hal format --src src',
       prepush: 'npm test',
       commitmsg: 'hal commitmsg',
       version: "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"

@@ -1,6 +1,9 @@
 {
+  "entry": "src",
+  "output": "dist",
   "watch": false,
   "port": 3000,
   "env": "prod",
-  "changelogFilename": "CHANGELOG.md"
+  "changelogFilename": "CHANGELOG.md",
+  "testPackageJson": true
 }

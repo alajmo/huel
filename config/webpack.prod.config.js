@@ -1,12 +1,17 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Jarvis = require('webpack-jarvis');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 
 module.exports = config;
 
 function config({ template, entry, output, webpack }) {
+  const outputDir = path.resolve(output);
+  const outputFilename =
+    path.extname(output).length === 0 ? 'index.js' : path.parse(output).name;
+
   return {
     devtool: 'source-map',
 
@@ -15,8 +20,8 @@ function config({ template, entry, output, webpack }) {
     },
 
     output: {
-      path: path.resolve(output),
-      filename: '[hash].index.js',
+      path: outputDir,
+      filename: `[hash].${outputFilename}.js`,
       publicPath: '/'
     },
 
@@ -58,7 +63,13 @@ function config({ template, entry, output, webpack }) {
     },
 
     plugins: [
-      new CleanWebpackPlugin([path.resolve(output)], { root: process.cwd() }),
+      new Jarvis({
+        port: 1338
+      }),
+
+      new CleanWebpackPlugin([outputDir], {
+        root: process.cwd()
+      }),
       new UglifyJSPlugin({
         sourceMap: true
       }),
@@ -79,7 +90,7 @@ function config({ template, entry, output, webpack }) {
         }
       }),
       new ExtractTextPlugin({
-        filename: '[hash].index.css',
+        filename: `[hash].${outputFilename}.css`,
         allChunks: true
       }),
       new webpack.DefinePlugin({

@@ -28,7 +28,7 @@ function build({ env, entry, output, template }) {
     webpack
   });
 
-  const compiler = webpack(webpackConfig, (err, stats) => {
+  webpack(webpackConfig, (err, stats) => {
     if (err) {
       console.error(err.stack || err);
       if (err.details) {

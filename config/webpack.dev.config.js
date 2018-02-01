@@ -5,7 +5,11 @@ const path = require('path');
 
 module.exports = config;
 
-function config({ template, entry, output, webpack }) {
+function config({ template, entry, output }) {
+  const outputDir = path.resolve(output);
+  const outputFilename =
+    path.extname(output).length === 0 ? 'index.js' : path.parse(output).name;
+
   return {
     devtool: 'cheap-module-eval-source-map',
 
@@ -14,8 +18,8 @@ function config({ template, entry, output, webpack }) {
     },
 
     output: {
-      path: path.resolve(output),
-      filename: '[hash].index.js',
+      path: outputDir,
+      filename: `[hash].${outputFilename}.js`,
       publicPath: '/'
     },
 
@@ -59,7 +63,7 @@ function config({ template, entry, output, webpack }) {
       new CleanWebpackPlugin([path.resolve(output)], { root: process.cwd() }),
       new HtmlWebpackPlugin({ template }),
       new ExtractTextPlugin({
-        filename: '[hash].index.css',
+        filename: `[hash].${outputFilename}.css`,
         allChunks: true
       })
     ],

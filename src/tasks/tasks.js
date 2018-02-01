@@ -3,6 +3,7 @@ const startFormat = require('./format.js');
 const startLint = require('./lint.js');
 const startTest = require('./test.js');
 const startInit = require('./init.js');
+const sizeLimit = require('./size-limit.js');
 const commitmsg = require('./lint-commit.js');
 const generateChangelog = require('./changelog.js');
 
@@ -32,7 +33,9 @@ const TASKS = Object.freeze({
 
   changelog: ({ filename }) => generateChangelog({ filename }),
 
-  init: () => startInit()
+  init: () => startInit(),
+
+  startSizeLimit: ({ dest }) => sizeLimit(dest)
 });
 
 module.exports = TASKS;

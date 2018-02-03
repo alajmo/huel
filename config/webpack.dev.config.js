@@ -8,7 +8,7 @@ module.exports = config;
 function config({ template, entry, output }) {
   const outputDir = path.resolve(output);
   const outputFilename =
-    path.extname(output).length === 0 ? 'index.js' : path.parse(output).name;
+    path.extname(output).length === 0 ? 'index' : path.parse(output).name;
 
   return {
     devtool: 'cheap-module-eval-source-map',

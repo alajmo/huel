@@ -7,8 +7,9 @@
     "build": "hal build --lint src --format src -t src/index.html -e src/index.js -o dist/",
     "lint": "hal lint --src src",
     "format": "hal format --src src",
-    "test": "hal test --src test/test.js",
-    "size": "hal size-limit",
+    "test": "hal test --src test/test.js && hal size-limit",
+    "size": "hal test --pjv --size",
+    "pjv": "hal test --pjv",
     "prepush": "npm test",
     "dev": "nodemon --quiet --ignore dist --watch ../../../../ --exec npm run size",
     "precommit": "npm test --pjv && hal format --src src",
@@ -17,9 +18,11 @@
   },
   "author": "McExample ExampleFace  <example.face@gmail.com>",
   "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
     "express": "^4.16.2",
     "hal": "^0.5.0",
+    "puppeteer": "^1.0.0",
     "tap": "^11.0.1"
   },
   "repository": {

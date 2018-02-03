@@ -1,9 +1,13 @@
-module.exports = dest => {
+const defaultConfig = require('./default.json');
+
+module.exports = sizeLimitDefault;
+
+function sizeLimitDefault() {
   return [
     {
-      path: `${dest}/*.index.js`,
+      path: `${defaultConfig.output}/*.index.js`,
       webpack: false,
       limit: '100 KB'
     }
   ];
-};
+}

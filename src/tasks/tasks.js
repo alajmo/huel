@@ -27,7 +27,7 @@ const TASKS = Object.freeze({
 
   lint: ({ src, watch }) => startLint({ src, watch }),
 
-  test: ({ src, watch }) => startTest({ src, pjv, watch }),
+  test: ({ pjv, size }) => startTest({ pjv, size }),
 
   startCommitmsg: () => commitmsg(),
 

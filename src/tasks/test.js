@@ -1,18 +1,22 @@
-const child = require('child_process');
-const path = require('path');
-const fs = require('fs');
-const glob = require('glob');
-const chokidar = require('chokidar');
-const colors = require('../lib/colors.js');
 const PJV = require('package-json-validator').PJV;
+const bytes = require('bytes');
+const chalk = require('chalk');
+const child = require('child_process');
+const colors = require('../lib/colors.js');
+const getSize = require('size-limit');
+const globby = require('globby');
+const path = require('path');
 
 module.exports = startTest;
 
-function startTest({ src, pjv, watch }) {
+function startTest({ pjv, size }) {
   if (pjv) {
     validatePackageJson();
   }
-  // runTests(src);
+
+  if (size) {
+    sizeLimit(size);
+  }
 }
 
 function runTests(src) {
@@ -71,4 +75,59 @@ function validatePackageJson() {
   } else {
     console.log(`${colors.green}Valid package.json${colors.reset}`);
   }
+}
+
+function sizeLimit(size) {
+  const sizeConfigPath =
+    typeof size === 'string'
+      ? path.resolve(process.cwd(), size)
+      : path.resolve(__dirname, '../../config/size-limit.js');
+
+  let sizeLimits = require(sizeConfigPath)();
+  Array.isArray(sizeLimits) ? '' : (sizeLimits = [sizeLimits]);
+
+  sizeLimits.forEach(limit => {
+    globby(limit.path, { cwd: process.cwd() })
+      .then(files => {
+        if (files.length > 0) {
+          getSize(files.map(file => path.join(process.cwd(), file)), {
+            analyzer: 'static'
+          })
+            .then(size => {
+              const limitNum = bytes.parse(limit.limit);
+              const sizeNum = bytes.parse(size);
+              const diff = sizeNum - limitNum;
+              if (diff > 0) {
+                process.stdout.write(
+                  `  ${chalk.red(
+                    'Package size limit has exceeded by ' + formatBytes(diff)
+                  )}\n` +
+                    `  Package size: ${chalk.bold(
+                      chalk.red(formatBytes(sizeNum))
+                    )}\n` +
+                    `  Size limit:   ${chalk.bold(formatBytes(limitNum))}\n`
+                );
+                process.exit(1);
+              } else {
+                process.stdout.write(
+                  `  Package size: ${chalk.bold(
+                    chalk.green(formatBytes(sizeNum))
+                  )}\n` +
+                    `  Size limit:   ${chalk.bold(formatBytes(limitNum))}\n`
+                );
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
+}
+
+function formatBytes(size) {
+  return bytes.format(size, { unitSeparator: ' ' });
 }

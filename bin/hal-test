@@ -5,16 +5,11 @@ const program = require('commander');
 const tasks = require('../src/tasks/tasks.js');
 
 program
-  .option('-s, --src <src>', `src for project. [string] [required]`)
-  .option('-p, --pjv', `check package.json. [boolean] [default: ${defaultConfig.testPackageJson}]`)
   .option(
-    '-w, --watch',
-    `watch filesystem for changes. [boolean] [default: ${defaultConfig.watch}]`
+    '-p, --pjv',
+    `check package.json. [boolean] [default: ${defaultConfig.testPackageJson}]`
   )
-  .option(
-    '-s, --src',
-    `test files`
-  )
+  .option('-s, --size [path]', `size limit test. [string]`)
   .on('--help', () => {
     console.log(`
 
@@ -30,15 +25,9 @@ program
   .parse(process.argv);
 
 function getTestOptions(options) {
-  if (!options.src) {
-    console.error('error: option -s, --src with value is required');
-    process.exit(1);
-  }
-
   return Object.freeze({
-    src: options.src,
-    pjv: options.src || defaultConfig.testPackageJson,
-    watch: options.watch || defaultConfig.watch
+    pjv: options.pjv || defaultConfig.testPackageJson,
+    size: options.size || defaultConfig.size
   });
 }
 

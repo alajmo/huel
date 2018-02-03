@@ -11,21 +11,29 @@ program
   )
   .option(
     '-t, --template <template>',
-    `template for project. [string] [required]`
+    `template for project. [string] [required] [default: ${
+      defaultConfig.template
+    }]`
   )
-  .option('-e, --entry <entry>', `entry for project. [string] [required]`)
-  .option('-o, --output <output>', `output for project. [string] [required]`)
+  .option(
+    '-e, --entry <entry>',
+    `entry for project. [string] [required] [default: ${defaultConfig.entry}]`
+  )
+  .option(
+    '-o, --output <output>',
+    `output for project. [string] [required] [default: ${defaultConfig.output}]`
+  )
   .option('-l, --lint <src>', `lint entry folder before build. [string]`)
   .option('-f, --format <src>', `format entry folder before build. [string]`)
+  .option(
+    '-w, --watch',
+    `start development server. [boolean] [default: ${defaultConfig.watch}]`
+  )
   .option(
     '-p, --port [port]',
     `port webpack-dev-server listens on. [integer] [default: ${
       defaultConfig.port
     }]`
-  )
-  .option(
-    '-w, --watch',
-    `start development server. [boolean] [default: ${defaultConfig.watch}]`
   )
   .on('--help', () => {
     console.log(`
@@ -57,13 +65,13 @@ function getBuildOptions(options) {
   }
 
   return Object.freeze({
-    entry: options.entry,
+    entry: options.entry || defaultConfig.entry,
     env: options.env || defaultConfig.env,
-    lint: options.lint,
-    format: options.format,
-    output: options.output,
+    lint: options.lint || defaultConfig.lint,
+    format: options.format || defaultConfig.format,
+    output: options.output || defaultConfig.output,
     port: options.port || defaultConfig.port,
-    template: options.template,
+    template: options.template || defaultConfig.template,
     watch: options.watch || defaultConfig.watch
   });
 }

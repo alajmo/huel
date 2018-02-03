@@ -1,6 +1,6 @@
 {
   "name": "hal-9000",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A development environment for the web",
   "main": "bin/hal",
   "bin": {
@@ -61,6 +61,7 @@
     "conventional-changelog-angular": "1.6.0",
     "css-loader": "0.28.7",
     "cssnano": "3.10.0",
+    "depcheck": "^0.6.8",
     "eslint": "4.11.0",
     "eslint-plugin-prettier": "2.3.1",
     "extract-text-webpack-plugin": "3.0.2",

@@ -101,10 +101,13 @@ function config({ template, entry, output, webpack }) {
     ],
 
     resolve: {
-      modules: [
-        path.resolve(process.cwd(), path.dirname(entry)),
-        'node_modules'
-      ]
+      alias: {
+        components: path.join(process.cwd(), entry, 'components'),
+        res: path.join(process.cwd(), entry, 'res'),
+        lib: path.join(process.cwd(), entry, 'lib'),
+        pages: path.join(process.cwd(), entry, 'pages')
+      },
+      modules: ['node_modules']
     }
   };
 }

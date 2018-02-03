@@ -1,10 +1,14 @@
 {
+  "template": "src/index.html",
   "entry": "src",
   "output": "dist",
   "watch": false,
   "port": 3000,
   "env": "prod",
+  "lint": false,
+  "format": false,
   "changelogFilename": "CHANGELOG.md",
-  "sizeLimit": false,
-  "testPackageJson": false
+  "dependencyCheck": false,
+  "sizeLimitCheck": false,
+  "packageJsonCheck": false
 }

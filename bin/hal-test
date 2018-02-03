@@ -7,9 +7,25 @@ const tasks = require('../src/tasks/tasks.js');
 program
   .option(
     '-p, --pjv',
-    `check package.json. [boolean] [default: ${defaultConfig.testPackageJson}]`
+    `check package.json. [boolean] [default: ${defaultConfig.packageJsonCheck}]`
   )
-  .option('-s, --size [path]', `size limit test. [string]`)
+  .option(
+    '-s, --size [path]',
+    `size limit test. [string] [default: ${defaultConfig.sizeLimitCheck}]`
+  )
+  .option(
+    '-d, --depcheck',
+    `dependency check. [boolean] [default: ${defaultConfig.dependencyCheck}]`
+  )
+  .option(
+    '-e, --entry <entry>',
+    `entry for project. [string] [required] [default: ${defaultConfig.entry}]`
+  )
+  .option(
+    '-o, --output <output>',
+    `output for project. [string] [required] [default: ${defaultConfig.output}]`
+  )
+
   .on('--help', () => {
     console.log(`
 
@@ -26,8 +42,11 @@ program
 
 function getTestOptions(options) {
   return Object.freeze({
-    pjv: options.pjv || defaultConfig.testPackageJson,
-    size: options.size || defaultConfig.size
+    pjv: options.pjv || defaultConfig.packageJsonCheck,
+    size: options.size || defaultConfig.sizeLimitCheck,
+    depcheck: options.depcheck || defaultConfig.dependencyCheck,
+    entry: options.entry || defaultConfig.entry,
+    output: options.output || defaultConfig.output
   });
 }
 

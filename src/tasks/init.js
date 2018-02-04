@@ -11,6 +11,7 @@ function startInit() {
   console.log(chalk.green('Git commit hooks added'));
 }
 
+/** Add github hooks to package.json */
 function addGitHooks(pkg) {
   return Object.assign(pkg, {
     scripts: Object.assign({}, pkg.scripts, {
@@ -37,6 +38,7 @@ function addGitHooks(pkg) {
   });
 }
 
+/** Calculate whitespace given a json file */
 function calcWhitespace(str) {
   let strRemovedNewline = str.replace(/\n/g, '');
   let res = /{[ \t]+\"/.exec(strRemovedNewline)[0];

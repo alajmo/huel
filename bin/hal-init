@@ -1,9 +1,26 @@
 #!/usr/bin/env node
 
+const defaultConfig = require('../config/default.json');
 const program = require('commander');
 const tasks = require('../src/tasks/tasks.js');
 
 program
+  .option(
+    '-t, --templates',
+    `generate templates. [boolean] [default: ${defaultConfig.addTemplates}]`
+  )
+  .option(
+    '-s, --scripts',
+    `add package.json scripts. [boolean] [default: ${
+      defaultConfig.addPackageJsonScripts
+    }]`
+  )
+  .option(
+    '-m, --misc-keys',
+    `add miscellaneous to package.json. [boolean] [default: ${
+      defaultConfig.addMiscPackageJsons
+    }]`
+  )
   .on('--help', () => {
     console.log(`
 
@@ -16,7 +33,11 @@ program
   .parse(process.argv);
 
 function getTestOptions(options) {
-  return Object.freeze({ });
+  return Object.freeze({
+    templates: options.templates || defaultConfig.addTemplates,
+    scripts: options.scripts || defaultConfig.addPackageJsonScripts,
+    miscKeys: options.miscKeys || defaultConfig.addMiscPackageJsons
+  });
 }
 
 main();

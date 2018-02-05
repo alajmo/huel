@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Example app",
   "scripts": {
+    "init": "hal init --misc-keys",
     "start": "hal build -w -t src/index.html -e src/index.js -o dist/ --env prod",
     "build": "hal build --lint src --format src -t src/index.html -e src/index.js -o dist/",
     "lint": "hal lint --src src",
@@ -31,10 +32,10 @@
     "url": "git://github.com/samiralajmovic/hal.git"
   },
   "keywords": [],
-  "engines": {
-    "node": ">=8"
-  },
   "bugs": "https://example.com",
   "contributors": "Samir Alajmovic",
-  "homepage": "https://github.com/samiralajmovic/hal"
+  "homepage": "https://github.com/samiralajmovic/hal",
+  "engines": {
+    "node": ">=8"
+  }
 }

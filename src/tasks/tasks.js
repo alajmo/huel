@@ -34,7 +34,8 @@ const TASKS = Object.freeze({
 
   changelog: ({ filename }) => generateChangelog({ filename }),
 
-  init: () => startInit(),
+  init: async ({ templates, scripts, miscKeys }) =>
+    await startInit({ templates, scripts, miscKeys }),
 
   startSizeLimit: ({ dest }) => sizeLimit(dest)
 });

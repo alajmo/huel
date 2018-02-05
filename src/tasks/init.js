@@ -1,17 +1,93 @@
 const chalk = require('chalk');
+const fs = require('fs');
+const path = require('path');
+const promisify = require('util').promisify;
+
+const stat = promisify(fs.stat);
+const mkdir = promisify(fs.mkdir);
+const copyFile = promisify(fs.copyFile);
 
 module.exports = startInit;
 
-function startInit() {
+async function startInit({ templates, scripts, miscKeys }) {
+  if (miscKeys) {
+    addMiscKeys();
+  }
+
+  if (scripts) {
+    addScripts();
+  }
+
+  if (templates) {
+    await addGithubTemplates();
+  }
+}
+
+/** Adds documentation templates such as CONTRIBUTING.md */
+async function addGithubTemplates() {
+  const templateRoot = path.resolve(__dirname, '../res/github');
+  const templates = [
+    'CONTRIBUTING.md',
+    'ISSUE_TEMPLATE.md',
+    'PULL_REQUEST_TEMPLATE.md'
+  ].map(template => path.join(templateRoot, template));
+
+  // Create directory docs
+  const docsPath = path.join(process.cwd(), 'docs');
+  try {
+    const docsStat = await stat(docsPath);
+    if (docsStat.isFile()) {
+      console.error(`${chalk.bold(docsPath)} is a file, expected directory.`);
+      process.exit(1);
+    }
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      await mkdir(docsPath);
+      console.log(`${chalk.green('✔︎')} Created directory ${docsPath}\n`);
+    }
+  }
+
+  // Copy templates to docs directory
+  await templates.forEach(async template => {
+    try {
+      await copyFile(template, path.join(docsPath, path.parse(template).base));
+      console.log(
+        `${chalk.green('✔︎')}  Added template ${chalk.bold(
+          path.parse(template).base
+        )}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  });
+}
+
+/** Add miscellaneous keys such as engine */
+function addMiscKeys() {
+  const pkgPath = path.join(process.cwd(), 'package.json');
+  const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
+
+  const pkg = Object.assign(require(pkgPath), {
+    engines: {
+      node: '>=8'
+    }
+  });
+
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
+
+  console.log(chalk.green('Added Node engine requirement'));
+}
+
+/** Add miscellaneous scripts */
+function addScripts() {
   const pkgPath = path.join(process.cwd(), 'package.json');
   const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
   const pkg = addGitHooks(require(pkgPath));
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
-
   console.log(chalk.green('Git commit hooks added'));
 }
 
-/** Add github hooks to package.json */
+/** Add github hooks and development scripts to package.json */
 function addGitHooks(pkg) {
   return Object.assign(pkg, {
     scripts: Object.assign({}, pkg.scripts, {

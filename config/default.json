@@ -10,5 +10,9 @@
   "changelogFilename": "CHANGELOG.md",
   "dependencyCheck": false,
   "sizeLimitCheck": false,
-  "packageJsonCheck": false
+  "packageJsonCheck": false,
+  "addTemplates": false,
+  "addPackageJsonScripts": false,
+  "addMiscPackageJsons": false,
+  "minimumNodeVersion": "8.9.0"
 }

@@ -23,6 +23,36 @@ async function startInit({ templates, scripts, miscKeys }) {
   }
 }
 
+/** Add miscellaneous keys such as engine */
+function addMiscKeys() {
+  const pkgPath = path.join(process.cwd(), 'package.json');
+  const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
+
+  const pkg = Object.assign(require(pkgPath), {
+    engines: {
+      node: '>=8'
+    }
+  });
+
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
+
+  console.log(
+    `Added following keys to ${chalk.bold('package.json')}:
+
+${chalk.green('✔︎')} Minimum engine requirement
+${JSON.stringify({ engines: { node: '>=8' } }, null, 4)}`
+  );
+}
+
+/** Add miscellaneous scripts */
+function addScripts() {
+  const pkgPath = path.join(process.cwd(), 'package.json');
+  const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
+  const pkg = addGitHooks(require(pkgPath));
+  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
+  console.log(chalk.green('Git commit hooks added'));
+}
+
 /** Adds documentation templates such as CONTRIBUTING.md */
 async function addGithubTemplates() {
   const templateRoot = path.resolve(__dirname, '../res/github');
@@ -60,31 +90,6 @@ async function addGithubTemplates() {
       console.error(e);
     }
   });
-}
-
-/** Add miscellaneous keys such as engine */
-function addMiscKeys() {
-  const pkgPath = path.join(process.cwd(), 'package.json');
-  const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
-
-  const pkg = Object.assign(require(pkgPath), {
-    engines: {
-      node: '>=8'
-    }
-  });
-
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
-
-  console.log(chalk.green('Added Node engine requirement'));
-}
-
-/** Add miscellaneous scripts */
-function addScripts() {
-  const pkgPath = path.join(process.cwd(), 'package.json');
-  const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
-  const pkg = addGitHooks(require(pkgPath));
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
-  console.log(chalk.green('Git commit hooks added'));
 }
 
 /** Add github hooks and development scripts to package.json */

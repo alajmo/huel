@@ -25,8 +25,7 @@ program
 
 function getLintOptions(options) {
   if (!options.src) {
-    console.error('error: option -s, --src with value is required');
-    process.exit(1);
+    throw new Error('error: option -s, --src with value is required');
   }
 
   return Object.freeze({

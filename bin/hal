@@ -1,19 +1,29 @@
 #!/usr/bin/env node
 
 const pkg = require('../package.json');
+// This Node version check only validates hal's dependency on Node.
 require('please-upgrade-node')(pkg);
+
+// This Node version check validates users application dependency on Node.
+require('../src/lib/check-node-version.js');
 const program = require('commander');
 
 program
   .version(pkg.version)
   .description('Development and build environment for the web')
-  .command('build', 'build project').alias('b')
-  .command('format', 'format files').alias('f')
-  .command('lint', 'lint files').alias('l')
-  .command('test', 'test code').alias('t')
-  .command('commitmsg', 'assert commit message is in conventional commit form').alias('c')
+  .command('build', 'build project')
+  .alias('b')
+  .command('format', 'format files')
+  .alias('f')
+  .command('lint', 'lint files')
+  .alias('l')
+  .command('test', 'test code')
+  .alias('t')
+  .command('commitmsg', 'assert commit message is in conventional commit form')
+  .alias('c')
   .command('changelog', 'generate changelog')
-  .command('init', 'bootstrap project').alias('i')
+  .command('init', 'bootstrap project')
+  .alias('i')
   .on('--help', () => {
     console.log(`
   Examples:

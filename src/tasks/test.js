@@ -1,30 +1,196 @@
+const {
+  assertMinNodeVersion,
+  assertMinNpmVersion
+} = require('../lib/check-node-version.js');
 const Depcheck = require('depcheck');
+const moduleCheck = require('check-dependencies');
 const PJV = require('package-json-validator').PJV;
 const bytes = require('bytes');
 const chalk = require('chalk');
 const child = require('child_process');
-const colors = require('../lib/colors.js');
 const getSize = require('size-limit');
 const globby = require('globby');
 const path = require('path');
+const readPkgUp = require('read-pkg-up');
+const pkgUp = require('pkg-up');
+const semver = require('semver');
 
 module.exports = startTest;
 
-function startTest({ pjv, size, depcheck, entry, output }) {
-  if (pjv) {
+function startTest({
+  verbose,
+  all,
+  pjv,
+  size,
+  depcheck,
+  nodecheck,
+  npmcheck,
+  moduleversioncheck,
+  modulenodecheck,
+  entry,
+  ignoreDirs
+}) {
+  if (pjv || all) {
+    // Check for mandatory package.json attributes.
     validatePackageJson();
   }
 
-  if (size) {
-    sizeLimit(size);
+  if (depcheck || all) {
+    // Check unused and missing dependencies.
+    depcheckTest({ entry, ignoreDirs });
   }
 
-  if (depcheck) {
-    depcheckTest({ entry, output });
+  if (nodecheck || all) {
+    // This Node version check validates users application dependency on Node.
+    nodeCheck(verbose);
+  }
+
+  if (npmcheck || all) {
+    // This Node version check validates users application dependency on Node.
+    npmCheck(verbose);
+  }
+
+  if (modulenodecheck || all) {
+    // This Node version check validates users module dependencies on Node.
+    moduleNodeCheck(verbose);
+  }
+
+  if (moduleversioncheck || all) {
+    // Make sure modules are synced between package.json and package-lock.json.
+    moduleVersionCheck(verbose);
+  }
+
+  if (size || all) {
+    // Add size limit to files.
+    sizeLimit({ size, verbose });
   }
 }
 
-function depcheckTest({ entry, output }) {
+function npmCheck(verbose) {
+  const currentNpmProcessVersion = semver.coerce(
+    child.execSync('npm --version', {
+      encoding: 'utf-8'
+    })
+  );
+  const {
+    pkg: { engines: { npm: targetNpmVersionCondition } }
+  } = readPkgUp.sync();
+
+  assertMinNpmVersion({
+    currentNpmProcessVersion,
+    targetNpmVersionCondition,
+    packageJsonPath: pkgUp.sync()
+  });
+
+  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+    'npm version check successful'
+  )}`;
+  console.log(successMessage);
+  if (verbose) {
+    console.log(
+      `   ${'npm: installed '} ${currentNpmProcessVersion}, expected: npm ${
+        targetNpmVersionCondition
+      }`
+    );
+  }
+}
+
+function nodeCheck(verbose) {
+  const currentNodeProcessVersion = semver.coerce(process.version).raw;
+  const {
+    pkg: { engines: { node: targetNodeVersionCondition } }
+  } = readPkgUp.sync();
+
+  assertMinNodeVersion({
+    currentNodeProcessVersion,
+    targetNodeVersionCondition,
+    packageJsonPath: pkgUp.sync()
+  });
+
+  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+    'node version check successful'
+  )}`;
+  console.log(successMessage);
+  if (verbose) {
+    console.log(
+      `   ${'node: installed '} ${currentNodeProcessVersion}, expected: node ${
+        targetNodeVersionCondition
+      }`
+    );
+  }
+}
+
+function moduleVersionCheck(verbose) {
+  const { status, log, error } = moduleCheck.sync();
+  if (status === 1) {
+    error.forEach(element => {
+      console.error(`   ${element}`);
+    });
+
+    process.exit(1);
+  } else {
+    const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+      'module version check successful'
+    )}`;
+    console.log(successMessage);
+    if (verbose) {
+      log.forEach(element => {
+        console.log(`   ${element}`);
+      });
+    }
+  }
+}
+
+function moduleNodeCheck(verbose) {
+  const pkg = require(path.join(process.cwd(), 'package.json'));
+  const nodeModulesPath = path.join(process.cwd());
+  const currentNodeProcessVersion = semver.coerce(process.version).raw;
+
+  const check = dependencies => {
+    let installedMessage = '';
+    Object.keys(dependencies).forEach(moduleName => {
+      const packageJsonPath = path.join(
+        nodeModulesPath,
+        'node_modules',
+        moduleName,
+        'package.json'
+      );
+      const tpkg = require(packageJsonPath);
+      if (tpkg.engines === undefined) {
+        return;
+      }
+      const targetNodeVersionCondition = tpkg.engines.node;
+
+      assertMinNodeVersion({
+        currentNodeProcessVersion,
+        targetNodeVersionCondition,
+        packageJsonPath: pkgUp.sync()
+      });
+
+      installedMessage += `${'   node: installed '} ${
+        currentNodeProcessVersion
+      }, ${chalk.bold(moduleName)} (${tpkg.version}) expected: node ${
+        targetNodeVersionCondition
+      }\n`;
+    });
+
+    return installedMessage;
+  };
+
+  let installedModules = '';
+  installedModules += check(pkg.dependencies);
+  installedModules += check(pkg.devDependencies);
+
+  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+    'module node version check successful'
+  )}`;
+  console.log(successMessage);
+  if (verbose) {
+    process.stdout.write(`${installedModules}`);
+  }
+}
+
+function depcheckTest({ entry, ignoreDirs }) {
   const resolveAliases = {
     components: path.join(process.cwd(), entry, 'components'),
     res: path.join(process.cwd(), entry, 'res'),
@@ -59,7 +225,7 @@ function depcheckTest({ entry, output }) {
   const options = {
     ignoreBinPackage: true,
     ignoreMatches: ['hal'],
-    ignoreDirs: [output],
+    ignoreDirs: [ignoreDirs],
     detectors: [Depcheck.detector.requireCallExpression, webpackAliasDetect],
     specials: [Depcheck.special.eslint, Depcheck.special.webpack]
   };
@@ -104,11 +270,11 @@ function depcheckTest({ entry, output }) {
       console.log();
     }
 
-    console.log(
-      dependencyCheckPassed
-        ? chalk.green('Dependency check passed!')
-        : chalk.red('Dependency check failed!')
-    );
+    const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+      'dependency check passed'
+    )}`;
+    const failMessage = `${chalk.red('✖')}  dependency check failed`;
+    console.log(dependencyCheckPassed ? successMessage : failMessage);
   });
 }
 
@@ -124,7 +290,7 @@ function validatePackageJson() {
     invalid = true;
     console.error('Following package.json errors found: \n');
     output.errors.forEach(element => {
-      console.log(`${colors.red}${element}${colors.reset}\n`);
+      console.log(`${chalk.red(element)}\n`);
     });
   }
 
@@ -132,7 +298,7 @@ function validatePackageJson() {
     invalid = true;
     console.error('Following package.json warnings found: \n');
     output.warnings.forEach(element => {
-      console.log(`${colors.yellow}${element}${colors.reset}\n`);
+      console.log(`${chalk.yellow(element)}\n`);
     });
   }
 
@@ -140,14 +306,14 @@ function validatePackageJson() {
     invalid = true;
     console.error('Following package.json recommendations found: \n');
     output.recommendations.forEach(element => {
-      console.log(`${colors.green}${element}${colors.reset}\n`);
+      console.log(`${chalk.green(element)}\n`);
     });
   }
 
   if (invalid) {
     process.exit();
   } else {
-    console.log(`${colors.green}Valid package.json${colors.reset}`);
+    console.log(`${chalk.green('✔︎')}  ${chalk.bold('valid package.json')}`);
   }
 }
 
@@ -155,7 +321,7 @@ function validatePackageJson() {
  * @desc Checks size limit of files.
  * @param {string|boolean} size If string then assumed to be a path to size-limit config file.
  */
-function sizeLimit(size) {
+function sizeLimit({ size, verbose }) {
   const sizeConfigPath =
     typeof size === 'string'
       ? path.resolve(process.cwd(), size)
@@ -168,9 +334,7 @@ function sizeLimit(size) {
     globby(limit.path, { cwd: process.cwd() })
       .then(files => {
         if (files.length > 0) {
-          getSize(files.map(file => path.join(process.cwd(), file)), {
-            analyzer: 'static'
-          })
+          getSize(files.map(file => path.join(process.cwd(), file)))
             .then(size => {
               const limitNum = bytes.parse(limit.limit);
               const sizeNum = bytes.parse(size);
@@ -178,21 +342,26 @@ function sizeLimit(size) {
               if (diff > 0) {
                 process.stdout.write(
                   `  ${chalk.red(
-                    'Package size limit has exceeded by ' + formatBytes(diff)
+                    'package size limit has exceeded by ' + formatBytes(diff)
                   )}\n` +
-                    `  Package size: ${chalk.bold(
+                    `   package size: ${chalk.bold(
                       chalk.red(formatBytes(sizeNum))
                     )}\n` +
-                    `  Size limit:   ${chalk.bold(formatBytes(limitNum))}\n`
+                    `   size limit:   ${chalk.bold(formatBytes(limitNum))}\n`
                 );
                 process.exit(1);
               } else {
-                process.stdout.write(
-                  `  Package size: ${chalk.bold(
-                    chalk.green(formatBytes(sizeNum))
-                  )}\n` +
-                    `  Size limit:   ${chalk.bold(formatBytes(limitNum))}\n`
-                );
+                const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+                  'valid size limit'
+                )}`;
+                console.log(successMessage);
+
+                if (verbose) {
+                  process.stdout.write(
+                    `   package size: ${chalk.bold(formatBytes(sizeNum))}\n` +
+                      `   size limit:   ${chalk.bold(formatBytes(limitNum))}\n`
+                  );
+                }
               }
             })
             .catch(err => {

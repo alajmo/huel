@@ -1,34 +1,28 @@
 /**
- * Affirm that the Node executable satisfied the Node version
- * found in the corresponding package.json file.
+ * Affirm that the Node.js and npm executable satisfied the Node and npm version
+ * found in package.json.
  */
 
 const { exitAndInform } = require('./error.js');
-const readPkgUp = require('read-pkg-up');
-const pkgUp = require('pkg-up');
 const semver = require('semver');
-const child = require('child_process');
 
-main();
-function main() {
-  assertMinNodeVersion();
-  assertMinNpmVersion();
-}
+module.exports = {
+  assertMinNodeVersion,
+  assertMinNpmVersion
+};
 
-function assertMinNodeVersion() {
-  const {
-    pkg: { engines: { node: targetNodeVersionCondition } }
-  } = readPkgUp.sync();
-
+function assertMinNodeVersion({
+  currentNodeProcessVersion,
+  targetNodeVersionCondition,
+  packageJsonPath
+}) {
   if (!semver.valid(semver.coerce(targetNodeVersionCondition))) {
     exitAndInform(
-      `Failed to read attribute engine.node from ${pkgUp.sync()}
+      `Failed to read attribute engine.node from ${packageJsonPath}
    Are you sure you have entered a valid npm version?
     `
     );
   }
-  // const currentNodeProcessVersion = '1.2.2'
-  const currentNodeProcessVersion = semver.coerce(process.version).raw;
 
   if (
     !semver.satisfies(currentNodeProcessVersion, targetNodeVersionCondition)
@@ -41,23 +35,17 @@ function assertMinNodeVersion() {
   }
 }
 
-function assertMinNpmVersion() {
-  const {
-    pkg: { engines: { npm: targetNpmVersionCondition } }
-  } = readPkgUp.sync();
-
+function assertMinNpmVersion({
+  currentNpmProcessVersion,
+  targetNpmVersionCondition,
+  packageJsonPath
+}) {
   if (!semver.valid(semver.coerce(targetNpmVersionCondition))) {
     exitAndInform(
-      `Failed to read attribute engine.npm from ${pkgUp.sync()}.
+      `Failed to read attribute engine.npm from ${packageJsonPath}.
    Are you sure you have entered a valid npm version?`
     );
   }
-
-  const currentNpmProcessVersion = semver.coerce(
-    child.execSync('npm --version', {
-      encoding: 'utf-8'
-    })
-  );
 
   if (!semver.satisfies(currentNpmProcessVersion, targetNpmVersionCondition)) {
     exitAndInform(

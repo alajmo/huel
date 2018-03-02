@@ -55,6 +55,7 @@
     "babel-register": "6.26.0",
     "bytes": "3.0.0",
     "chalk": "2.3.0",
+    "check-dependencies": "^1.1.0",
     "chokidar": "1.7.0",
     "clean-webpack-plugin": "0.1.17",
     "commander": "2.11.0",

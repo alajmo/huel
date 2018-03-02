@@ -3,7 +3,7 @@ const fs = require('fs');
 const glob = require('glob');
 const chokidar = require('chokidar');
 const prettier = require('prettier');
-const colors = require('../lib/colors.js');
+const chalk = require('chalk');
 
 module.exports = startFormat;
 
@@ -18,7 +18,7 @@ function startFormat({ src, watch }) {
 
   format(normalizedSrc);
   if (watch) {
-    console.log(`${colors.bold}Watching: ${colors.reset}${normalizedSrc}`);
+    console.log(`${chalk.bold('Watching: ')}${normalizedSrc}`);
     watchFormat(normalizedSrc);
   }
 }
@@ -52,7 +52,7 @@ function format(src) {
   });
 
   const successMessage = 'Code has been formatted with prettier.';
-  console.log(`${colors.green}${successMessage}${colors.reset}`);
+  console.log(`${chalk.green(successMessage)}`);
 }
 
 function formatFile(filepath) {
@@ -93,11 +93,7 @@ function watchFormat(src) {
     )
     .on('all', (event, filepath) => {
       formatFile(filepath);
-      console.log(
-        `${colors.green}Formatted file: ${colors.reset}${filepath}${
-          colors.reset
-        }`
-      );
+      console.log(`${chalk.green('Formatted file: ')}${filepath}`);
     });
 }
 

@@ -6,6 +6,14 @@ const tasks = require('../src/tasks/tasks.js');
 
 program
   .option(
+    '-v, --verbose',
+    `verbose printing. [boolean] [default: ${defaultConfig.verbose}]`
+  )
+  .option(
+    '-a, --all',
+    `run all tests. [boolean] [default: ${defaultConfig.allTests}]`
+  )
+  .option(
     '-p, --pjv',
     `check package.json. [boolean] [default: ${defaultConfig.packageJsonCheck}]`
   )
@@ -16,6 +24,22 @@ program
   .option(
     '-d, --depcheck',
     `dependency check. [boolean] [default: ${defaultConfig.dependencyCheck}]`
+  )
+  .option(
+    '-n, --nodecheck',
+    `node version check. [boolean] [default: ${defaultConfig.nodeCheck}]`
+  )
+  .option(
+    '-m, --npmcheck',
+    `npm version check. [boolean] [default: ${defaultConfig.npmCheck}]`
+  )
+  .option(
+    '-o, --moduleversioncheck',
+    `module version check. [boolean] [default: ${defaultConfig.moduleVersionCheck}]`
+  )
+  .option(
+    '-j, --modulenodecheck',
+    `module node version check. [boolean] [default: ${defaultConfig.modulenodecheck}]`
   )
   .option(
     '-e, --entry <entry>',
@@ -42,9 +66,15 @@ program
 
 function getTestOptions(options) {
   return Object.freeze({
+    verbose: options.verbose || defaultConfig.verbose,
+    all: options.all || defaultConfig.allTests,
     pjv: options.pjv || defaultConfig.packageJsonCheck,
     size: options.size || defaultConfig.sizeLimitCheck,
     depcheck: options.depcheck || defaultConfig.dependencyCheck,
+    nodecheck: options.nodecheck || defaultConfig.nodeCheck,
+    npmcheck: options.npmcheck || defaultConfig.npmCheck,
+    moduleversioncheck: options.moduleversioncheck || defaultConfig.moduleVersionCheck,
+    modulenodecheck: options.modulenodecheck || defaultConfig.moduleNodeCheck,
     entry: options.entry || defaultConfig.entry,
     output: options.output || defaultConfig.output
   });

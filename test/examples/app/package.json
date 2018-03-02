@@ -8,8 +8,9 @@
     "build": "hal build --lint src --format src -t src/index.html -e src/index.js -o dist/",
     "lint": "hal lint --src src",
     "format": "hal format --src src",
-    "test": "hal test --pjv --size --depcheck",
+    "test": "hal test --all --verbose",
     "depcheck": "hal test --depcheck",
+    "modulecheck": "hal test --moduleversioncheck",
     "size": "hal test --size",
     "pjv": "hal test --pjv",
     "prepush": "npm test",
@@ -20,11 +21,12 @@
   },
   "author": "McExample ExampleFace  <example.face@gmail.com>",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "pure-html": "^1.2.2"
+  },
   "devDependencies": {
-    "express": "^4.16.2",
-    "hal": "^0.5.0",
-    "puppeteer": "^1.0.0",
+    "express": "^4.16.1",
+    "puppeteer": "^1.1.1",
     "tap": "^11.0.1"
   },
   "repository": {
@@ -37,6 +39,6 @@
   "homepage": "https://github.com/samiralajmovic/hal",
   "engines": {
     "node": ">=8.9.0",
-    "npm": ">=5.7.1"
+    "npm": ">=5.7.0"
   }
 }

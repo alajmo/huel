@@ -11,7 +11,8 @@
   ],
   "contributors": [],
   "engines": {
-    "node": ">=8"
+    "node": ">=8.9.0",
+    "npm": ">=5.7.0"
   },
   "scripts": {
     "start": "hal build -w -t test/example/src/index.html -e test/example/src/index.js -o test/example/dist/ --env prod",
@@ -74,10 +75,12 @@
     "karma-cli": "1.0.1",
     "karma-tap": "3.1.1",
     "karma-webpack": "2.0.6",
+    "pkg-up": "^2.0.0",
     "please-upgrade-node": "3.0.1",
     "postcss-loader": "2.0.8",
     "prettier": "1.8.2",
     "puppeteer": "0.13.0",
+    "semver": "^5.5.0",
     "size-limit": "0.14.0",
     "style-loader": "0.19.0",
     "uglifyjs-webpack-plugin": "1.1.0",

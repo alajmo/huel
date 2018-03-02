@@ -14,5 +14,6 @@
   "addTemplates": false,
   "addPackageJsonScripts": false,
   "addMiscPackageJsons": false,
-  "minimumNodeVersion": "8.9.0"
+  "minimumNodeVersion": "8.9.0",
+  "minimumNpmVersion": "5.7.1"
 }

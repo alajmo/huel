@@ -1,24 +1,69 @@
-colors = require('chalk');
-const pkg = require('./package.json');
+/**
+ * Affirm that the Node executable satisfied the Node version
+ * found in the corresponding package.json file.
+ */
 
-// https://github.com/sindresorhus/pkg-up
-// https://github.com/sindresorhus/read-pkg
-// https://github.com/sindresorhus/read-pkg-up
-const version = parseFloat( process.version.substr(1) );
+const { exitAndInform } = require('./error.js');
+const readPkgUp = require('read-pkg-up');
+const pkgUp = require('pkg-up');
+const semver = require('semver');
+const child = require('child_process');
 
-module.exports = function (minimum) {
-  if (version >= minimum) {
-    return true;
+main();
+function main() {
+  assertMinNodeVersion();
+  assertMinNpmVersion();
+}
+
+function assertMinNodeVersion() {
+  const {
+    pkg: { engines: { node: targetNodeVersionCondition } }
+  } = readPkgUp.sync();
+
+  if (!semver.valid(semver.coerce(targetNodeVersionCondition))) {
+    exitAndInform(
+      `Failed to read attribute engine.node from ${pkgUp.sync()}
+   Are you sure you have entered a valid npm version?
+    `
+    );
+  }
+  // const currentNodeProcessVersion = '1.2.2'
+  const currentNodeProcessVersion = semver.coerce(process.version).raw;
+
+  if (
+    !semver.satisfies(currentNodeProcessVersion, targetNodeVersionCondition)
+  ) {
+    exitAndInform(
+      `Wrong Node.js version, expected node${
+        targetNodeVersionCondition
+      } but found ${currentNodeProcessVersion}!`
+    );
+  }
+}
+
+function assertMinNpmVersion() {
+  const {
+    pkg: { engines: { npm: targetNpmVersionCondition } }
+  } = readPkgUp.sync();
+
+  if (!semver.valid(semver.coerce(targetNpmVersionCondition))) {
+    exitAndInform(
+      `Failed to read attribute engine.npm from ${pkgUp.sync()}.
+   Are you sure you have entered a valid npm version?`
+    );
   }
 
-        const errorMessage = chalk.yellow(`
-                requires at least node@${minimum}!
-                You have node@${version}
+  const currentNpmProcessVersion = semver.coerce(
+    child.execSync('npm --version', {
+      encoding: 'utf-8'
+    })
+  );
 
-        `);
-
-  // version not supported && exit
-  process.stdout.write(errorMessage) + '\n';
-  process.exit(1);
-};
-
+  if (!semver.satisfies(currentNpmProcessVersion, targetNpmVersionCondition)) {
+    exitAndInform(
+      `Wrong npm version, expected npm${targetNpmVersionCondition} but found ${
+        currentNpmProcessVersion
+      }!`
+    );
+  }
+}

@@ -2,6 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const promisify = require('util').promisify;
+const defaultConfig = require('../../config/default.json');
 
 const stat = promisify(fs.stat);
 const mkdir = promisify(fs.mkdir);
@@ -30,7 +31,8 @@ function addMiscKeys() {
 
   const pkg = Object.assign(require(pkgPath), {
     engines: {
-      node: '>=8'
+      node: `>=${defaultConfig.minimumNodeVersion}`,
+      npm: `>=${defaultConfig.minimumNpmVersion}`
     }
   });
 
@@ -39,8 +41,11 @@ function addMiscKeys() {
   console.log(
     `Added following keys to ${chalk.bold('package.json')}:
 
-${chalk.green('✔︎')} Minimum engine requirement
-${JSON.stringify({ engines: { node: '>=8' } }, null, 4)}`
+${chalk.green('✔︎')} Minimum node engine requirement
+${JSON.stringify({ engines: { node: '>=8' } }, null, 4)}
+
+${chalk.green('✔︎')} Minimum npm engine requirement
+${JSON.stringify({ engines: { npm: '>=5' } }, null, 4)}`
   );
 }
 

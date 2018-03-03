@@ -12,6 +12,7 @@ module.exports = {
 };
 
 function assertMinNodeVersion({
+  moduleName,
   currentNodeProcessVersion,
   targetNodeVersionCondition,
   packageJsonPath
@@ -28,7 +29,7 @@ function assertMinNodeVersion({
     !semver.satisfies(currentNodeProcessVersion, targetNodeVersionCondition)
   ) {
     exitAndInform(
-      `Wrong Node.js version, expected node${
+      `${moduleName}: Wrong Node.js version, expected node${
         targetNodeVersionCondition
       } but found ${currentNodeProcessVersion}!`
     );
@@ -36,6 +37,7 @@ function assertMinNodeVersion({
 }
 
 function assertMinNpmVersion({
+  moduleName,
   currentNpmProcessVersion,
   targetNpmVersionCondition,
   packageJsonPath
@@ -49,7 +51,7 @@ function assertMinNpmVersion({
 
   if (!semver.satisfies(currentNpmProcessVersion, targetNpmVersionCondition)) {
     exitAndInform(
-      `Wrong npm version, expected npm${targetNpmVersionCondition} but found ${
+      `${moduleName}: Wrong npm version, expected npm${targetNpmVersionCondition} but found ${
         currentNpmProcessVersion
       }!`
     );

@@ -18,6 +18,10 @@ program
     `check package.json. [boolean] [default: ${defaultConfig.packageJsonCheck}]`
   )
   .option(
+    '-r, --strict-version',
+    `enforce strict versioning for modules. [boolean] [default: ${defaultConfig.strictVersion}]`
+  )
+  .option(
     '-s, --size [path]',
     `size limit test. [string] [default: ${defaultConfig.sizeLimitCheck}]`
   )
@@ -42,14 +46,21 @@ program
     `module node version check. [boolean] [default: ${defaultConfig.modulenodecheck}]`
   )
   .option(
+    '-c, --extraneous-modules',
+    `check extraneous in node_modules. [boolean] [default: ${defaultConfig.extraneousModulesCheck}]`
+  )
+  .option(
+    '-u, --update-check',
+    `check if updates are available. [boolean] [default: ${defaultConfig.updateCheck}]`
+  )
+  .option(
     '-e, --entry <entry>',
     `entry for project. [string] [required] [default: ${defaultConfig.entry}]`
   )
   .option(
-    '-o, --output <output>',
-    `output for project. [string] [required] [default: ${defaultConfig.output}]`
+    '-i, --ignore-dirs <dirs>',
+    `ignore directories. [string] [required] [default: ${defaultConfig.ignoreDirs}]`
   )
-
   .on('--help', () => {
     console.log(`
 
@@ -76,7 +87,10 @@ function getTestOptions(options) {
     moduleversioncheck: options.moduleversioncheck || defaultConfig.moduleVersionCheck,
     modulenodecheck: options.modulenodecheck || defaultConfig.moduleNodeCheck,
     entry: options.entry || defaultConfig.entry,
-    output: options.output || defaultConfig.output
+    ignoreDirs: options.ignoreDirs || defaultConfig.ignoreDirs,
+    strictversion: options.strictVersion || defaultConfig.strictVersion,
+    extraneousmodules: options.extraneousModules  || defaultConfig.extraneousModulesCheck,
+    updatecheck: options.updateCheck  || defaultConfig.updateCheck
   });
 }
 

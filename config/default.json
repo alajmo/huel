@@ -2,6 +2,7 @@
   "template": "src/index.html",
   "entry": "src",
   "output": "dist",
+  "ignoreDirs": "dist",
   "watch": false,
   "port": 3000,
   "env": "prod",
@@ -20,6 +21,9 @@
   "addTemplates": false,
   "addPackageJsonScripts": false,
   "addMiscPackageJsons": false,
+  "extraneousModulesCheck": false,
+  "updateCheck": false,
+  "strictVersion": false,
   "minimumNodeVersion": "8.9.0",
   "minimumNpmVersion": "5.7.1"
 }

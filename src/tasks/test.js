@@ -1,7 +1,9 @@
+const fs = require('fs');
 const {
   assertMinNodeVersion,
   assertMinNpmVersion
 } = require('../lib/check-node-version.js');
+const { getResolvedAliases } = require('../lib/util.js');
 const Depcheck = require('depcheck');
 const moduleCheck = require('check-dependencies');
 const PJV = require('package-json-validator').PJV;
@@ -14,6 +16,7 @@ const path = require('path');
 const readPkgUp = require('read-pkg-up');
 const pkgUp = require('pkg-up');
 const semver = require('semver');
+const checkNpmModules = require('npm-check');
 
 module.exports = startTest;
 
@@ -27,45 +30,179 @@ function startTest({
   npmcheck,
   moduleversioncheck,
   modulenodecheck,
+  extraneousmodules,
+  updatecheck,
   entry,
-  ignoreDirs
+  ignoreDirs,
+  strictversion
 }) {
+  if (updatecheck || all) {
+    updateCheck(verbose);
+  }
+
   if (pjv || all) {
-    // Check for mandatory package.json attributes.
-    validatePackageJson();
+    validatePackageJson(verbose);
+  }
+
+  if (strictversion || all) {
+    strictVersionCheck(verbose);
+  }
+
+  if (extraneousmodules || all) {
+    extraneousModulesCheck(verbose);
   }
 
   if (depcheck || all) {
-    // Check unused and missing dependencies.
     depcheckTest({ entry, ignoreDirs });
   }
 
-  if (nodecheck || all) {
-    // This Node version check validates users application dependency on Node.
-    nodeCheck(verbose);
-  }
-
   if (npmcheck || all) {
-    // This Node version check validates users application dependency on Node.
     npmCheck(verbose);
   }
 
+  if (nodecheck || all) {
+    nodeCheck(verbose);
+  }
+
   if (modulenodecheck || all) {
-    // This Node version check validates users module dependencies on Node.
     moduleNodeCheck(verbose);
   }
 
-  if (moduleversioncheck || all) {
-    // Make sure modules are synced between package.json and package-lock.json.
-    moduleVersionCheck(verbose);
+  if (size || all) {
+    sizeLimit({ size, verbose });
   }
 
-  if (size || all) {
-    // Add size limit to files.
-    sizeLimit({ size, verbose });
+  if (moduleversioncheck || all) {
+    moduleVersionCheck(verbose);
   }
 }
 
+function updateCheck(verbose) {
+  checkNpmModules({ skipUnused: true })
+    .then(currentState => {
+      const packages = currentState.get('packages');
+
+      let updateCheckPassed = true;
+      let statusMessage = '';
+      packages.forEach(pkg => {
+        const { moduleName, installed, latest } = pkg;
+        if (semver.neq(installed, latest)) {
+          updateCheckPassed = false;
+          statusMessage += `   ${chalk.dim(moduleName)} (${chalk.magenta(
+            installed
+          )}) isn't up to date (${chalk.green(latest)})\n`;
+        } else {
+          statusMessage = `   ${chalk.dim(moduleName)} (${chalk.green(
+            installed
+          )}) is up to date (${chalk.green(latest)})\n`;
+        }
+      });
+
+      const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+        'update check passed'
+      )}`;
+      const failMessage = `${chalk.blue('ℹ')}  ${chalk.bold(
+        'update check failed'
+      )}`;
+
+      updateCheckPassed
+        ? console.log(successMessage)
+        : console.log(failMessage);
+
+      if (!updateCheckPassed || verbose) {
+        console.log(statusMessage);
+      }
+    })
+    .catch(() => {});
+}
+
+function extraneousModulesCheck(verbose) {
+  const extraneousModulesJson = child.execSync('npm prune --dry-run --json', {
+    encoding: 'utf-8'
+  });
+  const extraneousModules = JSON.parse(extraneousModulesJson);
+
+  let extraneousModulesPassed = true;
+  let extraneousModulesStatusMessages = '';
+
+  if (extraneousModules.removed.length > 0) {
+    extraneousModulesPassed = false;
+    extraneousModulesStatusMessages += `   ${chalk.bold(
+      extraneousModules.removed.length
+    )} extraneous modules found in node_modules`;
+  } else {
+    extraneousModulesStatusMessages +=
+      '   no extraneous modules found in node_modules';
+  }
+
+  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+    'extraneous modules check passed'
+  )}`;
+  const failMessage = `${chalk.red('✖')}  ${chalk.bold(
+    'extraneous modules check failed'
+  )}`;
+
+  extraneousModulesPassed
+    ? console.log(successMessage)
+    : console.log(failMessage);
+
+  if (!extraneousModulesPassed || verbose) {
+    console.log(extraneousModulesStatusMessages);
+  }
+
+  if (!extraneousModulesPassed) {
+    process.exit(1);
+  }
+}
+
+function strictVersionCheck(verbose) {
+  const {
+    pkg: { dependencies: dependencies, devDependencies: devDependencies }
+  } = readPkgUp.sync();
+
+  const check = dependencies => {
+    let status = 0;
+    let logs = '';
+    Object.keys(dependencies).forEach(moduleName => {
+      const version = dependencies[moduleName];
+      if (semver.valid(version) === null) {
+        status = 1;
+        logs += `   ${moduleName} (${chalk.red(version)})\n`;
+      } else {
+        logs += `   ${moduleName} (${chalk.green(version)})\n`;
+      }
+    });
+
+    return { status, logs };
+  };
+
+  dependenciesCheck = check(dependencies);
+  devDependenciesCheck = check(devDependencies);
+
+  if ([dependenciesCheck.status, devDependenciesCheck.status].includes(1)) {
+    const failMessage = `${chalk.red('✖')}  ${chalk.bold(
+      'strict version check failed'
+    )}`;
+    console.log(failMessage);
+    process.stdout.write(
+      `${dependenciesCheck.logs}${devDependenciesCheck.logs}`
+    );
+    process.exit(1);
+  } else {
+    const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+      'strict version check passed'
+    )}`;
+    console.log(successMessage);
+    if (verbose) {
+      process.stdout.write(
+        `${dependenciesCheck.logs}${devDependenciesCheck.logs}`
+      );
+    }
+  }
+}
+
+// Verifies that the correct npm version is installed for the current
+// application.
 function npmCheck(verbose) {
   const currentNpmProcessVersion = semver.coerce(
     child.execSync('npm --version', {
@@ -73,10 +210,11 @@ function npmCheck(verbose) {
     })
   );
   const {
-    pkg: { engines: { npm: targetNpmVersionCondition } }
+    pkg: { engines: { npm: targetNpmVersionCondition }, name: moduleName }
   } = readPkgUp.sync();
 
   assertMinNpmVersion({
+    moduleName,
     currentNpmProcessVersion,
     targetNpmVersionCondition,
     packageJsonPath: pkgUp.sync()
@@ -88,20 +226,23 @@ function npmCheck(verbose) {
   console.log(successMessage);
   if (verbose) {
     console.log(
-      `   ${'npm: installed '} ${currentNpmProcessVersion}, expected: npm ${
-        targetNpmVersionCondition
-      }`
+      `   npm: installed  ${chalk.green(
+        currentNpmProcessVersion
+      )}, expected: npm ${chalk.green(targetNpmVersionCondition)}`
     );
   }
 }
 
+// Verifies that the correct Node.js version is installed for the current
+// application.
 function nodeCheck(verbose) {
   const currentNodeProcessVersion = semver.coerce(process.version).raw;
   const {
-    pkg: { engines: { node: targetNodeVersionCondition } }
+    pkg: { engines: { node: targetNodeVersionCondition }, name: moduleName }
   } = readPkgUp.sync();
 
   assertMinNodeVersion({
+    moduleName,
     currentNodeProcessVersion,
     targetNodeVersionCondition,
     packageJsonPath: pkgUp.sync()
@@ -113,34 +254,55 @@ function nodeCheck(verbose) {
   console.log(successMessage);
   if (verbose) {
     console.log(
-      `   ${'node: installed '} ${currentNodeProcessVersion}, expected: node ${
-        targetNodeVersionCondition
-      }`
+      `   node: installed  ${chalk.green(
+        currentNodeProcessVersion
+      )}, expected: node ${chalk.green(targetNodeVersionCondition)}`
     );
   }
 }
 
+// Make sure modules are synced between package.json and package-lock.json.
+// Also verifies that the package is found in node_modules.
 function moduleVersionCheck(verbose) {
   const { status, log, error } = moduleCheck.sync();
+  let moduleVersionCheckPassed = true;
+  let statusMessage = '';
   if (status === 1) {
-    error.forEach(element => {
-      console.error(`   ${element}`);
+    moduleVersionCheckPassed = false;
+    error.forEach((element, i, arr) => {
+      // All elements except the last because
+      // module check-dependencies includes the string
+      // 'Invoke npm install to install missing packages'
+      // as the last element in the array.
+      if (i < arr.length - 1) {
+        statusMessage += `   ${element.replace('!', '')}\n`;
+      }
     });
+  }
 
+  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+    'module version check successful'
+  )}`;
+  const failMessage = `${chalk.red('✖')}  ${chalk.bold(
+    'module version check failed'
+  )}`;
+
+  moduleVersionCheckPassed
+    ? console.log(successMessage)
+    : console.log(failMessage);
+
+  if (!moduleVersionCheckPassed) {
+    console.log(statusMessage);
     process.exit(1);
-  } else {
-    const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
-      'module version check successful'
-    )}`;
-    console.log(successMessage);
-    if (verbose) {
-      log.forEach(element => {
-        console.log(`   ${element}`);
-      });
-    }
+  } else if (verbose) {
+    log.forEach(element => {
+      console.log(`   ${element}`);
+    });
   }
 }
 
+// Verifies that the correct Node.js version is installed for the
+// dependencies found in package.json.
 function moduleNodeCheck(verbose) {
   const pkg = require(path.join(process.cwd(), 'package.json'));
   const nodeModulesPath = path.join(process.cwd());
@@ -155,6 +317,10 @@ function moduleNodeCheck(verbose) {
         moduleName,
         'package.json'
       );
+      if (!fs.existsSync(packageJsonPath)) {
+        return;
+      }
+
       const tpkg = require(packageJsonPath);
       if (tpkg.engines === undefined) {
         return;
@@ -162,16 +328,17 @@ function moduleNodeCheck(verbose) {
       const targetNodeVersionCondition = tpkg.engines.node;
 
       assertMinNodeVersion({
+        moduleName,
         currentNodeProcessVersion,
         targetNodeVersionCondition,
         packageJsonPath: pkgUp.sync()
       });
 
-      installedMessage += `${'   node: installed '} ${
+      installedMessage += `   node: installed  ${chalk.green(
         currentNodeProcessVersion
-      }, ${chalk.bold(moduleName)} (${tpkg.version}) expected: node ${
-        targetNodeVersionCondition
-      }\n`;
+      )}, ${moduleName} (${chalk.green(
+        tpkg.version
+      )}) expected: node ${chalk.green(targetNodeVersionCondition)}\n`;
     });
 
     return installedMessage;
@@ -190,14 +357,16 @@ function moduleNodeCheck(verbose) {
   }
 }
 
+// Check unused and missing dependencies. The following cases are considered:
+// 1. Module is specified in package.json (dependencies or devDependencies key)
+//    but then missing in code.
+// 2. Module is used in code but missing in package.json
+// 3. Files that cannot be accessed or parsed.
+// 4. Directories that cannot be accessed.
 function depcheckTest({ entry, ignoreDirs }) {
-  const resolveAliases = {
-    components: path.join(process.cwd(), entry, 'components'),
-    res: path.join(process.cwd(), entry, 'res'),
-    lib: path.join(process.cwd(), entry, 'lib'),
-    pages: path.join(process.cwd(), entry, 'pages')
-  };
+  const resolveAliases = getResolvedAliases(entry);
 
+  // Custom detector (parses the modules differently.
   const webpackAliasDetect = node => {
     if (node.type === 'ImportDeclaration' && node.source && node.source.value) {
       for (let key in resolveAliases) {
@@ -205,8 +374,6 @@ function depcheckTest({ entry, ignoreDirs }) {
           node.source.value.startsWith(key + '/') ||
           node.source.value === key
         ) {
-          // console.log('node.source.value: ', node.source.value);
-          // console.log('resolveAliases[key]: ', resolveAliases[key]);
           return [
             path.resolve(
               path.join(resolveAliases[key]),
@@ -230,90 +397,126 @@ function depcheckTest({ entry, ignoreDirs }) {
     specials: [Depcheck.special.eslint, Depcheck.special.webpack]
   };
 
-  Depcheck(path.join(process.cwd()), options, unused => {
+  const cwd = path.join(process.cwd());
+  Depcheck(cwd, options, unused => {
     let dependencyCheckPassed = true;
+    let statusMessage = '';
 
+    // No reference found to modules in dependencies attribute.
     if (unused.dependencies.length > 0) {
       dependencyCheckPassed = false;
-      console.log('Unused dependencies:');
-      unused.dependencies.forEach(dep => console.log(chalk.red(dep)));
-      console.log();
+      statusMessage += `   ${chalk.underline('Unused dependencies:\n')}`;
+      unused.dependencies.forEach(dep => (statusMessage += `   ${dep}\n`));
     }
+
+    // No reference found to modules in devDependencies attribute.
     if (unused.devDependencies.length > 0) {
       dependencyCheckPassed = false;
-      console.log('Unused devDependencies:');
-      unused.devDependencies.forEach(dep => console.log(chalk.red(dep)));
-      console.log();
+      statusMessage += `   ${chalk.underline('Unused devDependencies:\n')}`;
+      unused.devDependencies.forEach(dep => (statusMessage += `   ${dep}\n`));
     }
+
+    // References found in code but no equivalent in package.json.
     if (Object.keys(unused.missing).length > 0) {
       dependencyCheckPassed = false;
-      console.log('Missing dependencies:');
-      Object.keys(unused.missing).forEach(dep => console.log(chalk.red(dep)));
-      console.log();
+      statusMessage += `   ${chalk.underline('Missing dependencies:\n')}`;
+      Object.keys(unused.missing).forEach(
+        dep => (statusMessage += `   ${dep}\n`)
+      );
     }
 
+    // Files can't be accessed or parsed.
     if (Object.keys(unused.invalidFiles).length > 0) {
       dependencyCheckPassed = false;
-      console.log('Invalid files:');
-      Object.keys(unused.invalidFiles).forEach(file =>
-        console.log(chalk.red(file))
+      statusMessage += `   ${chalk.underline('Invalid files:\n')}`;
+      Object.keys(unused.invalidFiles).forEach(
+        file => (statusMessage += `   ${file}\n`)
       );
-      console.log();
     }
 
+    // Directories can't accessed.
     if (Object.keys(unused.invalidDirs).length > 0) {
       dependencyCheckPassed = false;
-      console.log('Invalid directories:');
-      Object.keys(unused.invalidDirs).forEach(dir =>
-        console.log(chalk.red(dir))
+      statusMessage += `   ${chalk.underline('Invalid directories:\n')}`;
+      Object.keys(unused.invalidDirs).forEach(
+        dir => (statusMessage += `   ${dir}\n`)
       );
-      console.log();
     }
 
     const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
       'dependency check passed'
     )}`;
-    const failMessage = `${chalk.red('✖')}  dependency check failed`;
-    console.log(dependencyCheckPassed ? successMessage : failMessage);
+    const failMessage = `${chalk.red('✖')}  ${chalk.bold(
+      'dependency check failed'
+    )}`;
+
+    dependencyCheckPassed
+      ? console.log(successMessage)
+      : console.log(failMessage);
+
+    if (!dependencyCheckPassed) {
+      console.log(statusMessage);
+      process.exit(1);
+    }
   });
 }
 
-function validatePackageJson() {
+// Check for mandatory package.json attributes.
+function validatePackageJson(verbose) {
+  // TODO: Error messages not in correct order, also check other test cases
+
   const pkg = require(path.join(process.cwd(), 'package.json'));
   let output = PJV.validate(JSON.stringify(pkg), 'npm', {
     warnings: true,
     recommendations: true
   });
-  let invalid = false;
 
+  let pjvCheckPassed = true;
+  let statusMessage = '';
   if (output.errors) {
-    invalid = true;
-    console.error('Following package.json errors found: \n');
+    pjvCheckPassed = false;
+    statusMessage += `   Following package.json ${chalk.red(
+      'errors'
+    )} found: \n`;
     output.errors.forEach(element => {
-      console.log(`${chalk.red(element)}\n`);
+      statusMessage += `   - ${chalk.red(element)}\n`;
     });
   }
 
   if (output.warnings) {
-    invalid = true;
-    console.error('Following package.json warnings found: \n');
+    statusMessage += `   Following package.json ${chalk.yellow(
+      'warnings'
+    )} found: \n`;
     output.warnings.forEach(element => {
-      console.log(`${chalk.yellow(element)}\n`);
+      statusMessage += `   - ${chalk.yellow(element)}\n`;
     });
   }
 
   if (output.recommendations) {
-    invalid = true;
-    console.error('Following package.json recommendations found: \n');
+    statusMessage += `   Following package.json ${chalk.green(
+      'recommendations'
+    )} found: \n`;
     output.recommendations.forEach(element => {
-      console.log(`${chalk.green(element)}\n`);
+      statusMessage += `   - ${chalk.green(element)}\n`;
     });
   }
 
-  if (invalid) {
-    process.exit();
-  } else {
-    console.log(`${chalk.green('✔︎')}  ${chalk.bold('valid package.json')}`);
+  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+    'valid package.json'
+  )}`;
+  const failMessage = `${chalk.red('✖')}  ${chalk.bold(
+    'invalid package.json'
+  )}`;
+
+  pjvCheckPassed ? console.log(successMessage) : console.log(failMessage);
+
+  if (verbose) {
+    console.log(statusMessage);
+  }
+
+  if (!pjvCheckPassed) {
+    console.log(statusMessage);
+    process.exit(1);
   }
 }
 
@@ -377,23 +580,4 @@ function sizeLimit({ size, verbose }) {
 
 function formatBytes(size) {
   return bytes.format(size, { unitSeparator: ' ' });
-}
-
-function runTests(src) {
-  const babelNodePath = path.join(
-    '..',
-    '..',
-    'node_modules',
-    'babel-cli',
-    'bin',
-    'babel-node.js'
-  );
-
-  child.exec(`${babelNodePath} ${src}`, (err, stdout, stderr) => {
-    console.log(stdout);
-    console.log(stderr);
-    if (err !== null) {
-      console.log('exec error: ' + err);
-    }
-  });
 }

@@ -38,7 +38,10 @@ const TASKS = Object.freeze({
     moduleversioncheck,
     modulenodecheck,
     entry,
-    output
+    extraneousmodules,
+    updatecheck,
+    ignoreDirs,
+    strictversion
   }) =>
     startTest({
       verbose,
@@ -51,7 +54,10 @@ const TASKS = Object.freeze({
       moduleversioncheck,
       modulenodecheck,
       entry,
-      output
+      updatecheck,
+      extraneousmodules,
+      ignoreDirs,
+      strictversion
     }),
 
   startCommitmsg: () => commitmsg(),

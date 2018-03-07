@@ -10,16 +10,16 @@ const copyFile = promisify(fs.copyFile);
 
 module.exports = startInit;
 
-async function startInit({ templates, scripts, miscKeys }) {
-  if (miscKeys) {
+async function startInit({ allInit, templates, scripts, miscKeys }) {
+  if (miscKeys || allInit) {
     addMiscKeys();
   }
 
-  if (scripts) {
+  if (scripts || allInit)  {
     addScripts();
   }
 
-  if (templates) {
+  if (templates || allInit) {
     await addGithubTemplates();
   }
 }

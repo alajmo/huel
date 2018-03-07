@@ -6,6 +6,10 @@ const tasks = require('../src/tasks/tasks.js');
 
 program
   .option(
+    '-a, --all',
+    `run all flags. [boolean] [default: ${defaultConfig.allInit}]`
+  )
+  .option(
     '-t, --templates',
     `generate templates. [boolean] [default: ${defaultConfig.addTemplates}]`
   )
@@ -34,6 +38,7 @@ program
 
 function getTestOptions(options) {
   return Object.freeze({
+    allInit: options.allInit || defaultConfig.allInit,
     templates: options.templates || defaultConfig.addTemplates,
     scripts: options.scripts || defaultConfig.addPackageJsonScripts,
     miscKeys: options.miscKeys || defaultConfig.addMiscPackageJsons

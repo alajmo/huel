@@ -65,8 +65,8 @@ const TASKS = Object.freeze({
 
   changelog: ({ filename }) => generateChangelog({ filename }),
 
-  init: async ({ templates, scripts, miscKeys }) =>
-    await startInit({ templates, scripts, miscKeys }),
+  init: async ({ allInit, templates, scripts, miscKeys }) =>
+    await startInit({ allInit, templates, scripts, miscKeys }),
 
   info: () => startInfo()
 });

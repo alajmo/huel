@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const promisify = require('util').promisify;
-const defaultConfig = require('../../config/default.json');
+const defaultConfig = require('../../config/hal.config.json');
 
 const stat = promisify(fs.stat);
 const mkdir = promisify(fs.mkdir);

@@ -155,6 +155,19 @@ function extraneousModulesCheck(verbose) {
   }
 }
 
+var matcher = /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/;
+
+/**
+ * Loosely validate a URL `string`.
+ *
+ * @param {String} string
+ * @return {Boolean}
+ */
+
+function isUrl(string){
+  return matcher.test(string);
+}
+
 function strictVersionCheck(verbose) {
   const {
     pkg: { dependencies: dependencies, devDependencies: devDependencies }
@@ -165,7 +178,9 @@ function strictVersionCheck(verbose) {
     let logs = '';
     Object.keys(dependencies).forEach(moduleName => {
       const version = dependencies[moduleName];
-      if (semver.valid(version) === null) {
+      if (semver.valid(version) === null && !isUrl(version)) {
+
+      console.log(version);
         status = 1;
         logs += `   ${moduleName} (${chalk.red(version)})\n`;
       } else {

@@ -1,3 +1,4 @@
+const { getResolvedAliases } = require('../src/lib/util.js');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -69,6 +70,7 @@ function config({ template, entry, output }) {
     ],
 
     resolve: {
+      alias: getResolvedAliases(entry),
       modules: [
         path.resolve(process.cwd(), path.dirname(entry)),
         'node_modules'

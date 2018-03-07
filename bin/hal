@@ -22,6 +22,8 @@ program
   .command('changelog', 'generate changelog')
   .command('init', 'bootstrap project')
   .alias('i')
+  .command('info', 'info about configs and modules')
+  .alias('j')
   .on('--help', () => {
     console.log(`
   Examples:

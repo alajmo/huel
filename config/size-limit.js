@@ -1,4 +1,4 @@
-const defaultConfig = require('./default.json');
+const defaultConfig = require('./hal.config.json');
 
 module.exports = sizeLimitDefault;
 

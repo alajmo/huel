@@ -27,14 +27,45 @@ const TASKS = Object.freeze({
 
   lint: ({ src, watch }) => startLint({ src, watch }),
 
-  test: ({ pjv, size, depcheck, entry, output }) =>
-    startTest({ pjv, size, depcheck, entry, output }),
+  test: ({
+    verbose,
+    all,
+    pjv,
+    size,
+    depcheck,
+    nodecheck,
+    npmcheck,
+    moduleversioncheck,
+    modulenodecheck,
+    entry,
+    extraneousmodules,
+    updatecheck,
+    ignoreDirs,
+    strictversion
+  }) =>
+    startTest({
+      verbose,
+      all,
+      pjv,
+      size,
+      depcheck,
+      nodecheck,
+      npmcheck,
+      moduleversioncheck,
+      modulenodecheck,
+      entry,
+      updatecheck,
+      extraneousmodules,
+      ignoreDirs,
+      strictversion
+    }),
 
   startCommitmsg: () => commitmsg(),
 
   changelog: ({ filename }) => generateChangelog({ filename }),
 
-  init: () => startInit(),
+  init: async ({ templates, scripts, miscKeys }) =>
+    await startInit({ templates, scripts, miscKeys }),
 
   startSizeLimit: ({ dest }) => sizeLimit(dest)
 });

@@ -5,7 +5,7 @@ const cli = new CLIEngine({
   baseConfig: false,
   configFile: path.resolve(__dirname, '../../config/.eslintrc')
 });
-const colors = require('../lib/colors.js');
+const chalk = require('chalk');
 
 module.exports = startLint;
 
@@ -14,7 +14,7 @@ function startLint({ src, watch }) {
 
   lint(normalizedSrc);
   if (watch) {
-    console.log(`${colors.bold}Watching: ${colors.reset}${normalizedSrc}`);
+    console.log(`${chalk.bold('Watching: ')} ${normalizedSrc}`);
     watchLint(normalizedSrc);
   }
 }
@@ -31,11 +31,11 @@ function lint(src) {
     // process.stdout.write('\x1Bc');
     console.error(formatter(report.results));
     const successMessage = 'Code is not ESlint compliant.\n';
-    console.error(`${colors.red}${successMessage}${colors.reset}`);
+    console.error(`${chalk.red(successMessage)}`);
     process.exit(1);
   } else {
     const successMessage = 'Code is ESLint compliant.';
-    console.log(`${colors.green}${successMessage}${colors.reset}`);
+    console.log(`${chalk.green(successMessage)}`);
   }
 }
 

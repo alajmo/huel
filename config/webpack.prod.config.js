@@ -1,3 +1,4 @@
+const { getResolvedAliases } = require('../src/lib/util.js');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -8,6 +9,7 @@ const path = require('path');
 module.exports = config;
 
 function config({ template, entry, output, webpack }) {
+  // TODO
   const outputDir = path.resolve(output);
   const outputFilename =
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
@@ -101,12 +103,7 @@ function config({ template, entry, output, webpack }) {
     ],
 
     resolve: {
-      alias: {
-        components: path.join(process.cwd(), entry, 'components'),
-        res: path.join(process.cwd(), entry, 'res'),
-        lib: path.join(process.cwd(), entry, 'lib'),
-        pages: path.join(process.cwd(), entry, 'pages')
-      },
+      alias: getResolvedAliases(path.dirname(entry)),
       modules: ['node_modules']
     }
   };

@@ -3,38 +3,43 @@
   "version": "0.1.0",
   "description": "Example app",
   "scripts": {
+    "init": "hal init --misc-keys",
     "start": "hal build -w -t src/index.html -e src/index.js -o dist/ --env prod",
-    "build": "hal build --lint src --format src -t src/index.html -e src/index.js -o dist/",
+    "build": "hal build --env prod --lint src --format src -t src/index.html -e src/index.js -o dist/",
     "lint": "hal lint --src src",
     "format": "hal format --src src",
-    "test": "hal test --pjv --size --depcheck",
-    "depcheck": "hal test --depcheck",
+    "test": "hal test --all",
+    "depcheck": "hal test --depcheck --verbose",
+    "nodecheck": "hal test --nodecheck --verbose",
+    "modulenodecheck": "hal test --modulenodecheck --verbose",
+    "moduleversioncheck": "hal test --moduleversioncheck --verbose",
+    "extraneousmodulescheck": "hal test --extraneous-modules --verbose",
     "size": "hal test --size",
     "pjv": "hal test --pjv",
+    "strictversion": "hal test --strict-version --verbose",
     "prepush": "npm test",
     "dev": "nodemon --quiet --ignore dist --watch ../../../../ --exec npm run size",
     "precommit": "hal format --src src",
     "commitmsg": "hal commitmsg",
+    "updatecheck": "hal test --update-check --verbose",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "author": "McExample ExampleFace  <example.face@gmail.com>",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "express": "^4.16.2",
-    "hal": "^0.5.0",
-    "puppeteer": "^1.0.0",
-    "tap": "^11.0.1"
+    "tap": "11.1.1"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/samiralajmovic/hal.git"
   },
   "keywords": [],
-  "engines": {
-    "node": ">=8"
-  },
   "bugs": "https://example.com",
   "contributors": "Samir Alajmovic",
-  "homepage": "https://github.com/samiralajmovic/hal"
+  "homepage": "https://github.com/samiralajmovic/hal",
+  "engines": {
+    "node": ">=8.9.0",
+    "npm": ">=5.7.0"
+  }
 }

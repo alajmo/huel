@@ -4,6 +4,7 @@ const startLint = require('./lint.js');
 const startTest = require('./test.js');
 const startInit = require('./init.js');
 const sizeLimit = require('./size-limit.js');
+const startInfo = require('./info.js');
 const commitmsg = require('./lint-commit.js');
 const generateChangelog = require('./changelog.js');
 
@@ -67,7 +68,7 @@ const TASKS = Object.freeze({
   init: async ({ templates, scripts, miscKeys }) =>
     await startInit({ templates, scripts, miscKeys }),
 
-  startSizeLimit: ({ dest }) => sizeLimit(dest)
+  info: () => startInfo()
 });
 
 module.exports = TASKS;

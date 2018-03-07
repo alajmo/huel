@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+const program = require('commander');
+const tasks = require('../src/tasks/tasks.js');
+
+program
+  .on('--help', () => {
+    console.log(`
+
+  Examples:
+
+    Bootstrap project
+    $ hal info
+  `);
+  })
+  .parse(process.argv);
+
+main();
+function main() {
+  tasks.info();
+}

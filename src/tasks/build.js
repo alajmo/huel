@@ -1,4 +1,5 @@
 const path = require('path');
+const chalk = require('chalk');
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
 const webpackFileConfigs = {
@@ -17,7 +18,18 @@ module.exports = {
   dev
 };
 
+/** Prints environment to the console. */
+function printEnvironment(env) {
+  const envName =
+    env === TARGETS.production
+      ? chalk.red.bold('=== PRODUCTION ===')
+      : chalk.yellow.bold('=== DEVELOPMENT ===');
+  process.stdout.write(`${envName}\n\n`);
+}
+
 function build({ env, entry, output, template }) {
+  printEnvironment(env);
+
   const webpackConfigPath =
     env === TARGETS.production
       ? webpackFileConfigs.production

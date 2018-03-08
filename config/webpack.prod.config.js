@@ -1,14 +1,13 @@
-const { getResolvedAliases } = require('../src/lib/util.js');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const Jarvis = require('webpack-jarvis');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
+const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
-function config({ template, entry, output, webpack }) {
+function config({ template, entry, output }) {
   const outputDir = path.resolve(output);
   const outputFilename =
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
@@ -38,11 +37,13 @@ function config({ template, entry, output, webpack }) {
           test: /\.html$/,
           use: 'html-loader'
         },
+
         {
           test: /.*\.js/,
           exclude: /node_modules/,
           use: ['babel-loader']
         },
+
         {
           test: /\.css$/,
           use: ExtractTextPlugin.extract({
@@ -58,6 +59,7 @@ function config({ template, entry, output, webpack }) {
             ]
           })
         },
+
         {
           test: /\.(png|jpg|gif|svg)$/,
           use: 'file-loader?name=img/[name].[ext]'
@@ -66,10 +68,6 @@ function config({ template, entry, output, webpack }) {
     },
 
     plugins: [
-      // new Jarvis({
-      //   port: 1338
-      // }),
-
       new CleanWebpackPlugin([outputDir], {
         root: process.cwd()
       }),
@@ -98,12 +96,6 @@ function config({ template, entry, output, webpack }) {
       new ExtractTextPlugin({
         filename: `[hash].${outputFilename}.css`,
         allChunks: true
-      }),
-
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify('production')
-        }
       })
     ],
 

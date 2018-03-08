@@ -4,8 +4,8 @@
   "description": "Example app",
   "scripts": {
     "start": "hal build --env development -w -t src/index.html -e src/index.js -o dist/",
-    "start-prod": "hal build --env prod -w -t src/index.html -e src/index.js -o dist/",
-    "build": "hal build --env prod -t src/index.html -e src/index.js -o dist/",
+    "start-prod": "hal build --env production -w -t src/index.html -e src/index.js -o dist/",
+    "build": "hal build --env production -t src/index.html -e src/index.js -o dist/",
     "lint": "hal lint --src src",
     "format": "hal format --src src",
     "test": "hal test --all",

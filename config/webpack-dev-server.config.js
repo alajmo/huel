@@ -9,7 +9,7 @@ function config({ contentBase, port = 3000 }) {
     filename: 'bundle.js',
     host: 'localhost',
     historyApiFallback: true,
-    inline: true,
+    // inline: true,
     publicPath: '/',
     stats: {
       colors: true,

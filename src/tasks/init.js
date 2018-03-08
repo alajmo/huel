@@ -13,41 +13,42 @@ const copyFile = promisify(fs.copyFile);
 module.exports = startInit;
 
 async function startInit({
-  allInit,
+  all,
   favicon,
   robots,
   manifest,
   templates,
+  dryRun,
   scripts,
   miscKeys
 }) {
-  if (miscKeys || allInit) {
-    addMiscKeys();
+  if (miscKeys || all) {
+    addMiscKeys(dryRun);
   }
 
-  if (favicon || allInit) {
-    addFavicon();
+  if (favicon || all) {
+    addFavicon(dryRun);
   }
 
-  if (robots || allInit) {
-    addRobots();
+  if (robots || all) {
+    addRobots(dryRun);
   }
 
-  if (manifest || allInit) {
-    addManifest();
+  if (manifest || all) {
+    addManifest(dryRun);
   }
 
-  if (scripts || allInit) {
-    addScripts();
+  if (scripts || all) {
+    addScripts(dryRun);
   }
 
-  if (templates || allInit) {
-    await addGithubTemplates();
+  if (templates || all) {
+    await addGithubTemplates(dryRun);
   }
 }
 
 /** Add miscellaneous keys such as engine */
-function addMiscKeys() {
+function addMiscKeys(dryRun) {
   const pkgPath = path.join(process.cwd(), 'package.json');
   const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
 
@@ -58,7 +59,9 @@ function addMiscKeys() {
     }
   });
 
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
+  if (!dryRun) {
+    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
+  }
 
   console.log(
     `Added following keys to ${chalk.bold('package.json')}:
@@ -72,15 +75,19 @@ ${JSON.stringify({ engines: { npm: '>=5' } }, null, 4)}`
 }
 
 /** Add miscellaneous scripts */
-function addScripts() {
+function addScripts(dryRun) {
   const pkgPath = path.join(process.cwd(), 'package.json');
   const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
-  const pkg = addGitHooks(require(pkgPath));
-  fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
-  console.log(chalk.green('Git commit hooks added'));
+  const [pkg, gitHooks] = addGitHooks(require(pkgPath));
+  if (!dryRun) {
+    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
+  }
+  console.log(`${chalk.green('Following scripts added to package.json:')}
+  ${JSON.stringify(gitHooks, null, 4)}
+  `);
 }
 
-async function addFavicon() {
+async function addFavicon(dryRun) {
   const resRoot = path.resolve(__dirname, '../res');
   const files = ['favicon.ico'].map(template => path.join(resRoot, template));
 
@@ -94,27 +101,28 @@ async function addFavicon() {
     }
   } catch (e) {
     if (e.code === 'ENOENT') {
-      await mkdir(resPath);
+      if (!dryRun) {
+        await mkdir(resPath);
+      }
       console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
     }
   }
 
   // Copy files to src/res directory
   await files.forEach(async template => {
+    const dest = path.join(resPath, path.parse(template).base);
     try {
-      await copyFile(template, path.join(resPath, path.parse(template).base));
-      console.log(
-        `${chalk.green('✔︎')}  Added template ${chalk.bold(
-          path.parse(template).base
-        )}`
-      );
+      if (!dryRun) {
+        await copyFile(template, dest);
+      }
+      console.log(`${chalk.green('✔︎')} generated ${chalk.bold(dest)} `);
     } catch (e) {
       console.error(e);
     }
   });
 }
 
-async function addRobots() {
+async function addRobots(dryRun) {
   const resRoot = path.resolve(__dirname, '../res');
   const files = ['robots.txt'].map(template => path.join(resRoot, template));
 
@@ -128,27 +136,28 @@ async function addRobots() {
     }
   } catch (e) {
     if (e.code === 'ENOENT') {
-      await mkdir(resPath);
+      if (!dryRun) {
+        await mkdir(resPath);
+      }
       console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
     }
   }
 
   // Copy files to src/res directory
   await files.forEach(async template => {
+    const dest = path.join(resPath, path.parse(template).base);
     try {
-      await copyFile(template, path.join(resPath, path.parse(template).base));
-      console.log(
-        `${chalk.green('✔︎')}  Added template ${chalk.bold(
-          path.parse(template).base
-        )}`
-      );
+      if (dryRun) {
+        await copyFile(template, dest);
+      }
+      console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
     } catch (e) {
       console.error(e);
     }
   });
 }
 
-async function addManifest() {
+async function addManifest(dryRun) {
   const resRoot = path.resolve(__dirname, '../res');
   const files = ['manifest.json'].map(template => path.join(resRoot, template));
 
@@ -162,20 +171,21 @@ async function addManifest() {
     }
   } catch (e) {
     if (e.code === 'ENOENT') {
-      await mkdir(resPath);
+      if (!dryRun) {
+        await mkdir(resPath);
+      }
       console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
     }
   }
 
   // Copy files to src/res directory
   await files.forEach(async template => {
+    const dest = path.join(resPath, path.parse(template).base);
     try {
-      await copyFile(template, path.join(resPath, path.parse(template).base));
-      console.log(
-        `${chalk.green('✔︎')}  Added template ${chalk.bold(
-          path.parse(template).base
-        )}`
-      );
+      if (!dryRun) {
+        await copyFile(template, dest);
+      }
+      console.log(`${chalk.green('✔︎')} generated ${chalk.bold(dest)} `);
     } catch (e) {
       console.error(e);
     }
@@ -183,7 +193,7 @@ async function addManifest() {
 }
 
 /** Adds documentation templates such as CONTRIBUTING.md */
-async function addGithubTemplates() {
+async function addGithubTemplates(dryRun) {
   const templateRoot = path.resolve(__dirname, '../res/github');
   const templates = [
     'CONTRIBUTING.md',
@@ -201,20 +211,21 @@ async function addGithubTemplates() {
     }
   } catch (e) {
     if (e.code === 'ENOENT') {
-      await mkdir(docsPath);
+      if (!dryRun) {
+        await mkdir(docsPath);
+      }
       console.log(`${chalk.green('✔︎')} Created directory ${docsPath}\n`);
     }
   }
 
   // Copy templates to docs directory
   await templates.forEach(async template => {
+    const dest = path.join(docsPath, path.parse(template).base);
     try {
-      await copyFile(template, path.join(docsPath, path.parse(template).base));
-      console.log(
-        `${chalk.green('✔︎')}  Added template ${chalk.bold(
-          path.parse(template).base
-        )}`
-      );
+      if (!dryRun) {
+        await copyFile(template, dest);
+      }
+      console.log(`${chalk.green('✔︎')} generated ${chalk.bold(dest)} `);
     } catch (e) {
       console.error(e);
     }
@@ -223,29 +234,33 @@ async function addGithubTemplates() {
 
 /** Add github hooks and development scripts to package.json */
 function addGitHooks(pkg) {
-  return Object.assign(pkg, {
-    scripts: Object.assign({}, pkg.scripts, {
-      'start-prod':
-        'huel build -w -t src/index.html -e src/index.js -o dist/ --env prod',
-      'start-dev':
-        'huel build -w -t src/index.html -e src/index.js -o dist/ --env sandbox',
-      'build-dev':
-        'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
-      'build-prod':
-        'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
-      lint: 'huel lint',
-      format: 'huel format',
-      test: 'huel test --pjv --size --depcheck',
-      depcheck: 'huel test --depcheck',
-      size: 'huel test --size',
-      pjv: 'huel test --pjv',
-      precommit: 'npm run format',
-      prepush: 'npm test',
-      commitmsg: 'huel commitmsg',
-      version:
-        'conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md'
-    })
-  });
+  const gitHooks = {
+    'start-prod':
+      'huel build -w -t src/index.html -e src/index.js -o dist/ --env prod',
+    'start-dev':
+      'huel build -w -t src/index.html -e src/index.js -o dist/ --env sandbox',
+    'build-dev':
+      'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
+    'build-prod':
+      'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
+    lint: 'huel lint',
+    format: 'huel format',
+    test: 'huel test --pjv --size --depcheck',
+    depcheck: 'huel test --depcheck',
+    size: 'huel test --size',
+    pjv: 'huel test --pjv',
+    precommit: 'npm run format',
+    prepush: 'npm test',
+    commitmsg: 'huel commitmsg',
+    version:
+      'conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md'
+  };
+  return [
+    Object.assign(pkg, {
+      scripts: Object.assign({}, pkg.scripts, gitHooks)
+    }),
+    gitHooks
+  ];
 }
 
 /** Calculate whitespace given a json file */

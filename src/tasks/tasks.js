@@ -76,20 +76,22 @@ const TASKS = Object.freeze({
   changelog: ({ filename }) => generateChangelog({ filename }),
 
   init: async ({
-    allInit,
+    all,
     favicon,
     robots,
     manifest,
     templates,
+    dryRun,
     scripts,
     miscKeys
   }) =>
     await startInit({
-      allInit,
+      all,
       favicon,
       robots,
       manifest,
       templates,
+      dryRun,
       scripts,
       miscKeys
     }),

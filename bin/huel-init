@@ -26,6 +26,10 @@ program
     `generate templates. [boolean] [default: ${defaultConfig.addTemplates}]`
   )
   .option(
+    '--dry-run',
+    `dry run. [boolean] [default: ${defaultConfig.dryRun}]`
+  )
+  .option(
     '-s, --scripts',
     `add package.json scripts. [boolean] [default: ${
       defaultConfig.addPackageJsonScripts
@@ -50,11 +54,12 @@ program
 
 function getTestOptions(options) {
   return Object.freeze({
-    allInit: options.allInit || defaultConfig.allInit,
+    all: options.all || defaultConfig.allInit,
     robots: options.robots || defaultConfig.addRobots,
     favicon: options.favicon || defaultConfig.addFavicon,
     manifest: options.manifest || defaultConfig.addManifest,
     templates: options.templates || defaultConfig.addTemplates,
+    dryRun: options.dryRun || defaultConfig.dryRun,
     scripts: options.scripts || defaultConfig.addPackageJsonScripts,
     miscKeys: options.miscKeys || defaultConfig.addMiscPackageJsons
   });

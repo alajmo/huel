@@ -1,8 +1,8 @@
-const { getResolvedAliases } = require('../src/lib/util.js');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
@@ -14,7 +14,8 @@ function config({ template, entry, output }) {
   return {
     mode: 'development',
 
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'eval', // cheap-module-eval-source-map
+    cache: false,
 
     entry: {
       app: [path.resolve(entry)]
@@ -23,7 +24,17 @@ function config({ template, entry, output }) {
     output: {
       path: outputDir,
       filename: `[hash].${outputFilename}.js`,
-      publicPath: '/'
+      publicPath: '/',
+      pathinfo: true
+    },
+
+    optimization: {
+      namedChunks: true,
+      nodeEnv: 'development',
+      minimize: false,
+      splitChunks: {
+        chunks: 'all'
+      }
     },
 
     resolveLoader: {
@@ -36,10 +47,12 @@ function config({ template, entry, output }) {
           test: /\.html$/,
           use: 'html-loader'
         },
+
         {
           test: /.*\.js/,
           use: ['babel-loader']
         },
+
         {
           test: /\.css$/,
           use: ExtractTextPlugin.extract({
@@ -55,6 +68,7 @@ function config({ template, entry, output }) {
             ]
           })
         },
+
         {
           test: /\.(png|jpg|gif|svg)$/,
           use: 'file-loader?name=img/[name].[ext]'
@@ -63,8 +77,12 @@ function config({ template, entry, output }) {
     },
 
     plugins: [
-      new CleanWebpackPlugin([path.resolve(output)], { root: process.cwd() }),
+      new CleanWebpackPlugin([outputDir], {
+        root: process.cwd()
+      }),
+
       new HtmlWebpackPlugin({ template }),
+
       new ExtractTextPlugin({
         filename: `[hash].${outputFilename}.css`,
         allChunks: true
@@ -72,11 +90,8 @@ function config({ template, entry, output }) {
     ],
 
     resolve: {
-      alias: getResolvedAliases(entry),
-      modules: [
-        path.resolve(process.cwd(), path.dirname(entry)),
-        'node_modules'
-      ]
+      alias: getResolvedAliases(path.dirname(entry)),
+      modules: ['node_modules']
     }
   };
 }

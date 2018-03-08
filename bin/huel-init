@@ -10,6 +10,18 @@ program
     `run all flags. [boolean] [default: ${defaultConfig.allInit}]`
   )
   .option(
+    '-f, --favicon',
+    `generate favicon.ico. [boolean] [default: ${defaultConfig.addFavicon}]`
+  )
+  .option(
+    '-m, --robots',
+    `generate robots.txt. [boolean] [default: ${defaultConfig.addRobots}]`
+  )
+  .option(
+    '-m, --manifest',
+    `generate manifest.json. [boolean] [default: ${defaultConfig.addManifest}]`
+  )
+  .option(
     '-t, --templates',
     `generate templates. [boolean] [default: ${defaultConfig.addTemplates}]`
   )
@@ -39,6 +51,9 @@ program
 function getTestOptions(options) {
   return Object.freeze({
     allInit: options.allInit || defaultConfig.allInit,
+    robots: options.robots || defaultConfig.addRobots,
+    favicon: options.favicon || defaultConfig.addFavicon,
+    manifest: options.manifest || defaultConfig.addManifest,
     templates: options.templates || defaultConfig.addTemplates,
     scripts: options.scripts || defaultConfig.addPackageJsonScripts,
     miscKeys: options.miscKeys || defaultConfig.addMiscPackageJsons

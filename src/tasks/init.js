@@ -1,3 +1,5 @@
+// TODO: Big refactor needed.
+//
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
@@ -10,12 +12,32 @@ const copyFile = promisify(fs.copyFile);
 
 module.exports = startInit;
 
-async function startInit({ allInit, templates, scripts, miscKeys }) {
+async function startInit({
+  allInit,
+  favicon,
+  robots,
+  manifest,
+  templates,
+  scripts,
+  miscKeys
+}) {
   if (miscKeys || allInit) {
     addMiscKeys();
   }
 
-  if (scripts || allInit)  {
+  if (favicon || allInit) {
+    addFavicon();
+  }
+
+  if (robots || allInit) {
+    addRobots();
+  }
+
+  if (manifest || allInit) {
+    addManifest();
+  }
+
+  if (scripts || allInit) {
     addScripts();
   }
 
@@ -56,6 +78,108 @@ function addScripts() {
   const pkg = addGitHooks(require(pkgPath));
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
   console.log(chalk.green('Git commit hooks added'));
+}
+
+async function addFavicon() {
+  const resRoot = path.resolve(__dirname, '../res');
+  const files = ['favicon.ico'].map(template => path.join(resRoot, template));
+
+  // Create directory docs
+  const resPath = path.join(process.cwd(), 'src/res');
+  try {
+    const resStat = await stat(resPath);
+    if (resStat.isFile()) {
+      console.error(`${chalk.bold(resPath)} is a file, expected directory.`);
+      process.exit(1);
+    }
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      await mkdir(resPath);
+      console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
+    }
+  }
+
+  // Copy files to src/res directory
+  await files.forEach(async template => {
+    try {
+      await copyFile(template, path.join(resPath, path.parse(template).base));
+      console.log(
+        `${chalk.green('✔︎')}  Added template ${chalk.bold(
+          path.parse(template).base
+        )}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  });
+}
+
+async function addRobots() {
+  const resRoot = path.resolve(__dirname, '../res');
+  const files = ['robots.txt'].map(template => path.join(resRoot, template));
+
+  // Create directory docs
+  const resPath = path.join(process.cwd(), 'src/res');
+  try {
+    const resStat = await stat(resPath);
+    if (resStat.isFile()) {
+      console.error(`${chalk.bold(resPath)} is a file, expected directory.`);
+      process.exit(1);
+    }
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      await mkdir(resPath);
+      console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
+    }
+  }
+
+  // Copy files to src/res directory
+  await files.forEach(async template => {
+    try {
+      await copyFile(template, path.join(resPath, path.parse(template).base));
+      console.log(
+        `${chalk.green('✔︎')}  Added template ${chalk.bold(
+          path.parse(template).base
+        )}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  });
+}
+
+async function addManifest() {
+  const resRoot = path.resolve(__dirname, '../res');
+  const files = ['manifest.json'].map(template => path.join(resRoot, template));
+
+  // Create directory docs
+  const resPath = path.join(process.cwd(), 'src/res');
+  try {
+    const resStat = await stat(resPath);
+    if (resStat.isFile()) {
+      console.error(`${chalk.bold(resPath)} is a file, expected directory.`);
+      process.exit(1);
+    }
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      await mkdir(resPath);
+      console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
+    }
+  }
+
+  // Copy files to src/res directory
+  await files.forEach(async template => {
+    try {
+      await copyFile(template, path.join(resPath, path.parse(template).base));
+      console.log(
+        `${chalk.green('✔︎')}  Added template ${chalk.bold(
+          path.parse(template).base
+        )}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  });
 }
 
 /** Adds documentation templates such as CONTRIBUTING.md */

@@ -1,4 +1,7 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const fs = require('fs');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
@@ -14,6 +17,17 @@ function config({ template, entry, output }) {
   const outputDir = path.resolve(output);
   const outputFilename =
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
+
+  const manifestPath = path.resolve(
+    process.cwd(),
+    path.dirname(entry),
+    'res/manifest.json'
+  );
+
+  let manifest = {};
+  if (fs.existsSync(manifestPath)) {
+    manifest = Object.assign({}, require(manifestPath));
+  }
 
   return smp.wrap({
     mode: 'production',
@@ -99,7 +113,16 @@ function config({ template, entry, output }) {
       new ExtractTextPlugin({
         filename: `[hash].${outputFilename}.css`,
         allChunks: true
-      })
+      }),
+
+      new ManifestPlugin({
+        seed: manifest
+      }),
+
+      new CopyWebpackPlugin([
+        { from: 'src/res/robots.txt' },
+        { from: 'src/res/favicon.ico' }
+      ])
     ],
 
     resolve: {

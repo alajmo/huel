@@ -5,7 +5,7 @@
 
 ## Synopsis
 
-A highly opionated build and development toolset for the web. A collection
+A highly opinionated build and development tool for the web. A wonderful concatenation
 of the following tools:
 
 * webpack - module bundler
@@ -13,12 +13,8 @@ of the following tools:
 * prettier - formats your code
 * eslint - lints your code
 * postcss - write next-gen css
-* ava - test assertion library
-* karma - test runner
-* please-upgrade-node
-* pjv
 
-hidden behind a minimalistic command-line-interface (CLI).
+, hidden behind a minimalistic command-line-interface (CLI).
 
 ## Requirements
 
@@ -26,33 +22,43 @@ hidden behind a minimalistic command-line-interface (CLI).
 
 ## Usage
 
-```
- Usage: hal [options] [command]
+```bash
+  Usage: hal [options] [command]
 
- Development and build environment for the web
+  Development and build environment for the web
 
- Options:
+  Options:
 
-   -V, --version  output the version number
-   -h, --help     output usage information
+    -V, --version  output the version number
+    -h, --help     output usage information
 
+  Commands:
 
- Commands:
+    build|b        build project
+    format|f       format files
+    lint|l         lint files
+    test|t         test code
+    commitmsg|c    assert commit message is in conventional commit form
+    changelog      generate changelog
+    init|i         bootstrap project
+    info|j         info about configs and modules
+    help [cmd]     display help for [cmd]
 
-   build [options]
-   lint [options]
-   format [options]
+  Examples:
 
+    Build project
+    $ hal build --lint src --format src -t src/index.html -e src/index.js -o dist/
+
+    Lint files
+    $ hal lint -s src/
+
+    Format files
+    $ hal format -s src/
+
+    Run test suite
+    $ hal test -s src/
 ```
 
 ## Development
 
 Follows [Conventional Commits](https://conventionalcommits.org/).
-
-## Resources
-
-* [Webpack concepts](https://webpack.js.org/concepts/output/)
-* [Webpack development](https://webpack.js.org/guides/development/)
-* [Webpack devserver configuration](https://webpack.js.org/configuration/dev-server)
-* [Webpack production](https://webpack.js.org/guides/production/)
-* [Webpack dashboard](https://github.com/FormidableLabs/webpack-dashboard)

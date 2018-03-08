@@ -1,4 +1,5 @@
 {
+  "debug": false,
   "template": "src/index.html",
   "entry": "src",
   "output": "dist",

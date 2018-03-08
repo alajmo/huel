@@ -11,7 +11,7 @@ const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
-function config({ template, entry, output }) {
+function config({ debug, template, entry, output }) {
   const smp = new SpeedMeasurePlugin({ humanVerbose: 'human' });
 
   const outputDir = path.resolve(output);
@@ -29,7 +29,7 @@ function config({ template, entry, output }) {
     manifest = Object.assign({}, require(manifestPath));
   }
 
-  return smp.wrap({
+  const config = {
     mode: 'production',
 
     devtool: 'source-map',
@@ -129,5 +129,7 @@ function config({ template, entry, output }) {
       alias: getResolvedAliases(path.dirname(entry)),
       modules: ['node_modules']
     }
-  });
+  };
+
+  return debug ? smp.wrap(config) : config;
 }

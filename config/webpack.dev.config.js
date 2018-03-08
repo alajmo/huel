@@ -13,7 +13,7 @@ function config({ template, entry, output }) {
   const outputFilename =
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
 
-  return smp.wrap({
+  const config = {
     mode: 'none',
 
     devtool: 'eval',
@@ -86,5 +86,7 @@ function config({ template, entry, output }) {
       alias: getResolvedAliases(path.dirname(entry)),
       modules: ['node_modules']
     }
-  });
+  };
+
+  return debug ? smp.wrap(config) : config;
 }

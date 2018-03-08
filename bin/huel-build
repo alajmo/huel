@@ -5,6 +5,7 @@ const program = require('commander');
 const tasks = require('../src/tasks/tasks.js');
 
 program
+  .option('--debug', `debug. [string] [default: ${defaultConfig.debug}]`)
   .option(
     '--env [env]',
     `environment. [string] [default: ${defaultConfig.env}]`
@@ -74,6 +75,7 @@ function getBuildOptions(options) {
   }
 
   return Object.freeze({
+    debug: options.debug || defaultConfig.debug,
     entry: options.entry || defaultConfig.entry,
     env: options.env || defaultConfig.env,
     lint: options.lint || defaultConfig.lint,

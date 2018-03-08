@@ -27,7 +27,7 @@ function printEnvironment(env) {
   process.stdout.write(`${envName}\n\n`);
 }
 
-function build({ env, entry, output, template }) {
+function build({ debug, build, env, entry, output, template }) {
   printEnvironment(env);
 
   const webpackConfigPath =
@@ -36,6 +36,7 @@ function build({ env, entry, output, template }) {
       : webpackFileConfigs.development;
 
   const webpackConfig = require(webpackConfigPath)({
+    debug,
     entry,
     output,
     template,

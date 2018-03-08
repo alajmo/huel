@@ -1,12 +1,13 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Jarvis = require('webpack-jarvis');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const path = require('path');
 const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
-function config({ template, entry, output }) {
+function config({ debug, template, entry, output }) {
   const smp = new SpeedMeasurePlugin({ humanVerbose: 'human' });
 
   const outputDir = path.resolve(output);
@@ -87,6 +88,15 @@ function config({ template, entry, output }) {
       modules: ['node_modules']
     }
   };
+
+  if (debug) {
+    config.plugins.push(
+      new Jarvis({
+        port: 1338,
+        watchOnly: false
+      })
+    );
+  }
 
   return debug ? smp.wrap(config) : config;
 }

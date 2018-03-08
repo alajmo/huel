@@ -27,7 +27,7 @@ function printEnvironment(env) {
   process.stdout.write(`${envName}\n\n`);
 }
 
-function build({ debug, build, env, entry, output, template }) {
+function build({ debug, env, entry, output, template }) {
   printEnvironment(env);
 
   const webpackConfigPath =
@@ -36,14 +36,16 @@ function build({ debug, build, env, entry, output, template }) {
       : webpackFileConfigs.development;
 
   const webpackConfig = require(webpackConfigPath)({
+    webpack,
     debug,
     entry,
     output,
-    template,
-    webpack
+    template
   });
 
-  webpack(webpackConfig, (err, stats) => {
+  const compiler = webpack(webpackConfig);
+
+  const webpackHandler = (err, stats) => {
     if (err) {
       console.error(err.stack || err);
       if (err.details) {
@@ -76,16 +78,19 @@ function build({ debug, build, env, entry, output, template }) {
     if (stats.hasWarnings()) {
       console.warn(info.warnings);
     }
-  });
+  };
+
+  debug ? compiler.watch({}, webpackHandler) : compiler.run(webpackHandler);
 }
 
-function dev({ env, entry, output, template, port }) {
+function dev({ debug, env, entry, output, template, port }) {
   const webpackConfigPath =
     env === TARGETS.production
       ? webpackFileConfigs.production
       : webpackFileConfigs.development;
 
   const webpackConfig = require(webpackConfigPath)({
+    debug,
     entry,
     output,
     template

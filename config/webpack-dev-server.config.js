@@ -24,7 +24,8 @@ function config({ contentBase, port = 3000 }) {
       source: false,
       errors: true,
       errorDetails: false,
-      warnings: true
+      warnings: true,
+      isDev: true
     },
     watchOptions: {
       aggregateTimeout: 0,

@@ -2,17 +2,20 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const path = require('path');
 const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
 function config({ template, entry, output }) {
+  const smp = new SpeedMeasurePlugin({ humanVerbose: 'human' });
+
   const outputDir = path.resolve(output);
   const outputFilename =
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
 
-  return {
+  return smp.wrap({
     mode: 'production',
 
     devtool: 'source-map',
@@ -103,5 +106,5 @@ function config({ template, entry, output }) {
       alias: getResolvedAliases(path.dirname(entry)),
       modules: ['node_modules']
     }
-  };
+  });
 }

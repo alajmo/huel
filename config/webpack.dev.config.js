@@ -1,21 +1,22 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const path = require('path');
 const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
 function config({ template, entry, output }) {
+  const smp = new SpeedMeasurePlugin({ humanVerbose: 'human' });
+
   const outputDir = path.resolve(output);
   const outputFilename =
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
 
-  return {
-    mode: 'development',
+  return smp.wrap({
+    mode: 'none',
 
-    devtool: 'eval', // cheap-module-eval-source-map
-    cache: false,
+    devtool: 'eval',
 
     entry: {
       app: [path.resolve(entry)]
@@ -23,7 +24,7 @@ function config({ template, entry, output }) {
 
     output: {
       path: outputDir,
-      filename: `[hash].${outputFilename}.js`,
+      filename: `${outputFilename}.js`,
       publicPath: '/',
       pathinfo: true
     },
@@ -49,24 +50,8 @@ function config({ template, entry, output }) {
         },
 
         {
-          test: /.*\.js/,
-          use: ['babel-loader']
-        },
-
-        {
           test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              { loader: 'css-loader', options: { importLoaders: 1 } },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  config: { path: path.resolve(__dirname, 'postcss.config.js') }
-                }
-              }
-            ]
-          })
+          use: 'css-loader'
         },
 
         {
@@ -81,11 +66,19 @@ function config({ template, entry, output }) {
         root: process.cwd()
       }),
 
-      new HtmlWebpackPlugin({ template }),
-
-      new ExtractTextPlugin({
-        filename: `[hash].${outputFilename}.css`,
-        allChunks: true
+      new HtmlWebpackPlugin({
+        template,
+        collapseWhitespace: false,
+        cache: true,
+        collapseInlineTagWhitespace: false,
+        caseSensitive: false,
+        minifyCSS: false,
+        minifyJS: false,
+        removeComments: false,
+        removeRedundantAttributes: false,
+        removeEmptyAttributes: false,
+        sortAttributes: false,
+        sortClassName: false
       })
     ],
 
@@ -93,5 +86,5 @@ function config({ template, entry, output }) {
       alias: getResolvedAliases(path.dirname(entry)),
       modules: ['node_modules']
     }
-  };
+  });
 }

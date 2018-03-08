@@ -10,7 +10,7 @@ program
   Examples:
 
     Bootstrap project
-    $ hal info
+    $ huel info
   `);
   })
   .parse(process.argv);

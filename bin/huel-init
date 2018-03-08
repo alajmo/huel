@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const defaultConfig = require('../config/hal.config.json');
+const defaultConfig = require('../config/huel.config.json');
 const program = require('commander');
 const tasks = require('../src/tasks/tasks.js');
 
@@ -31,7 +31,7 @@ program
   Examples:
 
     Bootstrap project
-    $ hal init
+    $ huel init
   `);
   })
   .parse(process.argv);

@@ -10,7 +10,7 @@ program
   Examples:
 
     Lints the last commit message
-    $ hal commitmsg
+    $ huel commitmsg
   `);
   })
   .parse(process.argv);

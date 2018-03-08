@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const defaultConfig = require('../config/hal.config.json');
+const defaultConfig = require('../config/huel.config.json');
 const program = require('commander');
 const tasks = require('../src/tasks/tasks.js');
 
@@ -67,10 +67,10 @@ program
   Examples:
 
     One time run test
-    $ hal test -s src/
+    $ huel test -s src/
 
     Watch files and run test on file change
-    $ hal test -w -s src/
+    $ huel test -w -s src/
   `);
   })
   .parse(process.argv);

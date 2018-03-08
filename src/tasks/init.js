@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 const promisify = require('util').promisify;
-const defaultConfig = require('../../config/hal.config.json');
+const defaultConfig = require('../../config/huel.config.json');
 
 const stat = promisify(fs.stat);
 const mkdir = promisify(fs.mkdir);
@@ -102,22 +102,22 @@ function addGitHooks(pkg) {
   return Object.assign(pkg, {
     scripts: Object.assign({}, pkg.scripts, {
       'start-prod':
-        'hal build -w -t src/index.html -e src/index.js -o dist/ --env prod',
+        'huel build -w -t src/index.html -e src/index.js -o dist/ --env prod',
       'start-dev':
-        'hal build -w -t src/index.html -e src/index.js -o dist/ --env sandbox',
+        'huel build -w -t src/index.html -e src/index.js -o dist/ --env sandbox',
       'build-dev':
-        'hal build --lint src --format src -t src/index.html -e src/index.js -o dist/',
+        'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
       'build-prod':
-        'hal build --lint src --format src -t src/index.html -e src/index.js -o dist/',
-      lint: 'hal lint',
-      format: 'hal format',
-      test: 'hal test --pjv --size --depcheck',
-      depcheck: 'hal test --depcheck',
-      size: 'hal test --size',
-      pjv: 'hal test --pjv',
+        'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
+      lint: 'huel lint',
+      format: 'huel format',
+      test: 'huel test --pjv --size --depcheck',
+      depcheck: 'huel test --depcheck',
+      size: 'huel test --size',
+      pjv: 'huel test --pjv',
       precommit: 'npm run format',
       prepush: 'npm test',
-      commitmsg: 'hal commitmsg',
+      commitmsg: 'huel commitmsg',
       version:
         'conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md'
     })

@@ -3,16 +3,16 @@
   "version": "0.1.0",
   "description": "Example app",
   "scripts": {
-    "start": "hal build --env development -w -t src/index.html -e src/index.js -o dist/",
-    "start-prod": "hal build --env production -w -t src/index.html -e src/index.js -o dist/",
-    "build": "hal build --env production -t src/index.html -e src/index.js -o dist/",
-    "lint": "hal lint --src src",
-    "format": "hal format --src src",
-    "test": "hal test --all",
-    "strictversion": "hal test --strict-version --verbose",
+    "start": "huel build --env development -w -t src/index.html -e src/index.js -o dist/",
+    "start-prod": "huel build --env production -w -t src/index.html -e src/index.js -o dist/",
+    "build": "huel build --env production -t src/index.html -e src/index.js -o dist/",
+    "lint": "huel lint --src src",
+    "format": "huel format --src src",
+    "test": "huel test --all",
+    "strictversion": "huel test --strict-version --verbose",
     "prepush": "npm test",
-    "precommit": "hal format --src src",
-    "commitmsg": "hal commitmsg",
+    "precommit": "huel format --src src",
+    "commitmsg": "huel commitmsg",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
   },
   "author": "McExample ExampleFace  <example.face@gmail.com>",
@@ -23,12 +23,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/samiralajmovic/hal.git"
+    "url": "git://github.com/samiralajmovic/huel.git"
   },
   "keywords": [],
   "bugs": "https://example.com",
   "contributors": "Samir Alajmovic",
-  "homepage": "https://github.com/samiralajmovic/hal",
+  "homepage": "https://github.com/samiralajmovic/huel",
   "engines": {
     "node": ">=8.9.0",
     "npm": ">=5.7.0"

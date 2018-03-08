@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const pkg = require('../package.json');
-// This Node version check only validates hal's dependency on Node.
+// This Node version check only validates huel's dependency on Node.
 require('please-upgrade-node')(pkg);
 
 const program = require('commander');
@@ -29,16 +29,16 @@ program
   Examples:
 
     Build project
-    $ hal build --lint src --format src -t src/index.html -e src/index.js -o dist/
+    $ huel build --lint src --format src -t src/index.html -e src/index.js -o dist/
 
     Lint files
-    $ hal lint -s src/
+    $ huel lint -s src/
 
     Format files
-    $ hal format -s src/
+    $ huel format -s src/
 
     Run test suite
-    $ hal test -s src/
+    $ huel test -s src/
   `);
   })
   .parse(process.argv);

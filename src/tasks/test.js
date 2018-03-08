@@ -407,7 +407,7 @@ function depcheckTest({ entry, ignoreDirs }) {
 
   const options = {
     ignoreBinPackage: true,
-    ignoreMatches: ['hal'],
+    ignoreMatches: ['huel'],
     ignoreDirs: [ignoreDirs],
     detectors: [Depcheck.detector.requireCallExpression, webpackAliasDetect],
     specials: [Depcheck.special.eslint, Depcheck.special.webpack]

@@ -1,7 +1,4 @@
-# HAL
-
-> Developer: Hello, HAL. Do you read me, HAL? <br>
-> HAL: Affirmative, Dave. I read you.
+# Huel
 
 ## Synopsis
 
@@ -23,7 +20,7 @@ of the following tools:
 ## Usage
 
 ```bash
-  Usage: hal [options] [command]
+  Usage: huel [options] [command]
 
   Development and build environment for the web
 
@@ -47,16 +44,16 @@ of the following tools:
   Examples:
 
     Build project
-    $ hal build --lint src --format src -t src/index.html -e src/index.js -o dist/
+    $ huel build --lint src --format src -t src/index.html -e src/index.js -o dist/
 
     Lint files
-    $ hal lint -s src/
+    $ huel lint -s src/
 
     Format files
-    $ hal format -s src/
+    $ huel format -s src/
 
     Run test suite
-    $ hal test -s src/
+    $ huel test -s src/
 ```
 
 ## Development

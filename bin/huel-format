@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const defaultConfig = require('../config/hal.config.json');
+const defaultConfig = require('../config/huel.config.json');
 const program = require('commander');
 const tasks = require('../src/tasks/tasks.js');
 
@@ -16,10 +16,10 @@ program
   Examples:
 
     One time run format
-    $ hal format -s src/
+    $ huel format -s src/
 
     Watch files and run format on file change
-    $ hal format -w -s src/
+    $ huel format -w -s src/
   `);
   })
   .parse(process.argv);

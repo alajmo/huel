@@ -4,3 +4,4 @@ test/example/dist
 coverage
 dist
 .nyc_output
+.cache

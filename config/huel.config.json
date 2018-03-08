@@ -24,6 +24,7 @@
   "addRobots": false,
   "addManifest": false,
   "addTemplates": false,
+  "dryRun": false,
   "addPackageJsonScripts": false,
   "addMiscPackageJsons": false,
   "extraneousModulesCheck": false,

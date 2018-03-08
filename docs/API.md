@@ -1,5 +1,21 @@
 # API
 
+## General Specifications
+
+* Ask before overriding files
+
+## Init
+
+### Specifications
+
+## Build
+
+Compile project and generate dist bundle. Generates manifest.json as well.
+
+### Specifications
+
+* User has to opt in for manifest.json generation
+
 ## Tests
 
 ### Node Version Check

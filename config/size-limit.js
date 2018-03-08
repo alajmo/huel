@@ -1,4 +1,4 @@
-const defaultConfig = require('./hal.config.json');
+const defaultConfig = require('./huel.config.json');
 
 module.exports = sizeLimitDefault;
 

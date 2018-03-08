@@ -18,9 +18,12 @@ module.exports = {
 };
 
 function build({ env, entry, output, template }) {
-  const webpackConfig = require(env === TARGETS.production
-    ? webpackFileConfigs.production
-    : webpackFileConfigs.development)({
+  const webpackConfigPath =
+    env === TARGETS.production
+      ? webpackFileConfigs.production
+      : webpackFileConfigs.development;
+
+  const webpackConfig = require(webpackConfigPath)({
     entry,
     output,
     template,
@@ -64,16 +67,18 @@ function build({ env, entry, output, template }) {
 }
 
 function dev({ env, entry, output, template, port }) {
-  const webpackConfig = require(env === TARGETS.development
-    ? webpackFileConfigs.development
-    : webpackFileConfigs.production)({
+  const webpackConfigPath =
+    env === TARGETS.production
+      ? webpackFileConfigs.production
+      : webpackFileConfigs.development;
+
+  const webpackConfig = require(webpackConfigPath)({
     entry,
     output,
-    template,
-    webpack
+    template
   });
 
-  const webpackDevServerConfig = require(webpackFileConfigs.devServer)({
+  const webpackDevServerConfig = require(webpackFileConfigs.developmentServer)({
     contentBase: path.normalize(output),
     port
   });

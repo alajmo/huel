@@ -49,6 +49,15 @@ program
   .parse(process.argv);
 
 function getBuildOptions(options) {
+  if (options.env !== undefined) {
+    if (!['production', 'development'].includes(options.env)) {
+      console.error(
+        `error: option -e, --env requires either value 'production' or 'development'`
+      );
+      process.exit(1);
+    }
+  }
+
   if (!options.template) {
     console.error('error: option -t, --template with value is required');
     process.exit(1);

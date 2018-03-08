@@ -12,6 +12,8 @@ function config({ template, entry, output }) {
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
 
   return {
+    mode: 'development',
+
     devtool: 'cheap-module-eval-source-map',
 
     entry: {

@@ -2,14 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 const webpackDevServer = require('webpack-dev-server');
 const webpackFileConfigs = {
-  prod: '../../config/webpack.prod.config.js',
-  dev: '../../config/webpack.dev.config.js',
-  devServer: '../../config/webpack-dev-server.config.js'
+  production: '../../config/webpack.prod.config.js',
+  development: '../../config/webpack.dev.config.js',
+  developmentServer: '../../config/webpack-dev-server.config.js'
 };
 
 const TARGETS = {
-  prod: 'prod',
-  dev: 'dev'
+  production: 'production',
+  development: 'development'
 };
 
 module.exports = {
@@ -18,9 +18,9 @@ module.exports = {
 };
 
 function build({ env, entry, output, template }) {
-  const webpackConfig = require(env === TARGETS.prod
-    ? webpackFileConfigs.prod
-    : webpackFileConfigs.dev)({
+  const webpackConfig = require(env === TARGETS.production
+    ? webpackFileConfigs.production
+    : webpackFileConfigs.development)({
     entry,
     output,
     template,
@@ -33,7 +33,8 @@ function build({ env, entry, output, template }) {
       if (err.details) {
         console.error(err.details);
       }
-      return;
+
+      throw err;
     }
 
     const info = stats.toJson();
@@ -53,6 +54,7 @@ function build({ env, entry, output, template }) {
 
     if (stats.hasErrors()) {
       console.error(info.errors);
+      throw info.errors;
     }
 
     if (stats.hasWarnings()) {
@@ -62,14 +64,15 @@ function build({ env, entry, output, template }) {
 }
 
 function dev({ env, entry, output, template, port }) {
-  const webpackConfig = require(env === TARGETS.dev
-    ? webpackFileConfigs.dev
-    : webpackFileConfigs.prod)({
+  const webpackConfig = require(env === TARGETS.development
+    ? webpackFileConfigs.development
+    : webpackFileConfigs.production)({
     entry,
     output,
     template,
     webpack
   });
+
   const webpackDevServerConfig = require(webpackFileConfigs.devServer)({
     contentBase: path.normalize(output),
     port

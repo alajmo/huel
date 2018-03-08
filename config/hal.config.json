@@ -11,6 +11,7 @@
   "changelogFilename": "CHANGELOG.md",
   "verbose": false,
   "allTests": false,
+  "allInit": false,
   "dependencyCheck": false,
   "nodeCheck": false,
   "npmCheck": false,

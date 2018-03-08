@@ -23,7 +23,7 @@
     "format": "hal format",
     "format-watch": "hal format -w",
     "test": "hal test --pjv --strict-version --size --nodecheck --npmcheck --moduleversioncheck --extraneous-modules --update-check --verbose",
-    "precommit": "npm run format && pkg-ok && pjv package.json && npm test",
+    "precommit": "npm run format && pkg-ok && npm run test",
     "prepush": "pkg-ok && pjv package.json && npm test",
     "prepublish": "pkg-ok && pjv package.json && npm test",
     "commitmsg": "commitlint -e $GIT_PARAMS",
@@ -75,7 +75,7 @@
     "style-loader": "0.20.2",
     "uglifyjs-webpack-plugin": "1.2.2",
     "webpack": "4.1.0",
-    "webpack-dev-server": "^3.1.0",
+    "webpack-dev-server": "3.1.0",
     "webpack-jarvis": "0.3.0",
     "webpack-serve": "0.2.0",
     "whatwg-fetch": "2.0.3"

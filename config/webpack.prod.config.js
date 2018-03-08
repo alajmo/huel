@@ -9,12 +9,13 @@ const path = require('path');
 module.exports = config;
 
 function config({ template, entry, output, webpack }) {
-  // TODO
   const outputDir = path.resolve(output);
   const outputFilename =
     path.extname(output).length === 0 ? 'index' : path.parse(output).name;
 
   return {
+    mode: 'production',
+
     devtool: 'source-map',
 
     entry: {
@@ -65,16 +66,18 @@ function config({ template, entry, output, webpack }) {
     },
 
     plugins: [
-      new Jarvis({
-        port: 1338
-      }),
+      // new Jarvis({
+      //   port: 1338
+      // }),
 
       new CleanWebpackPlugin([outputDir], {
         root: process.cwd()
       }),
+
       new UglifyJSPlugin({
         sourceMap: true
       }),
+
       new HtmlWebpackPlugin({
         template,
         minify: {
@@ -91,10 +94,12 @@ function config({ template, entry, output, webpack }) {
           sortClassName: true
         }
       }),
+
       new ExtractTextPlugin({
         filename: `[hash].${outputFilename}.css`,
         allChunks: true
       }),
+
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: JSON.stringify('production')

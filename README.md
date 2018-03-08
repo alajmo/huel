@@ -3,13 +3,14 @@
 ## Synopsis
 
 A highly opinionated build and development tool for the web. A wonderful concatenation
-of the following tools, hidden behind a minimalistic command-line-interface (CLI).:
+of the following tools, hidden behind a minimalistic command-line-interface:
 
 * [webpack](https://github.com/webpack) - module bundler
 * [babel](https://github.com/babel/babel) - write next-gen javascript
 * [postcss](https://github.com/postcss/postcss) - write next-gen css
 * [prettier](https://github.com/prettier/prettier) - formats your code
 * [eslint](https://github.com/eslint/eslint) - lints your code
+* [husky](https://github.com/typicode/husky) - add git commit hooks
 * [commitlint](https://github.com/marionebl/commitlint) - lint your commit messages
 * [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) - auto generate changelog
 * [depcheck](https://github.com/depcheck/depcheck) - sync dependencies between node_modules and package.json and check for unused modules
@@ -21,7 +22,7 @@ of the following tools, hidden behind a minimalistic command-line-interface (CLI
 
 ## Motivation
 
-When you rely on microservice architecture or simply deploy many web projects you find yourself replicating a lot of mundane work and thus Huel was born.
+When you rely on microservice architecture or simply deploy multiple similar web projects you find yourself replicating a lot of mundane work and thus Huel was born.
 
 ## Requirements
 

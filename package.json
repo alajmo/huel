@@ -1,13 +1,14 @@
 {
   "name": "huel",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "description": "A development tool for the web",
   "main": "bin/huel",
   "bin": {
     "huel": "./bin/huel"
   },
   "files": [
-    "bin/huel"
+    "bin",
+    "src"
   ],
   "contributors": [],
   "engines": {
@@ -30,7 +31,7 @@
     "changelog": "huel changelog && git add CHANGELOG.md && git commit -m \"chore: update changelog\""
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
-  "bugs": "https://github.com/samiralajmovic/huel-9000/issues",
+  "bugs": "https://github.com/samiralajmovic/huel/issues",
   "license": "MIT",
   "dependencies": {
     "@commitlint/cli": "6.1.3",

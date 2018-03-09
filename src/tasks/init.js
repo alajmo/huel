@@ -241,25 +241,21 @@ async function addGithubTemplates(dryRun) {
 /** Add github hooks and development scripts to package.json */
 function addGitHooks(pkg) {
   const gitHooks = {
+    start:
+      'huel build --env development --debug -w -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
     'start-prod':
-      'huel build -w -t src/index.html -e src/index.js -o dist/ --env prod',
-    'start-dev':
-      'huel build -w -t src/index.html -e src/index.js -o dist/ --env sandbox',
+      'huel build --env production --debug -w -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
+    build:
+      'huel build --env production --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
     'build-dev':
-      'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
-    'build-prod':
-      'huel build --lint src --format src -t src/index.html -e src/index.js -o dist/',
-    lint: 'huel lint',
-    format: 'huel format',
-    test: 'huel test --pjv --size --depcheck',
-    depcheck: 'huel test --depcheck',
-    size: 'huel test --size',
-    pjv: 'huel test --pjv',
-    precommit: 'npm run format',
-    prepush: 'npm test',
-    commitmsg: 'huel commitmsg',
+      'huel build --env development --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
+    lint: 'huel lint --src src',
+    'lint-watch': 'huel lint -w',
+    format: 'huel format --src src',
+    'format-watch': 'huel format -w',
+    commitlint: 'huel commitmsg',
     version:
-      'conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md'
+      'huel changelog && git add CHANGELOG.md && git commit -u "chore: Update changelog"'
   };
   return [
     Object.assign(pkg, {
@@ -280,10 +276,10 @@ function addHusky(dryRun) {
   const huskyHooks = {
     husky: {
       hooks: {
-        'pre-commit': 'npm test && npm run format && pkg-ok && npm run test',
-        'pre-push': 'pkg-ok && pjv package.json && npm test',
-        'pre-publish': 'pkg-ok && pjv package.json && npm test',
-        'commit-msg': 'commitlint -e $GIT_PARAMS'
+        'pre-commit': 'npm run format',
+        'pre-push': 'npm test',
+        'pre-publish': 'npm test',
+        'commit-msg': 'npm run commitlint'
       }
     }
   };

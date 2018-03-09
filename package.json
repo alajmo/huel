@@ -25,7 +25,7 @@
     "format": "huel format --src src",
     "format-watch": "huel format -w",
     "commitlint": "huel commitmsg",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "version": "huel changelog && git add CHANGELOG.md && git commit -u \"chore: Update changelog\"",
     "test": "huel test --pjv --strict-version --size --nodecheck --npmcheck --moduleversioncheck --modulenodecheck --extraneous-modules --update-check"
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
@@ -109,7 +109,7 @@
       "pre-commit": "npm run format",
       "pre-push": "npm test",
       "pre-publish": "npm test",
-      "commitmsg": "huel commitmsg"
+      "commit-msg": "npm run commitlint"
     }
   }
 }

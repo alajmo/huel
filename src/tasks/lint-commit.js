@@ -13,7 +13,7 @@ const CONFIG = {
 module.exports = commitmsg;
 
 function commitmsg() {
-  Promise.all([load(CONFIG), read({ from: 'HEAD~1' })])
+  Promise.all([load(CONFIG), read({ edit: true })])
     .then(tasks => {
       const [{ rules, parserPreset }, [commit]] = tasks;
       return lint(

@@ -156,7 +156,7 @@ async function addRobots(dryRun) {
       if (!dryRun) {
         await copyFile(template, dest);
       }
-      console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
+      console.log(`${chalk.green('✔︎')} generated ${chalk.bold(dest)} `);
     } catch (e) {
       console.error(e);
     }

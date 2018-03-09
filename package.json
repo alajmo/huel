@@ -1,6 +1,6 @@
 {
   "name": "huel",
-  "version": "1.0.0-alpha.18",
+  "version": "1.0.0-alpha.19",
   "description": "A development tool for the web",
   "main": "bin/huel",
   "bin": {

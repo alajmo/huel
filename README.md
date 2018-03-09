@@ -40,6 +40,8 @@ npm install --save-dev huel
 
 ### Usage
 
+*NOTE* that you have to stand in the root directory of your application, the same directory as your `package.json` for any of the commands to work.
+
 Production build:
 
 ```bash

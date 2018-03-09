@@ -36,10 +36,6 @@ program
     `node version check. [boolean] [default: ${defaultConfig.nodeCheck}]`
   )
   .option(
-    '-m, --npmcheck',
-    `npm version check. [boolean] [default: ${defaultConfig.npmCheck}]`
-  )
-  .option(
     '-o, --moduleversioncheck',
     `module version check. [boolean] [default: ${
       defaultConfig.moduleVersionCheck
@@ -95,7 +91,6 @@ function getTestOptions(options) {
     size: options.size || defaultConfig.sizeLimitCheck,
     depcheck: options.depcheck || defaultConfig.dependencyCheck,
     nodecheck: options.nodecheck || defaultConfig.nodeCheck,
-    npmcheck: options.npmcheck || defaultConfig.npmCheck,
     moduleversioncheck:
       options.moduleversioncheck || defaultConfig.moduleVersionCheck,
     modulenodecheck: options.modulenodecheck || defaultConfig.moduleNodeCheck,

@@ -21,23 +21,24 @@ function assertMinNodeVersion({
     !semver.valid(semver.coerce(targetNodeVersionCondition)) &&
     targetNodeVersionCondition !== '*'
   ) {
-    exitAndInform(
-      `${chalk.bold(
+    return {
+      message: `${chalk.bold(
         moduleName
-      )}: Failed to read attribute engine.node from ${packageJsonPath}
-   Are you sure you have entered a valid Node version?
-    `
-    );
+      )}: Failed to read attribute engine.node from ${packageJsonPath}.
+   Are you sure you have entered a valid node version?`,
+      valid: false
+    };
   }
 
-  if (
-    !semver.satisfies(currentNodeProcessVersion, targetNodeVersionCondition)
-  ) {
-    exitAndInform(
-      `${chalk.bold(
+  if (!semver.satisfies(currentNodeProcessVersion, targetNodeVersionCondition)) {
+    return {
+      message: `   - ${chalk.bold(
         moduleName
-      )}: Wrong Node.js version, expected node${targetNodeVersionCondition} but found ${currentNodeProcessVersion}!`
-    );
+      )}: wrong node version, expected node${chalk.green(
+        targetNodeVersionCondition
+      )} but found ${chalk.red(currentNodeProcessVersion)}!`,
+      valid: false
+    };
   }
 }
 
@@ -51,19 +52,25 @@ function assertMinNpmVersion({
     !semver.valid(semver.coerce(targetNpmVersionCondition)) &&
     targetNpmVersionCondition !== '*'
   ) {
-    exitAndInform(
-      `${chalk.bold(
+    return {
+      message: `${chalk.bold(
         moduleName
       )}: Failed to read attribute engine.npm from ${packageJsonPath}.
-   Are you sure you have entered a valid npm version?`
-    );
+   Are you sure you have entered a valid npm version?`,
+      valid: false
+    };
   }
 
   if (!semver.satisfies(currentNpmProcessVersion, targetNpmVersionCondition)) {
-    exitAndInform(
-      `${chalk.bold(
+    return {
+      message: `   - ${chalk.bold(
         moduleName
-      )}: Wrong npm version, expected npm${targetNpmVersionCondition} but found ${currentNpmProcessVersion}!`
-    );
+      )}: wrong npm version, expected npm${chalk.green(
+        targetNpmVersionCondition
+      )} but found ${chalk.red(currentNpmProcessVersion)}!`,
+      valid: false
+    };
   }
+
+  return { valid: true };
 }

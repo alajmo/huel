@@ -27,7 +27,6 @@ function startTest({
   size,
   depcheck,
   nodecheck,
-  npmcheck,
   moduleversioncheck,
   modulenodecheck,
   extraneousmodules,
@@ -54,10 +53,6 @@ function startTest({
 
   if (depcheck || all) {
     depcheckTest({ entry, ignoreDirs });
-  }
-
-  if (npmcheck || all) {
-    npmCheck(verbose);
   }
 
   if (nodecheck || all) {
@@ -215,39 +210,6 @@ function strictVersionCheck(verbose) {
   }
 }
 
-// Verifies that the correct npm version is installed for the current
-// application.
-function npmCheck(verbose) {
-  const currentNpmProcessVersion = semver.coerce(
-    child.execSync('npm --version', {
-      encoding: 'utf-8'
-    })
-  );
-
-  const {
-    pkg: { engines: { npm: targetNpmVersionCondition }, name: moduleName }
-  } = readPkgUp.sync();
-
-  assertMinNpmVersion({
-    moduleName,
-    currentNpmProcessVersion,
-    targetNpmVersionCondition,
-    packageJsonPath: pkgUp.sync()
-  });
-
-  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
-    'npm version check successful'
-  )}`;
-  console.log(successMessage);
-  if (verbose) {
-    console.log(
-      `   - npm: installed  ${chalk.green(
-        currentNpmProcessVersion
-      )},  expected: npm ${chalk.green(targetNpmVersionCondition)}`
-    );
-  }
-}
-
 // Verifies that the correct Node.js version is installed for the current
 // application.
 function nodeCheck(verbose) {
@@ -256,23 +218,32 @@ function nodeCheck(verbose) {
     pkg: { engines: { node: targetNodeVersionCondition }, name: moduleName }
   } = readPkgUp.sync();
 
-  assertMinNodeVersion({
+  const { message, valid } = assertMinNodeVersion({
     moduleName,
     currentNodeProcessVersion,
     targetNodeVersionCondition,
     packageJsonPath: pkgUp.sync()
   });
 
-  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
-    'node version check successful'
-  )}`;
-  console.log(successMessage);
-  if (verbose) {
-    console.log(
-      `   - node: installed  ${chalk.green(
-        currentNodeProcessVersion
-      )}, expected: node ${chalk.green(targetNodeVersionCondition)}`
-    );
+  if (valid) {
+    const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+      'node version check successful'
+    )}`;
+    console.log(successMessage);
+    if (verbose) {
+      console.log(
+        `   - node: installed  ${chalk.green(
+          currentNodeProcessVersion
+        )},  expected: node ${chalk.green(targetNodeVersionCondition)}`
+      );
+    }
+  } else {
+    const failmessage = `${chalk.red('✖')}  ${chalk.bold(
+      'node version check failed'
+    )}`;
+    console.log(failmessage);
+    console.log(message);
+    process.exit(1);
   }
 }
 

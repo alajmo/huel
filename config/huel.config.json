@@ -15,7 +15,6 @@
   "allInit": false,
   "dependencyCheck": false,
   "nodeCheck": false,
-  "npmCheck": false,
   "moduleVersionCheck": false,
   "moduleNodeCheck": false,
   "sizeLimitCheck": false,

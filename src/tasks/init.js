@@ -153,7 +153,7 @@ async function addRobots(dryRun) {
   await files.forEach(async template => {
     const dest = path.join(resPath, path.parse(template).base);
     try {
-      if (dryRun) {
+      if (!dryRun) {
         await copyFile(template, dest);
       }
       console.log(`${chalk.green('✔︎')} Created directory ${resPath}\n`);
@@ -242,13 +242,13 @@ async function addGithubTemplates(dryRun) {
 function addGitHooks(pkg) {
   const gitHooks = {
     start:
-      'huel build --env development --debug -w -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
+      'huel build --env development --debug -w -p 1337 -t src/index.html -e src/index.js -o dist/',
     'start-prod':
-      'huel build --env production --debug -w -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
+      'huel build --env production --debug -w -p 1337 -t src/index.html -e src/index.js -o dist/',
     build:
-      'huel build --env production -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
+      'huel build --env production -t src/index.html -e src/index.js -o dist/',
     'build-debug':
-      'huel build --env production --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
+      'huel build --env production --debug -t src/index.html -e src/index.js -o dist/',
     lint: 'huel lint --src src',
     'lint-watch': 'huel lint -w',
     format: 'huel format --src src',

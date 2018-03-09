@@ -12,7 +12,7 @@ const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
-function config({ webpack, debug, template, entry, output }) {
+function config({ debug, template, entry, output }) {
   const smp = new SpeedMeasurePlugin({ humanVerbose: 'human' });
 
   const outputDir = path.resolve(output);
@@ -86,8 +86,6 @@ function config({ webpack, debug, template, entry, output }) {
     },
 
     plugins: [
-      new webpack.EnvironmentPlugin(['NODE_ENV']),
-
       new CleanWebpackPlugin([outputDir], {
         root: process.cwd()
       }),

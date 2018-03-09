@@ -40,7 +40,10 @@ function config({ debug, template, entry, output }) {
     },
 
     resolveLoader: {
-      modules: [path.resolve(__dirname, '../node_modules')]
+      modules: [
+        path.resolve(__dirname, '../node_modules'),
+        path.resolve(__dirname, '../../')
+      ]
     },
 
     module: {

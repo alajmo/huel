@@ -9,24 +9,7 @@ const commitmsg = require('./lint-commit.js');
 const generateChangelog = require('./changelog.js');
 
 const TASKS = Object.freeze({
-  build: ({
-    debug,
-    lint,
-    format,
-    env,
-    template,
-    entry,
-    output,
-    port,
-    watch
-  }) => {
-    if (lint) {
-      startLint({ src: lint, watch: false });
-    }
-    if (format) {
-      startFormat({ src: format, watch: false });
-    }
-
+  build: ({ debug, env, template, entry, output, port, watch }) => {
     if (watch) {
       build.dev({ debug, env, port, entry, template, output });
     } else {

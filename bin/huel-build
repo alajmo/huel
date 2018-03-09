@@ -24,8 +24,6 @@ program
     '-o, --output <output>',
     `output for project. [string] [required] [default: ${defaultConfig.output}]`
   )
-  .option('-l, --lint <src>', `lint entry folder before build. [string]`)
-  .option('-f, --format <src>', `format entry folder before build. [string]`)
   .option(
     '-w, --watch',
     `start development server. [boolean] [default: ${defaultConfig.watch}]`
@@ -78,8 +76,6 @@ function getBuildOptions(options) {
     debug: options.debug || defaultConfig.debug,
     entry: options.entry || defaultConfig.entry,
     env: options.env || defaultConfig.env,
-    lint: options.lint || defaultConfig.lint,
-    format: options.format || defaultConfig.format,
     output: options.output || defaultConfig.output,
     port: options.port || defaultConfig.port,
     template: options.template || defaultConfig.template,

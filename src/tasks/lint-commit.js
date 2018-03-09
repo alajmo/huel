@@ -25,8 +25,12 @@ function commitmsg() {
       );
     })
     .then(report => {
-      console.log(commitMessage);
       if (!report.valid) {
+        process.stdout.write(
+          `${chalk.red('✖')}  ${chalk.bold(
+            'invalid commit'
+          )}\n   ${commitMessage}`
+        );
         const problems = format(report);
         problems.forEach(elem => {
           console.error(elem);
@@ -38,6 +42,11 @@ function commitmsg() {
         console.log('feat:Add feature x\n');
         process.exit(1);
       } else {
+        process.stdout.write(
+          `${chalk.green('✔︎')}  ${chalk.bold(
+            'valid commit'
+          )}\n   ${commitMessage}`
+        );
       }
     });
 }
@@ -57,14 +66,14 @@ function format(report = {}, options = {}) {
     const name = enabled
       ? chalk.grey(`[${problem.name}]`)
       : `[${problem.name}]`;
-    return `${decoration}   ${problem.message} ${name}`;
+    return `${decoration}  ${problem.message} ${name}`;
   });
 
   const sign = selectSign({ errors, warnings });
   const color = selectColor({ errors, warnings });
 
   const decoration = enabled ? chalk[color](sign) : sign;
-  const summary = `${decoration}   found ${errors.length} problems, ${
+  const summary = `${decoration}  found ${errors.length} problems, ${
     warnings.length
   } warnings`;
   return [...problems, enabled ? chalk.bold(summary) : summary];

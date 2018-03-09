@@ -268,7 +268,7 @@ function addGitHooks(pkg) {
 
 function addHusky(dryRun) {
   console.log('Running: npm install husky@next --save-dev');
-  if (dryRun) {
+  if (!dryRun) {
     child.execSync('npm install husky@next --save-dev', {
       encoding: 'utf-8'
     });

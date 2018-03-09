@@ -84,11 +84,11 @@
     "webpack-dev-server": "3.1.0",
     "webpack-jarvis": "0.3.0",
     "webpack-manifest-plugin": "2.0.0-rc.2",
-    "eslint-config-prettier": "2.9.0"
+    "eslint-config-prettier": "2.9.0",
+    "npm-check": "5.5.2"
   },
   "devDependencies": {
     "husky": "0.15.0-rc.8",
-    "npm-check": "5.5.2",
     "pkg-ok": "2.1.0"
   },
   "repository": {

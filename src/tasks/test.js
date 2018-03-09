@@ -1,8 +1,5 @@
 const fs = require('fs');
-const {
-  assertMinNodeVersion,
-  assertMinNpmVersion
-} = require('../lib/check-node-version.js');
+const { assertMinNodeVersion } = require('../lib/check-node-version.js');
 const { getResolvedAliases } = require('../lib/util.js');
 const Depcheck = require('depcheck');
 const moduleCheck = require('check-dependencies');
@@ -294,6 +291,7 @@ function moduleNodeCheck(verbose) {
   const nodeModulesPath = path.join(process.cwd());
   const currentNodeProcessVersion = semver.coerce(process.version).raw;
 
+  let modulenodecheckPassed = true;
   const check = dependencies => {
     let installedMessage = '';
     Object.keys(dependencies).forEach(moduleName => {
@@ -313,18 +311,23 @@ function moduleNodeCheck(verbose) {
       }
       const targetNodeVersionCondition = tpkg.engines.node;
 
-      assertMinNodeVersion({
+      const { message, valid } = assertMinNodeVersion({
         moduleName,
         currentNodeProcessVersion,
         targetNodeVersionCondition,
         packageJsonPath
       });
 
-      installedMessage += `   - node: installed ${chalk.green(
-        currentNodeProcessVersion
-      )}, ${moduleName} (${chalk.green(
-        tpkg.version
-      )}) expected: node ${chalk.green(targetNodeVersionCondition)}\n`;
+      if (valid) {
+        installedMessage += `   - node: installed ${chalk.green(
+          currentNodeProcessVersion
+        )}, ${moduleName} (${chalk.green(
+          tpkg.version
+        )}) expected: node ${chalk.green(targetNodeVersionCondition)}\n`;
+      } else {
+        modulenodecheckPassed = false;
+        installedMessage += message;
+      }
     });
 
     return installedMessage;
@@ -334,11 +337,19 @@ function moduleNodeCheck(verbose) {
   installedModules += check(pkg.dependencies);
   installedModules += check(pkg.devDependencies);
 
-  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
-    'module node version check successful'
-  )}`;
-  console.log(successMessage);
-  if (verbose) {
+  if (modulenodecheckPassed) {
+    const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
+      'module node version check successful'
+    )}`;
+    console.log(successMessage);
+    if (verbose) {
+      process.stdout.write(`${installedModules}`);
+    }
+  } else {
+    const failmessage = `${chalk.red('✖')}  ${chalk.bold(
+      'module node version check failed'
+    )}`;
+    console.log(failmessage);
     process.stdout.write(`${installedModules}`);
   }
 }

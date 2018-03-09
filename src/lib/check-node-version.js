@@ -7,8 +7,7 @@ const { exitAndInform } = require('./error.js');
 const semver = require('semver');
 
 module.exports = {
-  assertMinNodeVersion,
-  assertMinNpmVersion
+  assertMinNodeVersion
 };
 
 function assertMinNodeVersion({
@@ -30,47 +29,18 @@ function assertMinNodeVersion({
     };
   }
 
-  if (!semver.satisfies(currentNodeProcessVersion, targetNodeVersionCondition)) {
+  if (
+    !semver.satisfies(currentNodeProcessVersion, targetNodeVersionCondition)
+  ) {
     return {
       message: `   - ${chalk.bold(
         moduleName
       )}: wrong node version, expected node${chalk.green(
         targetNodeVersionCondition
-      )} but found ${chalk.red(currentNodeProcessVersion)}!`,
-      valid: false
-    };
-  }
-}
-
-function assertMinNpmVersion({
-  moduleName,
-  currentNpmProcessVersion,
-  targetNpmVersionCondition,
-  packageJsonPath
-}) {
-  if (
-    !semver.valid(semver.coerce(targetNpmVersionCondition)) &&
-    targetNpmVersionCondition !== '*'
-  ) {
-    return {
-      message: `${chalk.bold(
-        moduleName
-      )}: Failed to read attribute engine.npm from ${packageJsonPath}.
-   Are you sure you have entered a valid npm version?`,
+      )} but found ${chalk.red(currentNodeProcessVersion)}!\n`,
       valid: false
     };
   }
 
-  if (!semver.satisfies(currentNpmProcessVersion, targetNpmVersionCondition)) {
-    return {
-      message: `   - ${chalk.bold(
-        moduleName
-      )}: wrong npm version, expected npm${chalk.green(
-        targetNpmVersionCondition
-      )} but found ${chalk.red(currentNpmProcessVersion)}!`,
-      valid: false
-    };
-  }
-
-  return { valid: true };
+  return { message: '', valid: true };
 }

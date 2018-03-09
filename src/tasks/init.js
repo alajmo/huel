@@ -267,9 +267,12 @@ function addGitHooks(pkg) {
 }
 
 function addHusky(dryRun) {
-  // child.execSync('npm install husky@next --save-dev', {
-  //   encoding: 'utf-8'
-  // });
+  console.log('Running: npm install husky@next --save-dev');
+  if (dryRun) {
+    child.execSync('npm install husky@next --save-dev', {
+      encoding: 'utf-8'
+    });
+  }
 
   const pkgPath = path.join(process.cwd(), 'package.json');
   const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));

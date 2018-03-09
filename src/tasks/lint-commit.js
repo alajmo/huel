@@ -13,9 +13,11 @@ const CONFIG = {
 module.exports = commitmsg;
 
 function commitmsg() {
+  let commitMessage;
   Promise.all([load(CONFIG), read({ edit: true })])
     .then(tasks => {
       const [{ rules, parserPreset }, [commit]] = tasks;
+      commitMessage = commit;
       return lint(
         commit,
         rules,
@@ -23,6 +25,7 @@ function commitmsg() {
       );
     })
     .then(report => {
+      console.log(commitMessage);
       if (!report.valid) {
         const problems = format(report);
         problems.forEach(elem => {
@@ -34,6 +37,7 @@ function commitmsg() {
         console.log(`\nExample of ${chalk.bold.red('invalid')} commit`);
         console.log('feat:Add feature x\n');
         process.exit(1);
+      } else {
       }
     });
 }

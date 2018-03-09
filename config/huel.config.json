@@ -23,6 +23,7 @@
   "addFavicon": false,
   "addRobots": false,
   "addManifest": false,
+  "gitHooks": false,
   "addTemplates": false,
   "dryRun": false,
   "addPackageJsonScripts": false,

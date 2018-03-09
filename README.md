@@ -17,18 +17,39 @@ of the following tools, hidden behind a minimalistic command-line-interface:
 * [package-json-validator](https://github.com/gorillamania/package.json-validator) - validate package.json
 * [size-limit](https://github.com/ai/size-limit) - check size limit
 * [check-dependencies](https://github.com/mgol/check-dependencies) check that modules are synced between package.json and package-lock.json
+* [jarvis](https://github.com/zouhir/jarvis) - start a browser based Webpack dashboard
+* [speed-measure-webpack-plugin](speed-measure-webpack-plugin) - measure time it takes for webpack plugins to run
 * validate node and npm versions
 * validate that strict versioning is used in package.json for modules
 
 ## Motivation
 
-When you rely on microservice architecture or simply deploy multiple similar web projects you find yourself replicating a lot of mundane work and thus Huel was born.
+When you rely on microservice architecture or simply deploy multiple similar web projects you find yourself replicating a lot of mundane work and that's where Huel comes in. It allows you to hide all the configuration files and scripts behind a few commands defined in your `package.json` file.
 
 ## Requirements
 
 * Node > 8
 
-## Usage
+## Get Started
+
+### Install
+
+```sh
+npm install --save-dev huel
+```
+
+### Usage
+
+Production build:
+
+```bash
+huel build --template src/index.html --entry src/index.js --output dist/
+```
+
+Development server:
+```bash
+huel build --env development --debug -w --port 1337 --template src/index.html --entry src/index.js --output dist/
+```
 
 ```bash
   Usage: huel [options] [command]

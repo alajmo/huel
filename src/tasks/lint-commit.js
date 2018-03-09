@@ -26,8 +26,13 @@ function commitmsg() {
       if (!report.valid) {
         const problems = format(report);
         problems.forEach(elem => {
-          console.log(elem);
+          console.error(elem);
         });
+        console.log(`\nExample of ${chalk.bold.green('valid')} commit`);
+        console.log('feat: add feature x');
+
+        console.log(`\nExample of ${chalk.bold.red('invalid')} commit`);
+        console.log('feat:Add feature x\n');
         process.exit(1);
       }
     });

@@ -1,5 +1,6 @@
 module.exports = {
-  getResolvedAliases
+  getResolvedAliases,
+  printSuccessHeader
 };
 
 function getResolvedAliases(src) {
@@ -20,4 +21,8 @@ function getResolvedAliases(src) {
       return { [basename(dirPath)]: dirPath };
     })
   );
+}
+
+function printSuccessHeader(header) {
+  process.stdout.write(`${header}\n`);
 }

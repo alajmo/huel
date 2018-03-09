@@ -6,7 +6,7 @@ module.exports = generateConfig;
 
 function generateConfig({ filename }) {
   const filepath = path.join(process.cwd(), filename);
-  const config = require('conventional-changelog-angular');
+  const config = require('conventional-changelog-lint-config-canonical');
 
   conventionalChangelog({ config })
     .on('error', e => {

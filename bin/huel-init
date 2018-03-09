@@ -30,6 +30,10 @@ program
     `dry run. [boolean] [default: ${defaultConfig.dryRun}]`
   )
   .option(
+    '--git-hooks',
+    `add git hooks. [boolean] [default: ${defaultConfig.gitHooks}]`
+  )
+  .option(
     '-s, --scripts',
     `add package.json scripts. [boolean] [default: ${
       defaultConfig.addPackageJsonScripts
@@ -61,6 +65,7 @@ function getTestOptions(options) {
     templates: options.templates || defaultConfig.addTemplates,
     dryRun: options.dryRun || defaultConfig.dryRun,
     scripts: options.scripts || defaultConfig.addPackageJsonScripts,
+    gitHooks: options.gitHooks || defaultConfig.gitHooks,
     miscKeys: options.miscKeys || defaultConfig.addMiscPackageJsons
   });
 }

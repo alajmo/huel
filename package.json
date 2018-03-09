@@ -20,15 +20,12 @@
     "build": "huel build --env production --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
     "build-dev": "huel build --env development --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
     "eslint-check": "eslint --print-config config/.eslintrc | eslint-config-prettier-check",
-    "lint": "huel lint --src test/examples/app/src",
+    "lint": "huel lint --src src",
     "lint-watch": "huel lint -w",
-    "format": "huel format",
+    "format": "huel format --src src",
     "format-watch": "huel format -w",
-    "precommit": "npm run format && pkg-ok && npm run test",
-    "prepush": "pkg-ok && pjv package.json && npm test",
-    "prepublish": "pkg-ok && pjv package.json && npm test",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "test": "huel test --pjv --strict-version --size --nodecheck --npmcheck --moduleversioncheck --modulenodecheck --extraneous-modules --update-check"
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
   "bugs": "https://github.com/samiralajmovic/huel-9000/issues",
@@ -67,7 +64,6 @@
     "globby": "8.0.1",
     "html-loader": "1.0.0-alpha.0",
     "html-webpack-plugin": "3.0.6",
-    "husky": "0.14.3",
     "package-json-validator": "0.6.3",
     "pkg-up": "2.0.0",
     "please-upgrade-node": "3.0.1",
@@ -86,6 +82,7 @@
   },
   "devDependencies": {
     "eslint-config-prettier": "2.9.0",
+    "husky": "0.15.0-rc.8",
     "npm-check": "5.5.2",
     "pkg-ok": "2.1.0"
   },
@@ -105,5 +102,13 @@
     "build",
     "dev",
     "environment"
-  ]
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run format",
+      "pre-push": "npm test",
+      "pre-publish": "npm test",
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    }
+  }
 }

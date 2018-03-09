@@ -24,6 +24,7 @@
     "lint-watch": "huel lint -w",
     "format": "huel format --src src",
     "format-watch": "huel format -w",
+    "commitlint": "huel commitmsg",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "test": "huel test --pjv --strict-version --size --nodecheck --npmcheck --moduleversioncheck --modulenodecheck --extraneous-modules --update-check"
   },
@@ -108,7 +109,7 @@
       "pre-commit": "npm run format",
       "pre-push": "npm test",
       "pre-publish": "npm test",
-      "commit-msg": "commitlint -e $GIT_PARAMS"
+      "commitmsg": "huel commitmsg"
     }
   }
 }

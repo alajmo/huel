@@ -40,8 +40,15 @@ function format(src) {
   );
   jsonFiles.forEach(filepath => {
     const text = fs.readFileSync(filepath, 'utf8');
-    const formatted = prettier.format(text, prettierJSONConfig);
-    fs.writeFileSync(filepath, formatted);
+    try {
+      const formatted = prettier.format(text, prettierJSONConfig);
+      fs.writeFileSync(filepath, formatted);
+    } catch (e) {
+      console.error(
+        `Failed to parse json file ${chalk.bold(filepath)} with prettier`
+      );
+      throw e;
+    }
   });
 
   const prettierCSSConfig = JSON.parse(fs.readFileSync(PRETTIERRC.css, 'utf8'));

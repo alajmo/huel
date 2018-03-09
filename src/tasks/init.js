@@ -246,16 +246,17 @@ function addGitHooks(pkg) {
     'start-prod':
       'huel build --env production --debug -w -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
     build:
+      'huel build --env production -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
+    'build-debug':
       'huel build --env production --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
-    'build-dev':
-      'huel build --env development --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/',
     lint: 'huel lint --src src',
     'lint-watch': 'huel lint -w',
     format: 'huel format --src src',
     'format-watch': 'huel format -w',
     commitlint: 'huel commitmsg',
-    version:
-      'huel changelog && git add CHANGELOG.md && git commit -u "chore: Update changelog"'
+    test: 'huel test --all',
+    changelog:
+      'huel changelog && git add CHANGELOG.md && git commit -m "chore: update changelog"'
   };
   return [
     Object.assign(pkg, {

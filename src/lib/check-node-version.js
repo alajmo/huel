@@ -17,7 +17,6 @@ function assertMinNodeVersion({
   targetNodeVersionCondition,
   packageJsonPath
 }) {
-
   if (
     !semver.valid(semver.coerce(targetNodeVersionCondition)) &&
     targetNodeVersionCondition !== '*'

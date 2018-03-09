@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const promisify = require('util').promisify;
 const defaultConfig = require('../../config/huel.config.json');
+const child = require('child_process');
 
 const stat = promisify(fs.stat);
 const mkdir = promisify(fs.mkdir);
@@ -20,6 +21,7 @@ async function startInit({
   templates,
   dryRun,
   scripts,
+  gitHooks,
   miscKeys
 }) {
   if (miscKeys || all) {
@@ -40,6 +42,10 @@ async function startInit({
 
   if (scripts || all) {
     addScripts(dryRun);
+  }
+
+  if (gitHooks || all) {
+    addHusky();
   }
 
   if (templates || all) {
@@ -261,6 +267,35 @@ function addGitHooks(pkg) {
     }),
     gitHooks
   ];
+}
+
+function addHusky(dryRun) {
+  // child.execSync('npm install husky@next --save-dev', {
+  //   encoding: 'utf-8'
+  // });
+
+  const pkgPath = path.join(process.cwd(), 'package.json');
+  const numWhitespace = calcWhitespace(fs.readFileSync(pkgPath, 'utf-8'));
+
+  const huskyHooks = {
+    husky: {
+      hooks: {
+        'pre-commit': 'npm test && npm run format && pkg-ok && npm run test',
+        'pre-push': 'pkg-ok && pjv package.json && npm test',
+        'pre-publish': 'pkg-ok && pjv package.json && npm test',
+        'commit-msg': 'commitlint -e $GIT_PARAMS'
+      }
+    }
+  };
+
+  const pkg = Object.assign(require(pkgPath), Object.assign({}, huskyHooks));
+
+  if (!dryRun) {
+    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, numWhitespace));
+  }
+  console.log(`${chalk.green('Following scripts added to package.json:')}
+  ${JSON.stringify(huskyHooks, null, 4)}
+  `);
 }
 
 /** Calculate whitespace given a json file */

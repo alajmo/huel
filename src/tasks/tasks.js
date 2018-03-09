@@ -83,6 +83,7 @@ const TASKS = Object.freeze({
     templates,
     dryRun,
     scripts,
+    gitHooks,
     miscKeys
   }) =>
     await startInit({
@@ -93,6 +94,7 @@ const TASKS = Object.freeze({
       templates,
       dryRun,
       scripts,
+      gitHooks,
       miscKeys
     }),
 

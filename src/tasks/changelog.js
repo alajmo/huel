@@ -14,6 +14,6 @@ function generateConfig({ filename }) {
       process.exit(1);
     })
     .on('data', data => {
-    fs.writeFileSync(filepath, data.toString());
-  });
+      fs.writeFileSync(filepath, data.toString());
+    });
 }

@@ -164,7 +164,7 @@ var matcher = /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/;
  * @return {Boolean}
  */
 
-function isUrl(string){
+function isUrl(string) {
   return matcher.test(string);
 }
 
@@ -179,8 +179,7 @@ function strictVersionCheck(verbose) {
     Object.keys(dependencies).forEach(moduleName => {
       const version = dependencies[moduleName];
       if (semver.valid(version) === null && !isUrl(version)) {
-
-      console.log(version);
+        console.log(version);
         status = 1;
         logs += `   - ${moduleName} (${chalk.red(version)})\n`;
       } else {

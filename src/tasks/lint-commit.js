@@ -7,7 +7,7 @@ const DEFAULT_SIGNS = [' ', '⚠', '✖'];
 const DEFAULT_COLORS = ['white', 'yellow', 'red'];
 
 const CONFIG = {
-  extends: ['@commitlint/config-angular']
+  extends: ['@commitlint/config-conventional']
 };
 
 module.exports = commitmsg;
@@ -28,6 +28,7 @@ function commitmsg() {
         problems.forEach(elem => {
           console.log(elem);
         });
+        process.exit(1);
       }
     });
 }

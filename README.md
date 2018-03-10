@@ -1,9 +1,20 @@
 # Huel
 
-## Synopsis
+A highly opinionated build and development tool for web projects.
 
-A highly opinionated build and development tool for the web. A wonderful concatenation
-of the following tools, hidden behind a minimalistic command-line-interface:
+## Table of Contents
+
+* [Motivation](#motivation)
+* [Requirements](#requirements)
+* [Get Started](#get-started)
+  * [Install](#install)
+  * [Usage](#usage)
+    * [NOTE](#note)
+* [Contributing](#contributing)
+
+## Background
+
+A concatenation of the following tools, hidden behind a minimalistic command-line-interface:
 
 * [webpack](https://github.com/webpack) - module bundler
 * [babel](https://github.com/babel/babel) - write next-gen javascript
@@ -22,19 +33,9 @@ of the following tools, hidden behind a minimalistic command-line-interface:
 * validate node and npm versions
 * validate that strict versioning is used in package.json for modules
 
-## Table of Contents
-
-* [Motivation](#motivation)
-* [Requirements](#requirements)
-* [Get Started](#get-started)
-  - [Install](#install)
-  - [Usage](#usage)
-    + [NOTE](#note)
-* [Contributing](#contributing)
-
 ## Motivation
 
-When you rely on microservice architecture or simply deploy multiple similar web projects you find yourself replicating a lot of mundane work and that's where Huel comes in. It allows you to hide all the configuration files and scripts behind a few commands defined in your `package.json` file.
+When you rely on micro service architecture or simply deploy multiple similar web projects you find yourself replicating a lot of mundane work and that's where Huel comes in. It allows you to hide all the configuration files and scripts behind a few commands defined in your `package.json` file. There's also a `huel init` command which bootstraps your project with various build and development scrips and also adds commitlint, a git hook which lints your commits.
 
 ## Requirements
 
@@ -50,55 +51,27 @@ npm install --save-dev huel
 
 ### Usage
 
-#### NOTE
-that you have to stand in the root directory of your application, the same directory as your `package.json` for any of the commands to work.
+#### Production build
 
-**Production build**
 ```bash
 huel build --template src/index.html --entry src/index.js --output dist/
 ```
 
-**Development server**
+#### Development server
+
 ```bash
 huel build --env development --debug -w --port 1337 --template src/index.html --entry src/index.js --output dist/
 ```
 
+#### Package Tests
+
 ```bash
-  Usage: huel [options] [command]
-
-  Development and build environment for the web
-
-  Options:
-
-    -V, --version  output the version number
-    -h, --help     output usage information
-
-  Commands:
-
-    build|b        build project
-    format|f       format files
-    lint|l         lint files
-    test|t         test code
-    commitmsg|c    assert commit message is in conventional commit form
-    changelog      generate changelog
-    init|i         bootstrap project
-    info|j         info about configs and modules
-    help [cmd]     display help for [cmd]
-
-  Examples:
-
-    Build project
-    $ huel build --lint src --format src --template src/index.html --entry src/index.js --output dist/
-
-    Lint files
-    $ huel lint --src src/
-
-    Format files
-    $ huel format --src src/
-
-    Run test suite
-    $ huel test --all
+huel test --all --verbose
 ```
+
+#### NOTE
+
+You have to stand in the root directory of your application, the same directory as your `package.json` for any of the commands to work.
 
 ## Contributing
 

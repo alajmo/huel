@@ -22,6 +22,16 @@ of the following tools, hidden behind a minimalistic command-line-interface:
 * validate node and npm versions
 * validate that strict versioning is used in package.json for modules
 
+## Table of Contents
+
+* [Motivation](#motivation)
+* [Requirements](#requirements)
+* [Get Started](#get-started)
+  - [Install](#install)
+  - [Usage](#usage)
+    + [NOTE](#note)
+* [Contributing](#contributing)
+
 ## Motivation
 
 When you rely on microservice architecture or simply deploy multiple similar web projects you find yourself replicating a lot of mundane work and that's where Huel comes in. It allows you to hide all the configuration files and scripts behind a few commands defined in your `package.json` file.
@@ -90,6 +100,6 @@ huel build --env development --debug -w --port 1337 --template src/index.html --
     $ huel test --all
 ```
 
-## Development
+## Contributing
 
 Follows [Conventional Commits](https://conventionalcommits.org/).

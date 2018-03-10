@@ -39,7 +39,7 @@ A concatenation of the following tools, hidden behind a minimalistic command-lin
 
 ## Motivation
 
-When you rely on micro service architecture or simply deploy multiple similar web projects you find yourself replicating a lot of mundane work and that's where Huel comes in. It allows you to hide all the configuration files and scripts behind a few commands defined in your `package.json` file. There's also a `huel init` command which bootstraps your project with various build and development scrips and also adds commitlint, a git hook which lints your commits.
+When you rely on microservice architecture or merely deploy multiple similar web projects, you find yourself replicating a lot of mundane work, and that's where Huel comes in. It allows you to hide all the configuration files and scripts behind a few commands defined in your `package.json` file. There's also a `huel init` command which bootstraps your project with various build and development scripts and also adds commitlint, a git hook which lints your commits.
 
 ## Requirements
 

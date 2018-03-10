@@ -4,12 +4,16 @@ A highly opinionated build and development tool for web projects.
 
 ## Table of Contents
 
+* [Features](#features)
 * [Motivation](#motivation)
 * [Requirements](#requirements)
 * [Get Started](#get-started)
-  * [Install](#install)
-  * [Usage](#usage)
-    * [NOTE](#note)
+  - [Install](#install)
+  - [Usage](#usage)
+    + [Production build](#production-build)
+    + [Development server](#development-server)
+    + [Package Tests](#package-tests)
+    + [NOTE](#note)
 * [Contributing](#contributing)
 
 ## Features

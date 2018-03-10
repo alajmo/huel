@@ -12,7 +12,7 @@ A highly opinionated build and development tool for web projects.
     * [NOTE](#note)
 * [Contributing](#contributing)
 
-## Background
+## Features
 
 A concatenation of the following tools, hidden behind a minimalistic command-line-interface:
 

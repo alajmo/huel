@@ -14,6 +14,7 @@ A highly opinionated build and development tool for web projects.
     + [Development server](#development-server)
     + [Package Tests](#package-tests)
     + [NOTE](#note)
+* [Useful Resources](#useful-resources)
 * [Contributing](#contributing)
 
 ## Features
@@ -76,6 +77,12 @@ huel test --all --verbose
 #### NOTE
 
 You have to stand in the root directory of your application, the same directory as your `package.json` for any of the commands to work.
+
+## Useful Resources
+
+* [npm-stat, review node modules on npm](https://npm-stat.com/)
+* Type `npm view <module-name>` to see general information about a module
+* [The Twelve-Factor App, a methodology for building software-as-a-service apps](https://12factor.net/)
 
 ## Contributing
 

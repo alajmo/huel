@@ -1,21 +1,34 @@
-const fs = require('fs');
-const { assertMinNodeVersion } = require('../lib/check-node-version.js');
-const { getResolvedAliases } = require('../lib/util.js');
 const Depcheck = require('depcheck');
-const moduleCheck = require('check-dependencies');
 const PJV = require('package-json-validator').PJV;
+const copy = require('../data/copy.js');
 const bytes = require('bytes');
 const chalk = require('chalk');
+const checkNpmModules = require('npm-check');
 const child = require('child_process');
+const fs = require('fs');
 const getSize = require('size-limit');
 const globby = require('globby');
+const moduleCheck = require('check-dependencies');
 const path = require('path');
-const readPkgUp = require('read-pkg-up');
 const pkgUp = require('pkg-up');
+const readPkgUp = require('read-pkg-up');
 const semver = require('semver');
-const checkNpmModules = require('npm-check');
+const { assertMinNodeVersion } = require('../lib/check-node-version.js');
+const {
+  printSuccessMessage,
+  printFailMessage,
+  printWarningMessage,
+  formatStatusMessage,
+  getResolvedAliases
+} = require('../lib/util.js');
 
 module.exports = startTest;
+
+const STATUS = {
+  PASSED: 'PASSED',
+  FAILED: 'FAILED',
+  WARNING: 'WARNING'
+};
 
 function startTest({
   verbose,
@@ -69,43 +82,64 @@ function startTest({
   }
 }
 
-function updateCheck(verbose) {
-  checkNpmModules({ skipUnused: true })
-    .then(currentState => {
-      const packages = currentState.get('packages');
+async function testTemplate({
+  successMessage = '',
+  failMessage = '',
+  warningMessage = '',
+  test = () => {},
+  verbose = false
+}) {
+  const { testStatus = STATUS.FAILED, statusMessages = '' } = await test();
 
-      let updateCheckPassed = true;
-      let statusMessage = '';
-      packages.forEach(pkg => {
-        const { moduleName, installed, latest } = pkg;
-        if (semver.neq(installed, latest)) {
-          updateCheckPassed = false;
-          statusMessage += `   - ${moduleName} (${chalk.magenta(
-            installed
-          )}) isn't up to date (${chalk.green(latest)})\n`;
-        } else {
-          statusMessage += `   - ${moduleName} (${chalk.green(
-            installed
-          )}) is up to date (${chalk.green(latest)})\n`;
-        }
+  switch (testStatus) {
+    case STATUS.PASSED:
+      printSuccessMessage(successMessage);
+      break;
+    case STATUS.FAILED:
+      printFailMessage(failMessage);
+      break;
+    case STATUS.WARNING:
+      printWarningMessage(warningMessage);
+      break;
+    default:
+  }
+
+  if ([STATUS.FAILED, STATUS.WARNING].includes(testStatus) || verbose) {
+    console.log(statusMessages);
+    printStatusMessages(statusMessages);
+  }
+}
+
+function updateCheck(verbose) {
+  const test = () =>
+    checkNpmModules({ skipUnused: true })
+      .then(currentState => {
+        const packages = currentState.get('packages');
+
+        let testStatus;
+        let statusMessages = '';
+        packages.forEach(pkg => {
+          const { moduleName, installed, latest } = pkg;
+          if (semver.neq(installed, latest)) {
+            testStatus = STATUS.WARNING;
+            statusMessages += copy['test__update-check-status-message--success'];
+          } else {
+            statusMessages += copy['test__update-check-status-message--warning'];
+          }
+        });
+
+        return { testStatus, statusMessages };
+      })
+      .catch(err => {
+        throw err;
       });
 
-      const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
-        'update check passed'
-      )}`;
-      const failMessage = `${chalk.blue('ℹ')}  ${chalk.bold(
-        'update check failed'
-      )}`;
-
-      updateCheckPassed
-        ? console.log(successMessage)
-        : console.log(failMessage);
-
-      if (!updateCheckPassed || verbose) {
-        console.log(statusMessage);
-      }
-    })
-    .catch(() => {});
+  testTemplate({
+    successMessage: copy['test__update-check-message--success'],
+    warningMessage: copy['test__update-check-message--warning'],
+    test,
+    verbose
+  });
 }
 
 function extraneousModulesCheck(verbose) {

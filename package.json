@@ -29,7 +29,7 @@
     "format": "huel format --src src",
     "format-watch": "huel format -w",
     "commitlint": "huel commitmsg",
-    "test": "huel test --pjv --strict-version --size --nodecheck --moduleversioncheck --modulenodecheck --extraneous-modules --update-check",
+    "test": "huel test --verbose --pjv --strict-version --size --nodecheck --moduleversioncheck --modulenodecheck --extraneous-modules --update-check",
     "changelog": "huel changelog && git add CHANGELOG.md && git commit -m \"chore: update changelog\""
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",

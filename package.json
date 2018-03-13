@@ -1,6 +1,6 @@
 {
   "name": "huel",
-  "version": "1.0.0-alpha.22",
+  "version": "1.0.0-alpha.23",
   "description": "A development tool for the web",
   "main": "bin/huel",
   "bin": {
@@ -53,6 +53,7 @@
     "check-dependencies": "1.1.0",
     "chokidar": "2.0.2",
     "clean-webpack-plugin": "0.1.19",
+    "package-json-validator": "0.6.3",
     "commander": "2.15.0",
     "conventional-changelog": "1.1.18",
     "conventional-changelog-lint-config-canonical": "1.0.0",
@@ -69,7 +70,6 @@
     "globby": "8.0.1",
     "html-loader": "1.0.0-alpha.0",
     "html-webpack-plugin": "3.0.6",
-    "package-json-validator": "0.6.3",
     "pkg-up": "2.0.0",
     "please-upgrade-node": "3.0.1",
     "postcss-loader": "2.1.1",

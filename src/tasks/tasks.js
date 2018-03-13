@@ -22,6 +22,7 @@ const TASKS = Object.freeze({
   lint: ({ src, watch }) => startLint({ src, watch }),
 
   test: ({
+    bail,
     verbose,
     all,
     pjv,
@@ -32,11 +33,12 @@ const TASKS = Object.freeze({
     modulenodecheck,
     entry,
     extraneousmodules,
-    updatecheck,
+    updateCheck,
     ignoreDirs,
     strictversion
   }) =>
     startTest({
+      bail,
       verbose,
       all,
       pjv,
@@ -46,7 +48,7 @@ const TASKS = Object.freeze({
       moduleversioncheck,
       modulenodecheck,
       entry,
-      updatecheck,
+      updateCheck,
       extraneousmodules,
       ignoreDirs,
       strictversion

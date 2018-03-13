@@ -10,12 +10,18 @@ program
     `verbose printing. [boolean] [default: ${defaultConfig.verbose}]`
   )
   .option(
+    '-b, --bail',
+    `fail tests as soon as one test fials. [boolean] [default: ${
+      defaultConfig.updateCheck
+    }]`
+  )
+  .option(
     '-a, --all',
     `run all tests. [boolean] [default: ${defaultConfig.allTests}]`
   )
   .option(
     '-p, --pjv',
-    `check package.json. [boolean] [default: ${defaultConfig.packageJsonCheck}]`
+    `check package.json. [boolean] [default: ${defaultConfig.pjv}]`
   )
   .option(
     '-r, --strict-version',
@@ -86,8 +92,9 @@ program
 function getTestOptions(options) {
   return Object.freeze({
     verbose: options.verbose || defaultConfig.verbose,
+    bail: options.bail || defaultConfig.bail,
     all: options.all || defaultConfig.allTests,
-    pjv: options.pjv || defaultConfig.packageJsonCheck,
+    pjv: options.pjv || defaultConfig.pjv,
     size: options.size || defaultConfig.sizeLimitCheck,
     depcheck: options.depcheck || defaultConfig.dependencyCheck,
     nodecheck: options.nodecheck || defaultConfig.nodeCheck,
@@ -99,7 +106,7 @@ function getTestOptions(options) {
     strictversion: options.strictVersion || defaultConfig.strictVersion,
     extraneousmodules:
       options.extraneousModules || defaultConfig.extraneousModulesCheck,
-    updatecheck: options.updateCheck || defaultConfig.updateCheck
+    updateCheck: options.updateCheck || defaultConfig.updateCheck
   });
 }
 

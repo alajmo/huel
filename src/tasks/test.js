@@ -27,10 +27,12 @@ module.exports = startTest;
 const STATUS = {
   PASSED: 'PASSED',
   FAILED: 'FAILED',
-  WARNING: 'WARNING'
+  WARNING: 'WARNING',
+  INFO: 'INFO'
 };
 
-function startTest({
+async function startTest({
+  bail,
   verbose,
   all,
   pjv,
@@ -40,19 +42,24 @@ function startTest({
   moduleversioncheck,
   modulenodecheck,
   extraneousmodules,
-  updatecheck,
+  updateCheck,
   entry,
   ignoreDirs,
   strictversion
 }) {
-  if (updatecheck || all) {
-    updateCheck(verbose);
-  }
+  let testStatuses = [];
 
   if (pjv || all) {
-    validatePackageJson(verbose);
+    const pjvTestStatus = await pjvTest({ verbose, bail });
+    testStatuses.push(pjvTestStatus);
   }
 
+  if (updateCheck || all) {
+    const updateCheckTestStatus = await updateCheckTest(verbose);
+    testStatuses.push(updateCheckTestStatus);
+  }
+
+  console.log(testStatuses);
   if (strictversion || all) {
     strictVersionCheck(verbose);
   }
@@ -80,17 +87,19 @@ function startTest({
   if (moduleversioncheck || all) {
     moduleVersionCheck(verbose);
   }
+
+  // testStatuses.includes(STATUS.FAILED) ?
 }
 
-async function testTemplate({
+function testTemplate({
   successMessage = '',
   failMessage = '',
   warningMessage = '',
-  test = () => {},
+  testStatus = 'FAILED',
+  statusMessages = '',
+  bail = false,
   verbose = false
 }) {
-  const { testStatus = STATUS.FAILED, statusMessages = '' } = await test();
-
   switch (testStatus) {
     case STATUS.PASSED:
       printSuccessMessage(successMessage);
@@ -106,25 +115,93 @@ async function testTemplate({
 
   if ([STATUS.FAILED, STATUS.WARNING].includes(testStatus) || verbose) {
     console.log(statusMessages);
-    printStatusMessages(statusMessages);
+  }
+
+  if (bail && STATUS.FAILED === testStatus) {
+    process.exit(1);
   }
 }
 
-function updateCheck(verbose) {
+/** Check for mandatory package.json attributes. */
+async function pjvTest({ verbose, bail }) {
+  const test = () => {
+    const pkg = require(path.join(process.cwd(), 'package.json'));
+    let output = PJV.validate(JSON.stringify(pkg), 'npm', {
+      warnings: true,
+      recommendations: true
+    });
+
+    let testStatus = STATUS.PASSED;
+    let statusMessages = '';
+    if (output.errors) {
+      testStatus = STATUS.FAILED;
+      statusMessages += copy['test__pjv-status-message-header--failed']();
+      output.errors.forEach(element => {
+        statusMessages += copy['test__pjv-status-pjv-message-body--failed'](
+          element
+        );
+      });
+    }
+
+    if (output.warnings) {
+      statusMessages += copy['test__pjv-status-message-header--warning']();
+      output.warnings.forEach(element => {
+        statusMessages += copy['test__pjv-status-pjv-message-body--warning'](
+          element
+        );
+      });
+    }
+
+    if (output.recommendations) {
+      statusMessages += copy[
+        'test__pjv-status-message-header--recommendations'
+      ]();
+      output.recommendations.forEach(element => {
+        statusMessages += copy[
+          'test__pjv-status-pjv-message-body--recommendations'
+        ](element);
+      });
+    }
+
+    return { testStatus, statusMessages };
+  };
+
+  const { testStatus = STATUS.FAILED, statusMessages = '' } = await test();
+
+  testTemplate({
+    successMessage: copy['test__pjv-message--success'],
+    failMessage: copy['test__pjv-message--failed'],
+    warningMessage: copy['test__pjv-message--warning'],
+    testStatus,
+    statusMessages,
+    bail,
+    verbose
+  });
+
+  return testStatus;
+}
+
+/** Checks if you are using the latest version of your dependencies. Only
+ *  warns in case you are not using the latest.  */
+async function updateCheckTest(verbose) {
   const test = () =>
     checkNpmModules({ skipUnused: true })
       .then(currentState => {
         const packages = currentState.get('packages');
 
-        let testStatus;
+        let testStatus = STATUS.PASSED;
         let statusMessages = '';
         packages.forEach(pkg => {
           const { moduleName, installed, latest } = pkg;
           if (semver.neq(installed, latest)) {
             testStatus = STATUS.WARNING;
-            statusMessages += copy['test__update-check-status-message--success'];
+            statusMessages += copy[
+              'test__update-check-status-message--warning'
+            ]({ moduleName, installed, latest });
           } else {
-            statusMessages += copy['test__update-check-status-message--warning'];
+            statusMessages += copy[
+              'test__update-check-status-message--success'
+            ]({ moduleName, installed, latest });
           }
         });
 
@@ -134,12 +211,17 @@ function updateCheck(verbose) {
         throw err;
       });
 
+  const { testStatus = STATUS.FAILED, statusMessages = '' } = await test();
+
   testTemplate({
     successMessage: copy['test__update-check-message--success'],
     warningMessage: copy['test__update-check-message--warning'],
-    test,
+    testStatus,
+    statusMessages,
     verbose
   });
+
+  return testStatus;
 }
 
 function extraneousModulesCheck(verbose) {
@@ -490,65 +572,6 @@ function depcheckTest({ entry, ignoreDirs }) {
       process.exit(1);
     }
   });
-}
-
-// Check for mandatory package.json attributes.
-function validatePackageJson(verbose) {
-  // TODO: Error messages not in correct order, also check other test cases
-
-  const pkg = require(path.join(process.cwd(), 'package.json'));
-  let output = PJV.validate(JSON.stringify(pkg), 'npm', {
-    warnings: true,
-    recommendations: true
-  });
-
-  let pjvCheckPassed = true;
-  let statusMessage = '';
-  if (output.errors) {
-    pjvCheckPassed = false;
-    statusMessage += `   Following package.json ${chalk.red(
-      'errors'
-    )} found: \n`;
-    output.errors.forEach(element => {
-      statusMessage += `   - ${chalk.red(element)}\n`;
-    });
-  }
-
-  if (output.warnings) {
-    statusMessage += `   Following package.json ${chalk.yellow(
-      'warnings'
-    )} found: \n`;
-    output.warnings.forEach(element => {
-      statusMessage += `   - ${chalk.yellow(element)}\n`;
-    });
-  }
-
-  if (output.recommendations) {
-    statusMessage += `   Following package.json ${chalk.green(
-      'recommendations'
-    )} found: \n`;
-    output.recommendations.forEach(element => {
-      statusMessage += `   - ${chalk.green(element)}\n`;
-    });
-  }
-
-  const successMessage = `${chalk.green('✔︎')}  ${chalk.bold(
-    'valid package.json'
-  )}`;
-  const failMessage = `${chalk.red('✖')}  ${chalk.bold(
-    'invalid package.json'
-  )}`;
-
-  pjvCheckPassed ? console.log(successMessage) : console.log(failMessage);
-
-  if (verbose) {
-    process.stdout.write(statusMessage);
-  }
-
-  if (!pjvCheckPassed) {
-    console.log(statusMessage);
-    process.exit(1);
-  }
 }
 
 /**

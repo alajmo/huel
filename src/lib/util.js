@@ -45,15 +45,15 @@ function getResolvedAliases(src) {
 }
 
 function printSuccessMessage(message) {
-  console.log(`${chalk.green('✔︎')}  ${chalk.bold(message)} `);
+  console.log(`${chalk.green('✔︎')} ${chalk.bold(message)} `);
 }
 
 function printFailMessage(message) {
-  console.log(`${chalk.red('✖')}  ${chalk.bold(message)}`);
+  console.log(`${chalk.red('✖')} ${chalk.bold(message)}`);
 }
 
 function printWarningMessage(message) {
-  console.log(`${chalk.blue('ℹ')}  ${chalk.bold(message)}`);
+  console.log(`${chalk.blue('ℹ')} ${chalk.bold(message)}`);
 }
 
 function formatStatusMessage(message) {

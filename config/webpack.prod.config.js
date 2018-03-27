@@ -62,7 +62,10 @@ function config({ debug, template, entry, output }) {
         {
           test: /.*\.js/,
           exclude: /node_modules/,
-          use: ['babel-loader']
+          use: {
+            loader: 'babel-loader',
+            options: require('./babelrc.js')
+          }
         },
 
         {

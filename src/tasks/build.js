@@ -139,8 +139,11 @@ function dev({ debug, env, entry, output, template, port }) {
     }
   });
 
-  const server = new webpackDevServer(compiler, webpackDevServerConfig);
-  server.listen(port, 'localhost', () => {
-    console.log(`Listening on http://localhost:${port}`);
-  });
+  // TODO: Remove timeout when webpack fixes bug.
+  setTimeout(() => {
+    const server = new webpackDevServer(compiler, webpackDevServerConfig);
+    server.listen(port, 'localhost', () => {
+      console.log(`Listening on http://localhost:${port}`);
+    });
+  }, 2000);
 }

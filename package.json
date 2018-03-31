@@ -18,8 +18,8 @@
     "npm": ">=5.7.1"
   },
   "scripts": {
-    "start": "huel build --env development --debug -w -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
-    "start-prod": "huel build --env production --debug -w -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
+    "start": "huel build --env development --debug --watch -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
+    "start-prod": "huel build --env production --debug -watch -p 1337 -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
     "build": "huel build --env production -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
     "build-debug": "huel build --env production --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
     "build-dev": "huel build --env development --debug -t test/examples/app/src/index.html -e test/examples/app/src/index.js -o test/examples/app/dist/",
@@ -45,6 +45,7 @@
     "babel-loader": "7.1.4",
     "babel-plugin-transform-object-rest-spread": "6.26.0",
     "babel-plugin-transform-react-jsx": "6.24.1",
+    "babel-plugin-transform-runtime": "6.23.0",
     "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",

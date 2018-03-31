@@ -77,6 +77,12 @@ huel test --all --verbose
 
 You have to stand in the root directory of your application, the same directory as your `package.json` for any of the commands to work.
 
+## Misc
+
+Some helpful resources:
+
+* [Bundlephobia, find the cost of adding a npm package to your bundle](https://bundlephobia.com/result?p=https://github.com/mobxjs/mobx)
+
 ## Contributing
 
 Follows [Conventional Commits](https://conventionalcommits.org/).

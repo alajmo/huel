@@ -1,6 +1,14 @@
 module.exports = {
   babelrc: false,
   cacheDirectory: true,
+  retainLines: true,
+  compact: false,
+  comments: true,
+  env: {
+    development: {
+      plugins: []
+    }
+  },
   presets: [
     [
       require.resolve('babel-preset-env'),
@@ -12,7 +20,6 @@ module.exports = {
       }
     ]
   ],
-  retainLines: true,
   plugins: [
     require.resolve('babel-plugin-transform-object-rest-spread'),
     [require.resolve('babel-plugin-transform-react-jsx'), { pragma: 'h' }],
@@ -23,12 +30,5 @@ module.exports = {
         regenerator: true
       }
     ]
-  ],
-  compact: false,
-  comments: true,
-  env: {
-    development: {
-      plugins: []
-    }
-  }
+  ]
 };

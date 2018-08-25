@@ -1,7 +1,6 @@
-const path = require('path');
 const chalk = require('chalk');
 const webpack = require('webpack');
-const webpackDevServer = require('webpack-dev-server');
+const serve = require('webpack-serve');
 const webpackFileConfigs = {
   production: '../../config/webpack.prod.config.js',
   development: '../../config/webpack.dev.config.js',
@@ -30,11 +29,7 @@ function printEnvironment(env) {
 function build(options) {
   printEnvironment(options.env);
 
-  const webpackConfigPath =
-    options.env === TARGETS.production
-      ? webpackFileConfigs.production
-      : webpackFileConfigs.development;
-
+  const webpackConfigPath = getWebpackConfig(options);
   const webpackConfig = require(webpackConfigPath)(options);
   const compiler = webpack(webpackConfig);
 
@@ -77,61 +72,31 @@ function build(options) {
 }
 
 function dev(options) {
-  const webpackConfigPath =
-    options.env === TARGETS.production
-      ? webpackFileConfigs.production
-      : webpackFileConfigs.development;
-
+  const webpackConfigPath = getWebpackConfig(options);
   const webpackConfig = require(webpackConfigPath)(options);
 
-  const webpackDevServerConfig = require(webpackFileConfigs.developmentServer)({
-    contentBase: path.normalize(options.output),
-    port: options.port
-  });
-
-  webpackDevServer.addDevServerEntrypoints(
-    webpackConfig,
-    webpackDevServerConfig
-  );
-
-  const compiler = webpack(webpackConfig, (err, stats) => {
-    if (err) {
-      console.error(err.stack || err);
-      if (err.details) {
-        console.error(err.details);
-      }
-      return;
+  serve(
+    { port: options.port },
+    {
+      add: app => {
+        const send = require('koa-send');
+        const serve = require('koa-static');
+        app.use(serve(options.output));
+        app.use(async ctx => {
+          await send(ctx, 'index.html', {
+            root: options.output
+          });
+        });
+      },
+      config: webpackConfig,
+      devMiddleware: { writeToDisk: true },
+      hotClient: { logLevel: 'warn' }
     }
+  ).then(() => console.log(`Listening on http://localhost:${options.port}`));
+}
 
-    const info = stats.toJson();
-
-    console.log(
-      stats.toString({
-        version: false,
-        chunks: false,
-        chunkModules: false,
-        colors: true,
-        assets: true,
-        cached: false,
-        children: false,
-        hash: false
-      })
-    );
-
-    if (stats.hasErrors()) {
-      console.error(info.errors);
-    }
-
-    if (stats.hasWarnings()) {
-      console.warn(info.warnings);
-    }
-  });
-
-  // TODO: Remove timeout when webpack fixes bug.
-  setTimeout(() => {
-    const server = new webpackDevServer(compiler, webpackDevServerConfig);
-    server.listen(options.port, 'localhost', () => {
-      console.log(`Listening on http://localhost:${options.port}`);
-    });
-  }, 2000);
+function getWebpackConfig({ env }) {
+  return env === TARGETS.production
+    ? webpackFileConfigs.production
+    : webpackFileConfigs.development;
 }

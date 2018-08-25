@@ -1,12 +1,11 @@
 const build = require('./build.js');
-const startFormat = require('./format.js');
-const startLint = require('./lint.js');
-const startTest = require('./test.js');
-const startInit = require('./init.js');
-const sizeLimit = require('./size-limit.js');
-const startInfo = require('./info.js');
+const format = require('./format.js');
+const lint = require('./lint.js');
+const test = require('./test.js');
+const init = require('./init.js');
+const info = require('./info.js');
 const commitmsg = require('./lint-commit.js');
-const generateChangelog = require('./changelog.js');
+const changelog = require('./changelog.js');
 
 const TASKS = Object.freeze({
   build: options => {
@@ -16,70 +15,15 @@ const TASKS = Object.freeze({
       build.build(options);
     }
   },
-
-  format: ({ src, watch }) => startFormat({ src, watch }),
-
-  lint: ({ src, watch }) => startLint({ src, watch }),
-
-  test: ({
-    verbose,
-    all,
-    pjv,
-    size,
-    depcheck,
-    nodecheck,
-    moduleversioncheck,
-    modulenodecheck,
-    entry,
-    extraneousmodules,
-    updatecheck,
-    ignoreDirs,
-    strictversion
-  }) =>
-    startTest({
-      verbose,
-      all,
-      pjv,
-      size,
-      depcheck,
-      nodecheck,
-      moduleversioncheck,
-      modulenodecheck,
-      entry,
-      updatecheck,
-      extraneousmodules,
-      ignoreDirs,
-      strictversion
-    }),
-
-  startCommitmsg: () => commitmsg(),
-
-  changelog: ({ filename }) => generateChangelog({ filename }),
-
-  init: async ({
-    all,
-    favicon,
-    robots,
-    manifest,
-    templates,
-    dryRun,
-    scripts,
-    gitHooks,
-    miscKeys
-  }) =>
-    await startInit({
-      all,
-      favicon,
-      robots,
-      manifest,
-      templates,
-      dryRun,
-      scripts,
-      gitHooks,
-      miscKeys
-    }),
-
-  info: () => startInfo()
+  format,
+  lint,
+  test,
+  commitmsg,
+  changelog,
+  async init(options) {
+    return await init(options);
+  },
+  info
 });
 
 module.exports = TASKS;

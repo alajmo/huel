@@ -14,6 +14,10 @@ program
     `environment. [string] [default: ${defaultConfig.env}]`
   )
   .option(
+    '-f, --config <config>',
+    `config file for project. [string] [default: ${defaultConfig.configName}]`
+  )
+  .option(
     '-t, --template <template>',
     `template for project. [string] [required] [default: ${
       defaultConfig.template
@@ -50,9 +54,9 @@ program
   })
   .parse(process.argv);
 
-function getBuildOptions(options) {
-  if (options.env !== undefined) {
-    if (!['production', 'development'].includes(options.env)) {
+function getBuildOptions(flag) {
+  if (flag.env !== undefined) {
+    if (!['production', 'development'].includes(flag.env)) {
       console.error(
         `error: option -e, --env requires either value 'production' or 'development'`
       );
@@ -60,38 +64,40 @@ function getBuildOptions(options) {
     }
   }
 
-  let huelConfig = {};
-  if (fs.existsSync(defaultConfig.configName)) {
-    huelConfig = yaml.safeLoad(
+  let flagConfig = {};
+  if (flag.config) {
+    flagConfig = yaml.safeLoad(fs.readFileSync(flag.config, 'utf8'));
+  } else if (fs.existsSync(defaultConfig.configName)) {
+    flagConfig = yaml.safeLoad(
       fs.readFileSync(defaultConfig.configName, 'utf8')
     );
   }
 
-  if (!options.template && !huelConfig.template) {
+  if (!flag.template && !flagConfig.template) {
     console.error('error: template is required');
     process.exit(1);
   }
 
-  if (!options.entry && !huelConfig.entry) {
+  if (!flag.entry && !flagConfig.entry) {
     console.error('error: entry is required');
     process.exit(1);
   }
 
-  if (!options.output && !huelConfig.output) {
+  if (!flag.output && !flagConfig.output) {
     console.error('error: output is required');
     process.exit(1);
   }
 
   return Object.freeze({
-    debug: options.debug || defaultConfig.debug,
-    entry: options.entry || huelConfig.entry || defaultConfig.entry,
-    env: options.env || defaultConfig.env,
-    output: options.output || huelConfig.output || defaultConfig.output,
-    port: options.port || defaultConfig.port,
-    template: options.template || huelConfig.template || defaultConfig.template,
-    plugins: huelConfig.plugins,
-    copyFiles: huelConfig.copyFiles,
-    watch: options.watch || defaultConfig.watch
+    debug: flag.debug || defaultConfig.debug,
+    entry: flag.entry || flagConfig.entry || defaultConfig.entry,
+    env: flag.env || defaultConfig.env,
+    output: flag.output || flagConfig.output || defaultConfig.output,
+    port: flag.port || defaultConfig.port,
+    template: flag.template || flagConfig.template || defaultConfig.template,
+    plugins: flagConfig.plugins,
+    copyFiles: flagConfig.copyFiles,
+    watch: flag.watch || defaultConfig.watch
   });
 }
 

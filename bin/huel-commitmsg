@@ -16,12 +16,11 @@ program
   .parse(process.argv);
 
 function getTestOptions(options) {
-  return Object.freeze({ });
+  return Object.freeze({});
 }
 
 main();
 function main() {
   const opt = getTestOptions(program);
-  tasks.startCommitmsg(opt);
+  tasks.commitmsg(opt);
 }
-

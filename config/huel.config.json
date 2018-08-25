@@ -1,4 +1,5 @@
 {
+  "configName": "huel.yaml",
   "debug": false,
   "template": "src/index.html",
   "entry": "src",

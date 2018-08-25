@@ -12,23 +12,14 @@ const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
-function config({ debug, template, entry, output }) {
+function config(options) {
   const smp = new SpeedMeasurePlugin({ humanVerbose: 'human' });
 
-  const outputDir = path.resolve(output);
+  const outputDir = path.resolve(options.output);
   const outputFilename =
-    path.extname(output).length === 0 ? 'index' : path.parse(output).name;
-
-  const manifestPath = path.resolve(
-    process.cwd(),
-    path.dirname(entry),
-    'res/manifest.json'
-  );
-
-  let manifest = {};
-  if (fs.existsSync(manifestPath)) {
-    manifest = Object.assign({}, require(manifestPath));
-  }
+    path.extname(options.output).length === 0
+      ? 'index'
+      : path.parse(options.output).name;
 
   const config = {
     mode: 'production',
@@ -36,7 +27,7 @@ function config({ debug, template, entry, output }) {
     devtool: 'source-map',
 
     entry: {
-      app: [path.resolve(entry)]
+      app: [path.resolve(options.entry)]
     },
 
     output: {
@@ -91,54 +82,15 @@ function config({ debug, template, entry, output }) {
       ]
     },
 
-    plugins: [
-      new CleanWebpackPlugin([outputDir], {
-        root: process.cwd()
-      }),
-
-      new UglifyJSPlugin({
-        sourceMap: true
-      }),
-
-      new HtmlWebpackPlugin({
-        template,
-        minify: {
-          collapseWhitespace: true,
-          collapseInlineTagWhitespace: true,
-          caseSensitive: true,
-          html5: true,
-          minifyCSS: true,
-          minifyJS: true,
-          removeComments: true,
-          removeRedundantAttributes: true,
-          removeEmptyAttributes: true,
-          sortAttributes: true,
-          sortClassName: true
-        }
-      }),
-
-      new ExtractTextPlugin({
-        filename: `[hash].${outputFilename}.css`,
-        allChunks: true
-      }),
-
-      new ManifestPlugin({
-        seed: manifest
-      }),
-
-      new CopyWebpackPlugin([
-        { from: 'src/res/robots.txt' },
-        { from: 'src/res/favicon.ico' }
-      ])
-    ],
-
     resolve: {
-      alias: getResolvedAliases(path.dirname(entry)),
+      alias: getResolvedAliases(path.dirname(options.entry)),
       modules: ['node_modules']
     }
   };
 
-  if (debug) {
+  config.plugins = webpackPlugins({ ...options, outputFilename, outputDir });
+
+  if (options.debug) {
     config.plugins.push(
       new Jarvis({
         port: 1338,
@@ -147,5 +99,55 @@ function config({ debug, template, entry, output }) {
     );
   }
 
-  return debug ? smp.wrap(config) : config;
+  return options.debug ? smp.wrap(config) : config;
+}
+
+function webpackPlugins(options) {
+  const plugins = [
+    new UglifyJSPlugin({
+      sourceMap: true
+    }),
+
+    new HtmlWebpackPlugin({
+      template: options.template,
+      minify: {
+        collapseWhitespace: true,
+        collapseInlineTagWhitespace: true,
+        caseSensitive: true,
+        html5: true,
+        minifyCSS: true,
+        minifyJS: true,
+        removeComments: true,
+        removeRedundantAttributes: true,
+        removeEmptyAttributes: true,
+        sortAttributes: true,
+        sortClassName: true
+      }
+    }),
+
+    new ExtractTextPlugin({
+      filename: `[hash].${options.outputFilename}.css`,
+      allChunks: true
+    }),
+
+    new CleanWebpackPlugin([options.outputDir], {
+      root: process.cwd()
+    }),
+
+    new CopyWebpackPlugin(
+      Array.isArray(options.copyFiles)
+        ? options.copyFiles.map(file => ({ from: file }))
+        : []
+    )
+  ];
+
+  if (options.manifestPath && fs.existsSync(options.manifestPath)) {
+    plugins.push(
+      new ManifestPlugin({
+        seed: Object.assign({}, require(options.manifestPath))
+      })
+    );
+  }
+
+  return plugins;
 }

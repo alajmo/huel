@@ -76,22 +76,17 @@ function build(options) {
     : compiler.run(webpackHandler);
 }
 
-function dev({ debug, env, entry, output, template, port }) {
+function dev(options) {
   const webpackConfigPath =
-    env === TARGETS.production
+    options.env === TARGETS.production
       ? webpackFileConfigs.production
       : webpackFileConfigs.development;
 
-  const webpackConfig = require(webpackConfigPath)({
-    debug,
-    entry,
-    output,
-    template
-  });
+  const webpackConfig = require(webpackConfigPath)(options);
 
   const webpackDevServerConfig = require(webpackFileConfigs.developmentServer)({
-    contentBase: path.normalize(output),
-    port
+    contentBase: path.normalize(options.output),
+    port: options.port
   });
 
   webpackDevServer.addDevServerEntrypoints(
@@ -135,8 +130,8 @@ function dev({ debug, env, entry, output, template, port }) {
   // TODO: Remove timeout when webpack fixes bug.
   setTimeout(() => {
     const server = new webpackDevServer(compiler, webpackDevServerConfig);
-    server.listen(port, 'localhost', () => {
-      console.log(`Listening on http://localhost:${port}`);
+    server.listen(options.port, 'localhost', () => {
+      console.log(`Listening on http://localhost:${options.port}`);
     });
   }, 2000);
 }

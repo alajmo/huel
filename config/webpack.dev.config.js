@@ -1,4 +1,5 @@
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Jarvis = require('webpack-jarvis');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
@@ -7,12 +8,14 @@ const { getResolvedAliases } = require('../src/lib/util.js');
 
 module.exports = config;
 
-function config({ debug, template, entry, output }) {
+function config(options) {
   const smp = new SpeedMeasurePlugin({ humanVerbose: 'human' });
 
-  const outputDir = path.resolve(output);
+  const outputDir = path.resolve(options.output);
   const outputFilename =
-    path.extname(output).length === 0 ? 'index' : path.parse(output).name;
+    path.extname(options.output).length === 0
+      ? 'index'
+      : path.parse(options.output).name;
 
   const config = {
     mode: 'none',
@@ -20,7 +23,7 @@ function config({ debug, template, entry, output }) {
     devtool: 'eval',
 
     entry: {
-      app: [path.resolve(entry)]
+      app: [path.resolve(options.entry)]
     },
 
     output: {
@@ -74,35 +77,47 @@ function config({ debug, template, entry, output }) {
       ]
     },
 
-    plugins: [
-      new CleanWebpackPlugin([outputDir], {
-        root: process.cwd()
-      }),
-
-      new HtmlWebpackPlugin({
-        template,
-        collapseWhitespace: false,
-        cache: true,
-        collapseInlineTagWhitespace: false,
-        caseSensitive: false,
-        minifyCSS: false,
-        minifyJS: false,
-        removeComments: false,
-        removeRedundantAttributes: false,
-        removeEmptyAttributes: false,
-        sortAttributes: false,
-        sortClassName: false
-      })
-    ],
-
     resolve: {
-      alias: getResolvedAliases(path.dirname(entry)),
+      alias: getResolvedAliases(path.dirname(options.entry)),
       modules: ['node_modules']
     }
   };
 
-  if (debug) {
-    config.plugins.push(
+  config.plugins = webpackPlugins({ ...options, outputFilename, outputDir });
+
+  return options.debug ? smp.wrap(config) : config;
+}
+
+function webpackPlugins(options) {
+  const plugins = [
+    new CleanWebpackPlugin([options.outputDir], {
+      root: process.cwd()
+    }),
+
+    new HtmlWebpackPlugin({
+      template: options.template,
+      collapseWhitespace: false,
+      cache: true,
+      collapseInlineTagWhitespace: false,
+      caseSensitive: false,
+      minifyCSS: false,
+      minifyJS: false,
+      removeComments: false,
+      removeRedundantAttributes: false,
+      removeEmptyAttributes: false,
+      sortAttributes: false,
+      sortClassName: false
+    }),
+
+    new CopyWebpackPlugin(
+      Array.isArray(options.copyFiles)
+        ? options.copyFiles.map(file => ({ from: file }))
+        : []
+    )
+  ];
+
+  if (options.debug) {
+    plugins.push(
       new Jarvis({
         port: 1338,
         watchOnly: false
@@ -110,5 +125,5 @@ function config({ debug, template, entry, output }) {
     );
   }
 
-  return debug ? smp.wrap(config) : config;
+  return plugins;
 }

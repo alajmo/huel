@@ -90,15 +90,6 @@ function config(options) {
 
   config.plugins = webpackPlugins({ ...options, outputFilename, outputDir });
 
-  if (options.debug) {
-    config.plugins.push(
-      new Jarvis({
-        port: 1338,
-        watchOnly: false
-      })
-    );
-  }
-
   return options.debug ? smp.wrap(config) : config;
 }
 
@@ -145,6 +136,15 @@ function webpackPlugins(options) {
     plugins.push(
       new ManifestPlugin({
         seed: Object.assign({}, require(options.manifestPath))
+      })
+    );
+  }
+
+  if (options.debug) {
+    plugins.push(
+      new Jarvis({
+        port: 1338,
+        watchOnly: false
       })
     );
   }

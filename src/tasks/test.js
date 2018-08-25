@@ -212,7 +212,10 @@ function strictVersionCheck(verbose) {
 function nodeCheck(verbose) {
   const currentNodeProcessVersion = semver.coerce(process.version).raw;
   const {
-    pkg: { engines: { node: targetNodeVersionCondition }, name: moduleName }
+    pkg: {
+      engines: { node: targetNodeVersionCondition },
+      name: moduleName
+    }
   } = readPkgUp.sync();
 
   const { message, valid } = assertMinNodeVersion({

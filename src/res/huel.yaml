@@ -1,0 +1,10 @@
+---
+
+template: src/index.html
+entry: src/app.js
+output: dist
+copyFiles:
+    - robots.txt
+    - favicon.ico
+plugins:
+    - manifest: false

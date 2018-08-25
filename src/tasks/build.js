@@ -27,22 +27,15 @@ function printEnvironment(env) {
   process.stdout.write(`${envName}\n\n`);
 }
 
-function build({ debug, env, entry, output, template }) {
-  printEnvironment(env);
+function build(options) {
+  printEnvironment(options.env);
 
   const webpackConfigPath =
-    env === TARGETS.production
+    options.env === TARGETS.production
       ? webpackFileConfigs.production
       : webpackFileConfigs.development;
 
-  const webpackConfig = require(webpackConfigPath)({
-    webpack,
-    debug,
-    entry,
-    output,
-    template
-  });
-
+  const webpackConfig = require(webpackConfigPath)(options);
   const compiler = webpack(webpackConfig);
 
   const webpackHandler = (err, stats) => {
@@ -51,12 +44,10 @@ function build({ debug, env, entry, output, template }) {
       if (err.details) {
         console.error(err.details);
       }
-
       throw err;
     }
 
     const info = stats.toJson();
-
     console.log(
       stats.toString({
         version: true,
@@ -80,7 +71,9 @@ function build({ debug, env, entry, output, template }) {
     }
   };
 
-  debug ? compiler.watch({}, webpackHandler) : compiler.run(webpackHandler);
+  options.debug
+    ? compiler.watch({}, webpackHandler)
+    : compiler.run(webpackHandler);
 }
 
 function dev({ debug, env, entry, output, template, port }) {

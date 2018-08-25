@@ -3,6 +3,9 @@
 const defaultConfig = require('../config/huel.config.json');
 const program = require('commander');
 const tasks = require('../src/tasks/tasks.js');
+const yaml = require('js-yaml');
+const fs = require('fs');
+const path = require('path');
 
 program
   .option('--debug', `debug. [string] [default: ${defaultConfig.debug}]`)
@@ -57,28 +60,37 @@ function getBuildOptions(options) {
     }
   }
 
-  if (!options.template) {
-    console.error('error: option -t, --template with value is required');
+  let huelConfig = {};
+  if (fs.existsSync(defaultConfig.configName)) {
+    huelConfig = yaml.safeLoad(
+      fs.readFileSync(defaultConfig.configName, 'utf8')
+    );
+  }
+
+  if (!options.template && !huelConfig.template) {
+    console.error('error: template is required');
     process.exit(1);
   }
 
-  if (!options.entry) {
-    console.error('error: option -e, --entry with value is required');
+  if (!options.entry && !huelConfig.entry) {
+    console.error('error: entry is required');
     process.exit(1);
   }
 
-  if (!options.output) {
-    console.error('error: option -o, --output with value is required');
+  if (!options.output && !huelConfig.output) {
+    console.error('error: output is required');
     process.exit(1);
   }
 
   return Object.freeze({
     debug: options.debug || defaultConfig.debug,
-    entry: options.entry || defaultConfig.entry,
+    entry: options.entry || huelConfig.entry || defaultConfig.entry,
     env: options.env || defaultConfig.env,
-    output: options.output || defaultConfig.output,
+    output: options.output || huelConfig.output || defaultConfig.output,
     port: options.port || defaultConfig.port,
-    template: options.template || defaultConfig.template,
+    template: options.template || huelConfig.template || defaultConfig.template,
+    plugins: huelConfig.plugins,
+    copyFiles: huelConfig.copyFiles,
     watch: options.watch || defaultConfig.watch
   });
 }

@@ -23,12 +23,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/samiralajmovic/huel.git"
+    "url": "git://github.com/alajmo/huel.git"
   },
   "keywords": [],
   "bugs": "https://example.com",
   "contributors": "Samir Alajmovic",
-  "homepage": "https://github.com/samiralajmovic/huel",
+  "homepage": "https://github.com/alajmo/huel",
   "engines": {
     "node": ">=8.9.0",
     "npm": ">=5.7.0"

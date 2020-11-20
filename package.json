@@ -33,7 +33,7 @@
     "changelog": "huel changelog && git add CHANGELOG.md && git commit -m \"chore: update changelog\""
   },
   "author": "Samir Alajmovic <alajmovic.samir@gmail.com> (https://www.alajmovic.com)",
-  "bugs": "https://github.com/samiralajmovic/huel/issues",
+  "bugs": "https://github.com/alajmo/huel/issues",
   "license": "MIT",
   "dependencies": {
     "@commitlint/cli": "7.0.0",
@@ -98,9 +98,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/samiralajmovic/huel.git"
+    "url": "git://github.com/alajmo/huel.git"
   },
-  "homepage": "https://github.com/samiralajmovic/huel",
+  "homepage": "https://github.com/alajmo/huel",
   "keywords": [
     "html",
     "cli",
